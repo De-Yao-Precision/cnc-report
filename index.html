@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC 18.26.5｜Supabase 正式整合 PWA版</title>
+<title>德曜精密｜CNC V18.27.2｜等待校車介面簡化測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -569,24 +569,12 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 .auth-management{margin-bottom:18px}.auth-management input,.auth-management select{min-height:48px}.auth-management form{display:flex;gap:10px;flex-wrap:wrap}.auth-management form input{flex:1}
 .op-toast{top:calc(var(--auth-header-height,0px) + 18px);transition-property:opacity,transform}
 @media(max-width:520px){.auth-card{padding:18px}.auth-identity{padding:8px 11px;gap:8px}.auth-identity b{font-size:16px}.auth-note{font-size:12px}}
-#monthly .month-drill>.panel{min-width:0}#availability .panel{min-width:0}#availability input,#availability select,#avCorrectionModal input,#avCorrectionModal select{min-height:48px;font-size:18px;width:100%;max-width:450px}#availability .btn{min-height:48px}#availability td{white-space:nowrap}#operator .action-btn[data-action="setupcomplete"]{background:#e9fff2;color:#12552a;border-color:#69a77a}#availability .av-warning{color:#e6b74c}#operator .form-grid select{min-width:0}
-#avStorageError{position:sticky;top:0;z-index:30000;background:#721b1b;color:white;padding:16px;font-size:18px;font-weight:bold}#avPlanBatch{display:flex;flex-wrap:wrap;gap:12px}#avPlanBatch label{display:flex;align-items:center;gap:6px}#avPlanBatch input{width:24px!important;min-height:24px!important}#avPlanTools label{display:block;margin:8px 0}#avCutModal input,#avCutModal select,#avWorkModal input,#avCorrectionScope{width:100%;min-height:48px;font-size:18px}#avWorkModal .btn,#avCutModal .btn{min-height:48px;margin-top:10px}#avOperatorWorkNotice{padding:8px;border:1px solid #bb9340;overflow-wrap:anywhere}#avOperatorWork{min-height:44px}#avCorrectionWho,#avCutWho,#avWorkWho{overflow-wrap:anywhere}#avPlanTools [hidden],#avOperatorWorkNotice [hidden]{display:none!important}#avPlanTools .form-grid{min-width:0}#avPlanTools input,#avPlanTools select{min-width:0}#avPlanTools details{margin:12px 0}.av-card-rate{margin-top:8px;border-top:1px solid #888;padding-top:6px}#avWorkModal .modal-card,#avCutModal .modal-card{max-height:90vh;overflow:auto}
-#avStorageError{top:var(--auth-header-height,0px);z-index:11000}#avStorageError input{display:inline-block;max-width:300px;min-height:44px;margin:8px;font-size:18px}#avStorageError .btn{min-height:48px}#avFaultRelease{background:#174bb4;color:#fff;border:2px solid #fff}#avPlanReconfirm{width:24px!important;min-height:24px!important}.av-write-locked .action-btn{opacity:.55;cursor:not-allowed}
+#monthly .month-drill>.panel{min-width:0}#operator .action-btn[data-action="setupcomplete"]{background:#e9fff2;color:#12552a;border-color:#69a77a}#operator .form-grid select{min-width:0}
+#avStorageError{position:sticky;top:0;z-index:30000;background:#721b1b;color:white;padding:16px;font-size:18px;font-weight:bold}
+#avStorageError{top:var(--auth-header-height,0px);z-index:11000}#avStorageError input{display:inline-block;max-width:300px;min-height:44px;margin:8px;font-size:18px}#avStorageError .btn{min-height:48px}#avFaultRelease{background:#174bb4;color:#fff;border:2px solid #fff}.av-write-locked .action-btn{opacity:.55;cursor:not-allowed}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.26.3 Supabase 資料整合測試版">
-
-<style id="cnc-cloud-v18264">
-#cncCloudStatus{position:fixed;right:10px;bottom:10px;z-index:99999;padding:7px 10px;border-radius:999px;background:#fff;border:1px solid #cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,.12);font:700 12px/1.2 system-ui,-apple-system,"Noto Sans TC",sans-serif}
-#cncCloudStatus[data-ok="1"]{border-color:#86efac}
-#cncCloudStatus[data-ok="0"]{border-color:#fca5a5}
-@media(max-width:640px){#cncCloudStatus{font-size:11px;right:6px;bottom:6px;padding:6px 8px}}
-</style>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0a1020">
-<meta name="application-name" content="德曜精密 CNC 報工">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="德曜精密 CNC 報工">
+<meta name="version" content="V18.27.2 等待校車介面簡化測試版">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><b id="authIdentityName"></b><span id="authIdentityRole"></span><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -594,7 +582,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 <div id="avStorageError" role="alert" hidden><div data-av-fault-text></div><label>解除原因 / Lý do mở khóa<input id="avFaultReason" maxlength="200"></label><button id="avFaultRelease" type="button" class="btn" hidden>主管解除稼動率資料鎖定 / Mở khóa dữ liệu</button></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V11 操作員防呆預覽 18.26.3｜Wait／Gap互斥＋Gap引用一致＋重新確認立即刷新</div></div>
+  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.2 測試版｜操作介面簡化｜保留 Wait／Setup／Gap 底層事件</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -615,7 +603,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
  <button class="tab mgmt-only-tab" data-view="workOrderHistory">🔒 製令歷史（主管）</button>
  <button class="tab mgmt-only-tab" data-view="erpImportPreview">🧩 ERP製令匯入（示意）</button>
  <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 班別加工紀錄（主管）</button>
- <button class="tab mgmt-only-tab" data-view="availability">稼動率 / Tỷ lệ vận hành</button>
  <button class="tab" data-view="monthly">歷史 / 月報</button>
  <button class="tab" data-view="systemAdmin" hidden>系統管理中心</button>
  <button class="tab" data-view="rules">規則說明</button>
@@ -693,7 +680,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
     <label class="op-context-box"><span id="lblRole">身份 / Vai trò</span><input id="operatorRole" disabled></label>
    </div>
 
-   <p class="note" id="testPersonnelNote">TEST 編號為現場測試暫時編號；目前登入者與機台責任人分開顯示。</p>
 
    <div class="operator-identity">
     <div class="id-card"><span id="lblIdMachine">目前機台 / Máy hiện tại</span><b id="opHeroMachine">-</b></div>
@@ -702,7 +688,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
     <div class="id-card"><span id="lblIdOrder">目前製令 / Lệnh sản xuất</span><b id="opHeroWO">-</b></div>
    </div>
 
-   <div id="avOperatorWorkNotice" class="note"><span></span> <button id="avOperatorWork" type="button" class="btn secondary" hidden>機台工作區間 / Thời gian làm việc máy</button></div>
 <div id="opSafetyBanner" class="op-safety-banner"></div>
 
    <div class="shift-strip">
@@ -1145,7 +1130,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 </section>
 
 
-<section id="monthly" class="view"><div class="panel"><h3 id="avMonthlyTitle">公司月稼動率 / Tỷ lệ vận hành tháng</h3><p id="avMonthlyCoverage" class="note"></p><b id="avMonthlyKPI" style="font-size:30px">—</b><button class="btn secondary" type="button" onclick="avOpenReport()">查看機台／每日／班別明細</button></div>
+<section id="monthly" class="view"><div class="panel"><h3>稼動率暫停顯示</h3><p class="note">自動稼動率尚未建立，此版不顯示正式稼動率。</p></div>
  <div class="panel">
   <div class="month-toolbar">
    <strong>歷史月份</strong>
@@ -1248,10 +1233,10 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 <label>姓名<input id="adminNewName" required maxlength="60"></label>
 <label>角色<select id="adminNewRole"><option value="operator">操作員</option><option value="supervisor">主管</option><option value="owner">老闆</option><option value="qualitySupervisor">品管主管</option></select></label>
 <label>預設語言<select id="adminNewLanguage"><option value="zh">中文</option><option value="vi">Tiếng Việt</option></select></label>
-<label>建立原因<input id="adminNewReason" required maxlength="200"></label><button class="btn primary">新增員工</button></form>
+<button class="btn primary">新增員工</button></form>
 <h3>人員帳號管理</h3><div class="table-wrap"><table><thead><tr><th>員工編號</th><th>姓名</th><th>角色</th><th>預設語言</th><th>帳號狀態</th><th>密碼狀態</th><th>建立日期</th><th>最後修改</th><th>操作</th></tr></thead><tbody id="authAccountRows"></tbody></table></div>
 <form id="adminEditForm" class="admin-grid"><label>目標員工<select id="authAccountSelect"></select></label>
-<label>修改項目<select id="adminAction"><option value="RESET_TEMP_PASSWORD">建立／重設暫時密碼</option><option value="DISABLE_ACCOUNT">停用帳號</option><option value="ENABLE_ACCOUNT">重新啟用</option><option value="CHANGE_ROLE">角色變更</option><option value="CHANGE_LANGUAGE">預設語言</option><option value="CHANGE_NAME">姓名修正</option></select></label>
+<label>修改項目<select id="adminAction"><option value="RESET_TEMP_PASSWORD">建立／重設暫時密碼</option><option value="DELETE_ACCOUNT">永久刪除帳號</option><option value="CHANGE_ROLE">角色變更</option><option value="CHANGE_LANGUAGE">預設語言</option><option value="CHANGE_NAME">姓名修正</option></select></label>
 <label id="adminValueLabel">新值<input id="adminValue" maxlength="128" autocomplete="off"></label>
 <label>角色新值<select id="adminRole"><option value="operator">操作員</option><option value="supervisor">主管</option><option value="owner">老闆</option><option value="qualitySupervisor">品管主管</option></select></label>
 <label>語言新值<select id="adminLanguage"><option value="zh">中文</option><option value="vi">Tiếng Việt</option></select></label>
@@ -1260,41 +1245,10 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 <p id="authAccountStatus" role="status"></p>
 <h3>公司主帳號設定</h3><p>此公司主帳號目前只存在這台瀏覽器／裝置。帳號ID不可直接變更。</p>
 <form id="adminSelfForm" class="admin-grid"><label>設定<select id="adminSelfAction"><option value="SYSTEM_ADMIN_NAME_CHANGED">顯示名稱</option><option value="SYSTEM_ADMIN_PASSWORD_CHANGED">密碼（至少12字元）</option></select></label><label>新值<input id="adminSelfValue" required maxlength="128"></label><label>修改原因<input id="adminSelfReason" required maxlength="200"></label><button class="btn primary">更新主帳號設定</button></form>
-<h3>帳號生命週期稽核（不含密碼）</h3><div class="table-wrap"><table><thead><tr><th>時間</th><th>目標帳號</th><th>事件</th><th>修改前</th><th>修改後</th><th>原因</th><th>真正執行者</th></tr></thead><tbody id="adminLifecycleRows"></tbody></table></div>
-<h3>最近登入稽核</h3><div class="table-wrap"><table><thead><tr><th>時間</th><th>帳號</th><th>事件</th><th>說明</th></tr></thead><tbody id="authAuditRows"></tbody></table></div>
 </div></section>
-<section id="availability" class="view"><div class="panel">
-<h2>稼動率 / Tỷ lệ vận hành</h2><p>V18.26.3：只統計明確確認的機台班別工作區間。未確認不等於未排產；舊活動只作證據。</p>
-<p id="avPlanNotice" class="av-warning" role="status"></p>
-<div id="avPlanTools" class="panel" hidden><h3>主管：班別機台工作區間確認 / Xác nhận kế hoạch máy</h3>
-<div class="form-grid"><label>機台 / Máy<select id="avPlanMachine"></select></label><label>生產日 / Ngày sản xuất<input id="avPlanDate" type="date"></label><label>班別 / Ca<select id="avPlanShift"><option>早班</option><option>晚班</option></select></label><label>排定生產？ / Có sản xuất?<select id="avPlanScheduled"><option value="yes">是 / Có</option><option value="no">明確未排產 / Không sản xuất</option></select></label></div>
-<div id="avPlanTimes" class="form-grid"><label>正常排定開始 / Bắt đầu<input id="avPlanStart" type="datetime-local"></label><label>正常排定結束 / Kết thúc<input id="avPlanEnd" type="datetime-local"></label></div>
-<div id="avNoProductionFields" class="form-grid" hidden><label>未排產原因<select id="avNoReason"><option>今日未排產</option><option>等待其他製令</option><option>保養</option><option>不使用此機台</option><option>其他</option></select></label><label>補充說明（其他必填）<input id="avNoDetail" maxlength="200"></label></div>
-<label>確認／修改原因 / Lý do<input id="avPlanReason" maxlength="200" required></label>
-<label id="avPlanReconfirmRow" hidden><input id="avPlanReconfirm" type="checkbox">主管明確重新確認已結束的工作區間（不恢復舊加班） / Xác nhận lại thời gian đã kết thúc (không khôi phục tăng ca cũ)</label>
-<details><summary>批次套用機台（未勾選時只套用上方機台）</summary><div id="avPlanBatch"></div></details>
-<button id="avPlanSubmit" class="btn primary" type="button">明確確認工作區間 / Xác nhận</button><button id="avPlanWork" class="btn secondary" type="button">加班確認／機台工作結束</button>
-<p class="note">早班08:00～17:00、晚班20:30～次日05:00。加班另行明確確認，最晚早班20:30、晚班次日08:00。機台工作結束不會結束責任、製令或停機計時。</p></div>
-<label>生產月份<input id="avMonth" type="month" value="2026-09"></label>
-<div class="shift-strip"><div class="shift-box"><span id="avTitle">公司月稼動率 / Tỷ lệ tháng</span><b id="avCompanyRate">—</b></div><div class="shift-box"><span>應運轉 / Thời gian máy dự kiến chạy</span><b id="avDenominator">0</b></div><div class="shift-box"><span>實際運轉 / Thời gian máy chạy thực tế</span><b id="avRunning">0</b></div></div>
-<p id="avCoverage" class="note"></p><p id="avFormula" class="note"></p><div class="note">固定休息→非排程等待→校車→行政空檔依序排除，剩餘時間才計入停機與等待損失。準備欄同時列出事件原始時間／有效排除時間，避免休息重扣。</div>
-<h3>機台每月（點機台看每日／班別）</h3><div class="table-wrap"><table><thead><tr><th>機台</th><th>應運轉</th><th>實際運轉</th><th>停機LOSS</th><th>等待LOSS / Chờ</th><th>準備時間原始／排除 / Thời gian chuẩn bị</th><th>非排程等待 / Chưa lên kế hoạch</th><th>稼動率</th></tr></thead><tbody id="avMachineRows"></tbody></table></div>
-<h3 id="avDetailTitle">機台每日／班別</h3><div class="table-wrap"><table><thead><tr><th>機台</th><th>生產日</th><th>班別／每日</th><th>排產狀態／資料涵蓋</th><th>排定開始</th><th>排定結束</th><th>加班截止</th><th>排定分鐘</th><th>休息</th><th>非排程等待 / Chưa lên kế hoạch</th><th>準備時間原始／排除 / Thời gian chuẩn bị</th><th>行政空檔</th><th>停機LOSS</th><th>等待LOSS / Chờ</th><th>應運轉</th><th>實際運轉</th><th>稼動率</th></tr></thead><tbody id="avDetailRows"></tbody></table></div>
-<h3>等待／校車事件</h3><div class="table-wrap"><table><thead><tr><th>事件ID／Group</th><th>類型／分類</th><th>機台／製令</th><th>生產日／班別</th><th>開始／結束</th><th>原始分鐘</th><th>原因</th><th>建立／結束者</th><th>狀態／修正</th></tr></thead><tbody id="avEventRows"></tbody></table></div>
-<p id="avLegacyNote" class="note"></p></div></section>
 <section id="rules" class="view">
 
  <div class="panel">
-  <div class="panel" style="margin-bottom:14px" id="testPersonnelPanel">
-   <h2>正式測試中央人員名單</h2>
-   <p class="note">TEST001～TEST013 是現場測試暫時編號，非公司正式員工編號。主管同時具備操作員能力；老闆唯讀；品管主管唯讀＋異常品確認，不可修改異常數量或生產數量。</p>
-   <p class="note">已建立員工編號＋密碼的現場功能驗證版登入；角色權限依固定名單執行，登入與機台責任完全分離。</p>
-   <div class="table-wrap"><table>
-    <thead><tr><th>暫時員工編號</th><th>姓名</th><th>角色</th><th>預設語言</th><th>權限規格</th></tr></thead>
-    <tbody id="testPersonnelRows"></tbody>
-   </table></div>
-   <p class="small">舊共用測試 PIN 已停用。主管建立暫時密碼，首次登入強制變更；已結算／月結修正須驗證目前登入者自己的密碼。</p>
-  </div>
   <h2>目前已納入的系統規則</h2>
   <div class="table-wrap"><table>
    <thead><tr><th>項目</th><th>規則</th></tr></thead>
@@ -1554,9 +1508,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 
 <div class="modal auth-modal" id="authReauthModal"><div class="modal-card" style="max-width:520px"><h2>目前登入者再次驗證</h2><p id="authReauthWho"></p><form id="authReauthForm"><label>目前登入者自己的密碼<input id="authReauthPassword" type="password" autocomplete="current-password" required></label><p id="authReauthError" role="alert"></p><button class="btn primary">驗證</button><button class="btn secondary" id="authReauthCancel" type="button">取消</button></form></div></div>
 <div class="modal auth-modal" id="authProductionCorrectionModal"><div class="modal-card" style="max-width:600px"><h2>主管累積數修正</h2><p>不切換機台責任人；新增修正事件，保留歷史切點與原值。</p><select id="authCorrectionMachine" aria-label="修正機台"></select><label>修正製令<select id="authCorrectionWorkOrder" aria-label="修正製令"></select></label><p id="authCorrectionOld"></p><label>修正後累積數<input id="authCorrectionQty" type="number" min="0" step="1"></label><label>修改原因<input id="authCorrectionReason" maxlength="200"></label><button class="btn primary" id="authCorrectionSubmit" type="button">確認修正</button><button class="btn secondary" id="authCorrectionCancel" type="button">取消</button></div></div>
-<div class="modal auth-modal" id="avCorrectionModal"><div class="modal-card"><h2>主管等待歷史分類修正</h2><p id="avCorrectionWho"></p><p id="avCorrectionOriginal"></p><label>修正範圍<select id="avCorrectionScope"><option value="slice">只修本片（預設）</option><option value="group">整組逐片修正（各片獨立檢查封存／月結）</option></select></label><label>是否原本排定生產<select id="avCorrectionScheduled"><option value="yes">是 / Có → LOSS</option><option value="no">否 / Không → EXCLUDED</option></select></label><label>歷史修正原因<input id="avCorrectionReason" maxlength="200" required></label><p class="note">原事件完整保留。本功能修正原本誤選；現在才開始排產請改用「從現在開始變更分類」。</p><button class="btn primary" id="avCorrectionSubmit" type="button">確認修正</button><button class="btn secondary" id="avCorrectionCancel" type="button">取消</button></div></div>
-<div class="modal auth-modal" id="avCutModal"><div class="modal-card"><h2>從現在開始變更等待分類 / Đổi phân loại từ bây giờ</h2><p id="avCutWho"></p><label>新分類<select id="avCutScheduled"><option value="yes">排定生產 LOSS</option><option value="no">未排定 EXCLUDED</option></select></label><label>變更原因<input id="avCutReason" maxlength="200" required></label><p>使用同一時間關閉舊片、開啟新片，保留同一Group。開始前的分鐘保持原分類。</p><button class="btn primary" id="avCutSubmit" type="button">確認現在切點</button><button class="btn secondary" data-av-close="avCutModal" type="button">取消</button></div></div>
-<div class="modal auth-modal" id="avWorkModal"><div class="modal-card"><h2>加班確認／機台工作結束 / Tăng ca / Kết thúc công việc máy</h2><p id="avWorkWho"></p><label>加班開始 / Bắt đầu tăng ca<input id="avOvertimeStart" type="datetime-local"></label><label>明確加班截止 / Kết thúc tăng ca<input id="avOvertimeEnd" type="datetime-local"></label><label>確認原因 / Lý do<input id="avWorkReason" maxlength="200" required></label><button class="btn primary" id="avOvertimeSubmit" type="button">明確確認加班 / Xác nhận tăng ca</button><button class="btn primary" id="avWorkEnd" type="button">機台工作結束（現在時間） / Kết thúc công việc máy</button><button class="btn secondary" data-av-close="avWorkModal" type="button">取消 / Hủy</button><p class="note">只記錄工作終點；責任人、製令、累積數及停機狀態依既有流程保持。正常下班後須先確認加班。/ Chỉ ghi thời điểm kết thúc công việc máy; người phụ trách, lệnh, số lượng và trạng thái dừng máy được giữ nguyên. Sau giờ thường phải xác nhận tăng ca.</p></div></div>
 <script>
 const AV_FAULT_KEY="deyao_availability_write_fault";
 let avStorageFault=avReadFault();
@@ -1831,7 +1782,9 @@ function currentSegmentDetail(m,endTs=Date.now()){
  return segmentCapacityDetail({startTs,endTs,prodDate,shift,overtime,mode,cycle,
   downtimeIntervals:downtimeIntervalsFor(m,startTs,endTs,s?.segmentStartWO||m.wo)});
 }
+function isAwaitingWorkOrder(m){return m.status==='待建立製令'&&!m.wo;}
 function shiftSegmentExpected(m,endTs=Date.now()){
+ if(isAwaitingWorkOrder(m))return 0;
  const s=m.shiftSession;
  if(!s){
   const d=currentSegmentDetail(m,endTs);
@@ -1989,46 +1942,30 @@ const PERSONNEL_ROLES = Object.freeze({
   labels: Object.freeze({zh:'操作員',vi:'Người vận hành'}),
   permissions: Object.freeze({canView:true,canOperate:true,canCorrectProduction:false,canCorrectDefect:false,canConfirmDefect:false})
  }),
- systemAdmin: Object.freeze({labels:Object.freeze({zh:'公司主帳號／系統管理員',vi:'Quản trị hệ thống'}),permissions:Object.freeze({canView:false,canOperate:false,canCorrectProduction:false,canCorrectDefect:false,canConfirmDefect:false,canManageAccounts:true})}),
+ systemAdmin: Object.freeze({labels:Object.freeze({zh:'公司主帳號／Super Admin',vi:'Super Admin'}),permissions:Object.freeze({canView:true,canOperate:true,canCorrectProduction:true,canCorrectDefect:true,canConfirmDefect:true,canManageAccounts:true})}),
  qualitySupervisor: Object.freeze({
   labels: Object.freeze({zh:'品管主管',vi:'Quản lý chất lượng'}),
   permissions: Object.freeze({canView:true,canOperate:false,canCorrectProduction:false,canCorrectDefect:false,canConfirmDefect:true})
  })
 });
-const TEST_PERSONNEL = Object.freeze([
- {employeeId:'TEST001',name:'蔡證豐',roleCode:'owner',defaultLanguage:'zh'},
- {employeeId:'TEST002',name:'李茂億',roleCode:'supervisor',defaultLanguage:'zh'},
- {employeeId:'TEST003',name:'王震威',roleCode:'supervisor',defaultLanguage:'zh'},
- {employeeId:'TEST004',name:'胡家銓',roleCode:'supervisor',defaultLanguage:'zh'},
- {employeeId:'TEST005',name:'蔡證聰',roleCode:'supervisor',defaultLanguage:'zh'},
- {employeeId:'TEST006',name:'楊茗凱',roleCode:'operator',defaultLanguage:'zh'},
- {employeeId:'TEST007',name:'黃淑貞',roleCode:'operator',defaultLanguage:'zh'},
- {employeeId:'TEST008',name:'蔡慧君',roleCode:'operator',defaultLanguage:'zh'},
- {employeeId:'TEST009',name:'陶克青',roleCode:'operator',defaultLanguage:'vi'},
- {employeeId:'TEST010',name:'趙氏香',roleCode:'operator',defaultLanguage:'vi'},
- {employeeId:'TEST011',name:'段氏顯',roleCode:'operator',defaultLanguage:'vi'},
- {employeeId:'TEST012',name:'阮氏如翠',roleCode:'operator',defaultLanguage:'vi'},
- {employeeId:'TEST013',name:'張金玲',roleCode:'qualitySupervisor',defaultLanguage:'zh'}
-].map(p=>Object.freeze({
- ...p,temporaryEmployeeId:true,
- role:PERSONNEL_ROLES[p.roleCode].labels.zh,
- permissions:PERSONNEL_ROLES[p.roleCode].permissions
-})));
-const TEST_LOGIN_SPEC = Object.freeze({
- authenticationStatus:'localFieldTest',
- employeeIdField:'employeeId',
- supportedLanguages:Object.freeze(['zh','vi']),
- passwordConfigured:'systemAdminProvisioned',
- roleEnforcementStatus:'enforced',
- defectConfirmationStatus:'implemented'
-});
-const TEST_LOGIN_TEXT = Object.freeze({
- zh:Object.freeze({title:'人員登入',employeeId:'測試暫時編號',password:'密碼',submit:'登入',invalidCredentials:'員工編號或密碼錯誤',notAvailable:'請由主管先建立暫時密碼'}),
- vi:Object.freeze({title:'Đăng nhập nhân viên',employeeId:'Mã nhân viên tạm thời',password:'Mật khẩu',submit:'Đăng nhập',invalidCredentials:'Mã nhân viên hoặc mật khẩu không đúng',notAvailable:'Hãy nhờ quản lý tạo mật khẩu tạm'})
-});
+// Initial local accounts: store only salted password hashes; first login must change the password.
+const COMPANY_INITIAL_EMPLOYEES = Object.freeze([
+ {employeeId:'DY003',name:'蔡證聰',roleCode:'supervisor',defaultLanguage:'zh',salt:'58da7b80443003e765875de29be18846',hash:'92244e407afb7418aa8093e3c7128c55407c6a49c2955bb60fe786a0a153dba2'},
+ {employeeId:'DY004',name:'李茂億',roleCode:'supervisor',defaultLanguage:'zh',salt:'ea73abaacef985d42de12132559bad2f',hash:'079b75cdeaffa8bfc153a3fa5954d8e0435ba458cbd69a6cd9e6f75e31d98c51'},
+ {employeeId:'DY005',name:'胡家銓',roleCode:'supervisor',defaultLanguage:'zh',salt:'350c74f26c0492f0ffa88e75465f430f',hash:'66adeb09c7d83e5abbf8ac0a4fb7281dffcf63a433a18e59d2cd4057a9f3dd55'},
+ {employeeId:'DY006',name:'王震威',roleCode:'supervisor',defaultLanguage:'zh',salt:'d68ecf1d78a66425c5168160383c819b',hash:'abe9955810a2dee1106468d56de1029464c39a0c2fae9fbc69ec30e6ea055d52'},
+ {employeeId:'DY007',name:'黃淑貞',roleCode:'operator',defaultLanguage:'zh',salt:'ad8534dd1804e3c6ce6362cff40ce917',hash:'7e3ebe4dac008bf1d8a3d4343b585aca37eea11e7b57e19b665b1db09eb917c9'},
+ {employeeId:'DY013',name:'張金玲',roleCode:'qualitySupervisor',defaultLanguage:'zh',salt:'bd11d6dd680154aceff51a2a516856bf',hash:'e788def1be4ab9d0937395a8fc5d1fa9aa26e13ba6e1aec9cd72542954bfd754'},
+ {employeeId:'DY014',name:'蔡慧君',roleCode:'operator',defaultLanguage:'zh',salt:'62b24126eada695ba10393343cb49d0f',hash:'dbe8eeddf8278b8fd62a10449b9634c2ea4388a96c02f85101be0fb878423527'},
+ {employeeId:'DY028',name:'陶克青',roleCode:'operator',defaultLanguage:'vi',salt:'6f5060832ed69c271756db3d8bcc507e',hash:'681c2d04c4d8f01f3aedfe117c27aa6d665f4534b30c7ef9ed70c77831ce9493'},
+ {employeeId:'DY034',name:'阮氏如翠',roleCode:'operator',defaultLanguage:'vi',salt:'d6bca905339f6db0bfdc88bf4fdced88',hash:'5158624ed1eebd9a66bd3aa06776b70b5c50153df44a519008735f71863b3027'},
+ {employeeId:'DY036',name:'段氏顯',roleCode:'operator',defaultLanguage:'vi',salt:'98413d99b1f7b0699cc6387c29da4ab5',hash:'d170ae202eef45f38a4e6a0c6f0dfa7b50b8c647cd30e6ec82cdd1de431aac30'},
+ {employeeId:'DY042',name:'趙氏香',roleCode:'operator',defaultLanguage:'vi',salt:'92e98c8fecfdc91270576d5d494e6245',hash:'3a8d8921e877b1ea8c380e07cb8ef3b65b4c2cac96f192f40d0821163530e0ab'},
+ {employeeId:'DY045',name:'范氏芳草',roleCode:'operator',defaultLanguage:'zh',salt:'b71f4e6a93a00adf7c17dc12ca85398e',hash:'d8a06e4ecc4716a83b52368ffdc87250f2656c4a2263c5744cc3847ba4636170'},
+ {employeeId:'DY046',name:'楊茗凱',roleCode:'operator',defaultLanguage:'zh',salt:'922c60fbedd0d5bed9d0342897d2695a',hash:'8d1b429ee925a80eff8e47d00fee8d1773e8696262365c7046c2caf2c6796f84'}
+]);
 // 既有生產事件仍使用姓名；只讓具備現場操作能力的人進入操作員選單。
-let operators = TEST_PERSONNEL.filter(p=>p.permissions.canOperate);
-const TEST_PERSONNEL_SELECTION_KEY='deyao_test_personnel_selected_id';
+let operators = [];
 function personnelLanguageFor(person){
  const saved=localStorage.getItem('deyao_test_personnel_lang_'+person.employeeId);
  return ['zh','vi'].includes(saved)?saved:person.defaultLanguage;
@@ -2036,23 +1973,15 @@ function personnelLanguageFor(person){
 function personnelOption(person){
  return `<option value="${escapeAttr(person.name)}">${escapeHTML(person.employeeId)}｜${escapeHTML(person.name)}</option>`;
 }
-function renderTestPersonnelRoster(){
- const rows=document.getElementById('testPersonnelRows');
- if(!rows)return;
- rows.innerHTML=TEST_PERSONNEL.map(p=>{
-  const policy=p.roleCode==='owner'?'唯讀':p.roleCode==='qualitySupervisor'?'唯讀＋異常品確認':p.roleCode==='supervisor'?'操作員全部功能＋主管修正權限＋異常品確認':'現場操作';
-  return `<tr><td>${escapeHTML(p.employeeId)}</td><td>${escapeHTML(p.name)}</td><td>${escapeHTML(p.role)}</td><td>${p.defaultLanguage==='vi'?'越南文 / Tiếng Việt':'繁體中文'}</td><td>${policy}</td></tr>`;
- }).join('');
-}
 // legacy/test 共用 PIN 已停用，不得繞過目前登入帳號。
 let supervisorUnlockResolver=null;
 // 現場功能驗證版登入：單機 localStorage 可被裝置使用者修改，不等同正式伺服器身分驗證。
 const AUTH_KEYS=Object.freeze({accounts:'deyao_auth_v1_accounts',audit:'deyao_auth_v1_audit',
  confirmations:'deyao_auth_v1_defect_confirmations',corrections:'deyao_auth_v1_production_corrections'});
-const ADMIN_KEYS=Object.freeze({personnel:'deyao_auth_v2_personnel',systemAdmin:'deyao_auth_v2_system_admin',lifecycle:'deyao_auth_v2_account_audit'});
+const ADMIN_KEYS=Object.freeze({personnel:'deyao_auth_v2_personnel',systemAdmin:'deyao_auth_v2_system_admin',lifecycle:'deyao_auth_v2_account_audit',seeded:'deyao_auth_v2_initial_employees_seeded'});
 const AUTH_MONTH_HISTORY_KEY='deyao_auth_v2_month_history';
 const AUTH_ENV_SUPPORTED=window.isSecureContext===true&&!!globalThis.crypto?.subtle&&typeof globalThis.crypto?.randomUUID==='function';
-const AUTH_IDLE_MS=120000;
+const AUTH_IDLE_MS=300000;
 let authAccounts={},authAccountsError='',authSession=null,authPendingUser=null;
 let authLastActivity=0,authLanguage='zh',authScreen='login',authReauthResolver=null,authBusy=false;
 try{authAccounts=JSON.parse(localStorage.getItem(AUTH_KEYS.accounts)||'{}');
@@ -2061,7 +1990,7 @@ try{authAccounts=JSON.parse(localStorage.getItem(AUTH_KEYS.accounts)||'{}');
 let personnelStore={},systemAdminAccount=null;
 try{
  const saved=localStorage.getItem(ADMIN_KEYS.personnel);
- personnelStore=saved?JSON.parse(saved):Object.fromEntries(TEST_PERSONNEL.map(p=>[p.employeeId,{employeeId:p.employeeId,name:p.name,roleCode:p.roleCode,defaultLanguage:p.defaultLanguage,temporaryEmployeeId:true,status:authAccounts[p.employeeId]?.mustChange?'PENDING_FIRST_LOGIN':'ACTIVE',createdAt:authAccounts[p.employeeId]?.updatedAt||Date.now(),updatedAt:authAccounts[p.employeeId]?.updatedAt||Date.now()}]));
+  personnelStore=saved?JSON.parse(saved):{};
  if(!personnelStore||Array.isArray(personnelStore)||typeof personnelStore!=='object')throw Error('人員目錄格式錯誤');
  if(!saved)localStorage.setItem(ADMIN_KEYS.personnel,JSON.stringify(personnelStore));
  systemAdminAccount=JSON.parse(localStorage.getItem(ADMIN_KEYS.systemAdmin)||'null');
@@ -2070,11 +1999,11 @@ try{
 function authT(zh,vi){return authLanguage==='vi'?vi:zh;}
 function authPerson(id){
  id=String(id||'').trim().toUpperCase();
- const p=systemAdminAccount?.employeeId===id?systemAdminAccount:personnelStore[id];
- if(!p||!PERSONNEL_ROLES[p.roleCode])return null;
+ const p=systemAdminAccount?.employeeId?.toUpperCase()===id?systemAdminAccount:personnelStore[id];
+ if(!p||!PERSONNEL_ROLES[p.roleCode]||(p.roleCode==='systemAdmin'&&p!==systemAdminAccount))return null;
  return {...p,role:PERSONNEL_ROLES[p.roleCode].labels.zh,permissions:PERSONNEL_ROLES[p.roleCode].permissions};
 }
-function authActive(){return !!authSession&&!authSession.locked&&authPerson(authSession.employeeId)?.status!=='DISABLED';}
+function authActive(){if(!authSession||authSession.locked)return false;const p=authPerson(authSession.employeeId);return !!p&&p.status!=='DISABLED';}
 function authCan(permission){return authActive()&&!!authPerson(authSession.employeeId)?.permissions[permission];}
 function authActorFields(){
  const p=authActive()?authPerson(authSession.employeeId):null;
@@ -2082,11 +2011,7 @@ function authActorFields(){
   actorRoleCode:p?.roleCode||'system',actorSessionId:p?authSession.id:''};
 }
 function authAudit(action,id='',detail=''){
- const key=AUTH_KEYS.audit,rows=JSON.parse(localStorage.getItem(key)||'[]');
- const p=authPerson(id);
- rows.unshift({id:crypto.randomUUID(),time:Date.now(),action,employeeId:p?.employeeId||String(id).slice(0,20),
-  name:p?.name||'',role:p?.role||'',detail,...authActorFields()});
- localStorage.setItem(key,JSON.stringify(rows.slice(0,1000)));
+ // 登入稽核功能已移除；既有本機紀錄保留但不再新增。
 }
 function authPasswordValid(value){return typeof value==='string'&&value.length>=8&&value.length<=128;}
 async function authPasswordRecord(password){
@@ -2103,25 +2028,12 @@ async function authHashPassword(password,saltHex){
 }
 async function authVerify(id,password){
  if(!AUTH_ENV_SUPPORTED)return false;
- const record=systemAdminAccount?.employeeId===id?systemAdminAccount.password:authAccounts[id];
+ id=String(id||'').trim().toUpperCase();
+ const record=systemAdminAccount?.employeeId?.toUpperCase()===id?systemAdminAccount.password:authAccounts[id];
  if(!record||record.iterations!==120000||!/^\w{32}$/.test(record.salt||'')||!/^\w{64}$/.test(record.hash||''))return false;
  return (await authHashPassword(password,record.salt))===record.hash;
 }
 function authSaveAccounts(next){localStorage.setItem(AUTH_KEYS.accounts,JSON.stringify(next));authAccounts=next;}
-async function authBootstrap(){return {ok:false,message:'legacy / migration only：舊主管首次設定已停用，請建立公司主帳號。'};}
-async function authCreateSystemAdmin(id,name,password,repeat){
- if(!AUTH_ENV_SUPPORTED||authAccountsError||systemAdminAccount)return {ok:false,message:'不能再次建立主帳號，或目前環境不支援安全驗證。'};
- id=String(id||'').trim().toUpperCase();name=String(name||'').trim();
- if(!/^[A-Z0-9_.-]{1,40}$/.test(id)||personnelStore[id]||!adminNameValid(name)||password!==repeat||password.length<12||password.length>128)return {ok:false,message:'ID須唯一；姓名必填且不可含HTML標記；主帳號密碼須12～128字元且兩次相同。'};
- const record=await authPasswordRecord(password);record.mustChange=false;
- if(systemAdminAccount)return {ok:false,message:'本機已有公司主帳號。'};
- const p={employeeId:id,name,roleCode:'systemAdmin',defaultLanguage:'zh',status:'ACTIVE',createdAt:Date.now(),updatedAt:Date.now(),password:record};
- const old=localStorage.getItem(ADMIN_KEYS.systemAdmin);
- try{localStorage.setItem(ADMIN_KEYS.systemAdmin,JSON.stringify(p));systemAdminAccount=p;
-  adminAudit('SYSTEM_ADMIN_CREATED',p,null,{employeeId:id,name,roleCode:'systemAdmin'},'首次本機設定',{actorEmployeeId:id,actorName:name,actorRole:'公司主帳號／系統管理員',actorRoleCode:'systemAdmin',actorSessionId:''});
- }catch(e){old===null?localStorage.removeItem(ADMIN_KEYS.systemAdmin):localStorage.setItem(ADMIN_KEYS.systemAdmin,old);systemAdminAccount=null;throw e;}
- authScreen='login';renderAuthGate();return {ok:true};
-}
 async function authSetTemporaryPassword(id,password,ownPassword,reason='建立／重設暫時密碼'){
  if(!authCan('canManageAccounts')||!personnelStore[id]||personnelStore[id].status==='DISABLED')return {ok:false,message:'只有公司主帳號可管理啟用的人員帳號。'};
  if(!authPasswordValid(password)||!reason.trim())return {ok:false,message:'暫時密碼須8～128字元，原因必填。'};
@@ -2142,7 +2054,7 @@ async function authLogin(id,password){
  if(authAccountsError)return {ok:false,message:authAccountsError};
  const p=authPerson(id),ok=p&&await authVerify(id,password);
  if(!ok){authAudit('登入失敗',id,'帳號或密碼錯誤；不鎖帳號');return {ok:false,message:authT('員工編號或密碼錯誤；帳號未停用。','Mã hoặc mật khẩu không đúng; tài khoản không bị khóa.')};}
- if(authAccounts[id]?.mustChange){authPendingUser={employeeId:id};authScreen='change';renderAuthGate();return {ok:true,mustChange:true};}
+ if(p.roleCode!=='systemAdmin'&&authAccounts[id]?.mustChange){authPendingUser={employeeId:id};authScreen='change';renderAuthGate();return {ok:true,mustChange:true};}
  authFinishLogin(p);return {ok:true};
 }
 async function authChangeFirstPassword(password,repeat){
@@ -2157,13 +2069,13 @@ async function authChangeFirstPassword(password,repeat){
  authAudit('首次密碼變更完成',id);authPendingUser=null;authFinishLogin(authPerson(id));return {ok:true};
 }
 function authFinishLogin(p){
- const previousView=document.querySelector('.view.active')?.id;
+ const previousView=p.roleCode==='operator'?null:document.querySelector('.view.active')?.id;
  authSession={employeeId:p.employeeId,id:crypto.randomUUID(),locked:false};
  authLastActivity=Date.now();authPendingUser=null;authScreen='login';authLanguage=p.defaultLanguage;
  operatorLang=p.defaultLanguage;operatorSelect.innerHTML=p.permissions.canOperate?personnelOption(p):'';operatorSelect.value=p.name;operatorSelect.disabled=true;
  opFormDirty=false;localStorage.setItem('deyao_operator_lang',operatorLang);
  authAudit('登入成功',p.employeeId);applyOperatorLanguage();authApplyAccess();renderAll();
- authShowView(authAllowedView(previousView)?previousView:(p.roleCode==='systemAdmin'?'systemAdmin':p.permissions.canOperate?'operator':p.roleCode==='qualitySupervisor'?'defectRecords':'owner'));
+ authShowView(p.roleCode==='operator'?'operator':p.roleCode==='systemAdmin'?'systemAdmin':authAllowedView(previousView)?previousView:p.permissions.canOperate?'operator':p.roleCode==='qualitySupervisor'?'defectRecords':'owner');
 }
 function authCancelPending(){
  closeSupervisorUnlockModal({ok:false,cancelled:true});closeDefectCorrectionModal();
@@ -2198,11 +2110,12 @@ function authLogout(){
 function authAllowedView(view){
  if(!authActive())return false;
  const p=authPerson(authSession.employeeId);
- if(p.roleCode==='systemAdmin')return view==='systemAdmin';
+ if(p.roleCode==='operator')return view==='operator';
+ if(p.roleCode==='systemAdmin')return true;
  if(view==='systemAdmin')return false;
  if(view==='operator')return p.permissions.canOperate;
  if(view==='erpImportPreview')return p.roleCode==='supervisor';
- return p.roleCode!=='operator'||view==='rules';
+ return true;
 }
 function authShowView(view){
  if(!authAllowedView(view))return false;
@@ -2219,6 +2132,7 @@ function authApplyAccess(){
   document.getElementById('authIdentityRole').textContent=`${operatorLang==='vi'?'Vai trò':'角色'}：${PERSONNEL_ROLES[p.roleCode].labels[operatorLang]}`;}
  document.documentElement.style.setProperty('--auth-header-height',`${identity.getBoundingClientRect().height}px`);
  document.querySelectorAll('.tab').forEach(t=>{t.hidden=!authAllowedView(t.dataset.view);});
+ if(p?.roleCode==='operator' && document.querySelector('.view.active')?.id!=='operator')authShowView('operator');
  ['monthCheckBtn','monthCloseBtn','monthReopenBtn','loadDemoData','enterCleanTestMode','selectJsonRestore','downloadJsonBackup'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=!authCan('canCorrectProduction');});
  document.getElementById('authAccountsPanel').hidden=!authCan('canManageAccounts');
  document.getElementById('authProductionCorrectionBtn').hidden=!authCan('canCorrectProduction');
@@ -2230,7 +2144,7 @@ function authConfirmAction(action,m){
  const p=authPerson(authSession.employeeId);
  const names={takeMachine:'接手機台 / Nhận máy',endResponsibility:'結束本次責任 / Kết thúc phụ trách',qty:'更新數量 / Cập nhật số lượng',defect:'異常品 / Hàng lỗi',down:'停機 / Dừng máy',resume:'恢復生產 / Tiếp tục',tool:'換刀 / Thay dao',complete:'製令完成 / Hoàn thành',exception:'例外結單 / Kết thúc ngoại lệ',waitsetup:'待換線／待校車 / Chờ chỉnh máy',setup:'開始校車 / Bắt đầu chỉnh máy',order:'換製令 / Đổi lệnh',settle:'下班結算 / Chốt ca'};
  const wo=action==='order'?(document.getElementById('fWO')?.value||m.wo):m.wo;
- return confirm(`${names[action]||action}\n\n操作者 / Người thao tác：${p.name}\n員工編號（測試暫時編號） / Mã tạm：${p.employeeId}\n角色 / Vai trò：${p.role}\n機台 / Máy：${m.id||m.machine||'-'}\n製令 / Lệnh：${wo||'-'}\n\n確認以此登入身分執行？ / Xác nhận người thao tác?`);
+ return confirm(`${names[action]||action}\n\n操作者 / Người thao tác：${p.name}\n員工編號 / Mã nhân viên：${p.employeeId}\n角色 / Vai trò：${p.role}\n機台 / Máy：${m.id||m.machine||'-'}\n製令 / Lệnh：${wo||'-'}\n\n確認以此登入身分執行？ / Xác nhận người thao tác?`);
 }
 function authAssertSession(id){if(!authActive()||authSession.id!==id)throw Error('登入已鎖定或切換，這次操作已停止。');}
 function authMonthEverClosed(month){
@@ -2288,31 +2202,26 @@ function authConfirmDefect(eventId){
 }
 function renderAuthAccounts(){
  if(!authCan('canManageAccounts'))return;
- const selected=document.getElementById('authAccountSelect').value,people=Object.values(personnelStore);
+ const selected=document.getElementById('authAccountSelect').value,people=Object.values(personnelStore).filter(p=>p.status!=='DISABLED'&&!isTestAccount(p.employeeId,p));
  document.getElementById('authAccountSelect').innerHTML=people.map(p=>`<option value="${escapeAttr(p.employeeId)}">${escapeHTML(p.employeeId)}｜${escapeHTML(p.name)}｜${PERSONNEL_ROLES[p.roleCode].labels.zh}</option>`).join('');
  if(personnelStore[selected])document.getElementById('authAccountSelect').value=selected;
  const date=v=>v?new Date(v).toLocaleString('zh-TW'):'-';
- document.getElementById('authAccountRows').innerHTML=people.map(p=>`<tr><td>${escapeHTML(p.employeeId)}</td><td>${escapeHTML(p.name)}</td><td>${PERSONNEL_ROLES[p.roleCode].labels.zh}</td><td>${p.defaultLanguage==='vi'?'Tiếng Việt':'中文'}</td><td>${p.status==='DISABLED'?'停用':p.status==='PENDING_FIRST_LOGIN'?'待首次登入':'啟用'}</td><td>${!authAccounts[p.employeeId]?'尚未建立正式密碼':authAccounts[p.employeeId].mustChange?'待首次變更密碼':'已設定個人密碼（不可查看）'}</td><td>${date(p.createdAt)}</td><td>${date(p.updatedAt)}</td><td><button class="btn secondary" type="button" data-admin-select="${escapeAttr(p.employeeId)}">管理此帳號</button></td></tr>`).join('');
+ document.getElementById('authAccountRows').innerHTML=people.map(p=>`<tr><td>${escapeHTML(p.employeeId)}</td><td>${escapeHTML(p.name)}</td><td>${PERSONNEL_ROLES[p.roleCode].labels.zh}</td><td>${p.defaultLanguage==='vi'?'Tiếng Việt':'中文'}</td><td>${p.status==='PENDING_FIRST_LOGIN'?'待首次登入':'啟用'}</td><td>${!authAccounts[p.employeeId]?'尚未建立正式密碼':authAccounts[p.employeeId].mustChange?'待首次變更密碼':'已設定個人密碼（不可查看）'}</td><td>${date(p.createdAt)}</td><td>${date(p.updatedAt)}</td><td><button class="btn secondary" type="button" data-admin-select="${escapeAttr(p.employeeId)}">管理此帳號</button></td></tr>`).join('');
  document.querySelectorAll('[data-admin-select]').forEach(b=>b.onclick=()=>{document.getElementById('authAccountSelect').value=b.dataset.adminSelect;document.getElementById('adminEditForm').scrollIntoView({block:'center'});});
- const rows=JSON.parse(localStorage.getItem(AUTH_KEYS.audit)||'[]').slice(0,30);
- document.getElementById('authAuditRows').innerHTML=rows.map(r=>`<tr><td>${date(r.time)}</td><td>${escapeHTML(r.employeeId)}</td><td>${escapeHTML(r.action)}</td><td>${escapeHTML(r.detail)}</td></tr>`).join('');
- document.getElementById('adminLifecycleRows').innerHTML=JSON.parse(localStorage.getItem(ADMIN_KEYS.lifecycle)||'[]').slice(0,200).map(r=>`<tr><td>${date(r.time)}</td><td>${escapeHTML(r.targetEmployeeId)}｜${escapeHTML(r.targetName)}</td><td>${escapeHTML(r.action)}</td><td>${escapeHTML(JSON.stringify(r.before))}</td><td>${escapeHTML(JSON.stringify(r.after))}</td><td>${escapeHTML(r.reason)}</td><td>${escapeHTML(r.actor.actorEmployeeId)}｜${escapeHTML(r.actor.actorName)}</td></tr>`).join('');
 }
 function renderAuthGate(){
  const gate=document.getElementById('authGate'),locked=authScreen==='lock'&&authSession?.locked;
- const setup=!systemAdminAccount&&!authAccountsError&&AUTH_ENV_SUPPORTED;
  const change=authScreen==='change';
  gate.innerHTML=`<div class="auth-card"><div class="auth-language"><button type="button" data-auth-lang="zh">中文</button><button type="button" data-auth-lang="vi">Tiếng Việt</button></div>
  <h1>${authT(locked?'畫面已鎖定':change?'第一次登入：設定新密碼':'德曜精密｜人員登入',locked?'Màn hình đã khóa':change?'Lần đầu: đặt mật khẩu mới':'Đức Diệu｜Đăng nhập')}</h1>
- <p>${locked?`${authPerson(authSession.employeeId).employeeId}｜${authPerson(authSession.employeeId).name}`:authT('TEST001～TEST013 為現場測試暫時編號。','TEST001–TEST013 là mã tạm để kiểm thử.')}</p>
+ <p>${locked?`${authPerson(authSession.employeeId).employeeId}｜${authPerson(authSession.employeeId).name}`:authT('請輸入員工編號與密碼。','Nhập mã nhân viên và mật khẩu.')}</p>
  <form id="authGateForm">
- ${!locked&&!change?`<label>${authT('員工編號（測試暫時編號）','Mã nhân viên tạm')}<input id="authLoginId" autocomplete="username" placeholder="TEST006" required></label>`:''}
+ ${!locked&&!change?`<label>${authT('員工編號','Mã nhân viên')}<input id="authLoginId" autocomplete="username" placeholder="DY003" required></label>`:''}
  <label>${authT(change?'新密碼':'密碼',change?'Mật khẩu mới':'Mật khẩu')}<input id="authLoginPassword" type="password" autocomplete="${change?'new-password':'current-password'}" required maxlength="128"></label>
  ${change?`<label>${authT('再次輸入新密碼','Nhập lại mật khẩu mới')}<input id="authRepeatPassword" type="password" autocomplete="new-password" required maxlength="128"></label>`:''}
  <button class="btn primary" id="authLoginSubmit">${authT(locked?'原使用者解鎖':change?'儲存新密碼並登入':'登入',locked?'Mở khóa':change?'Lưu và đăng nhập':'Đăng nhập')}</button></form>
  <p id="authGateError" role="alert"></p>
  ${locked?`<button class="btn secondary" id="authSwitchUser">${authT('切換使用者','Đổi người dùng')}</button>`:''}
- ${setup?`<details><summary>${authT('建立公司主帳號（首次本機設定）','Tạo tài khoản quản trị công ty')}</summary><form id="authSetupForm"><label>${authT('主帳號登入ID','ID quản trị')}<input id="authSetupId" required maxlength="40"></label><label>${authT('顯示名稱','Tên hiển thị')}<input id="authSetupName" required maxlength="60"></label><label>${authT('密碼（至少12字元）','Mật khẩu (ít nhất 12 ký tự)')}<input id="authSetupPassword" type="password" autocomplete="new-password" minlength="12" required></label><label>${authT('再次輸入密碼','Nhập lại mật khẩu')}<input id="authSetupRepeat" type="password" autocomplete="new-password" required></label><button class="btn primary">${authT('建立公司主帳號','Tạo quản trị công ty')}</button><p>此公司主帳號目前只存在這台瀏覽器／裝置。</p></form></details>`:''}
  <p class="auth-note">目前為單機測試版驗證，不等同正式伺服器身分驗證。<br>Chỉ xác thực thử trên một máy, không phải xác thực máy chủ chính thức.</p></div>`;
  gate.hidden=authActive();
  gate.querySelectorAll('[data-auth-lang]').forEach(b=>b.onclick=()=>{authLanguage=b.dataset.authLang;renderAuthGate();});
@@ -2320,7 +2229,6 @@ function renderAuthGate(){
  document.getElementById('authGateForm').onsubmit=e=>{e.preventDefault();const pw=document.getElementById('authLoginPassword').value;
   handle(()=>locked?authUnlock(pw):change?authChangeFirstPassword(pw,document.getElementById('authRepeatPassword').value):authLogin(document.getElementById('authLoginId').value,pw));};
  document.getElementById('authSwitchUser')?.addEventListener('click',authGoSwitch);
- document.getElementById('authSetupForm')?.addEventListener('submit',e=>{e.preventDefault();handle(()=>authCreateSystemAdmin(document.getElementById('authSetupId').value,document.getElementById('authSetupName').value,document.getElementById('authSetupPassword').value,document.getElementById('authSetupRepeat').value));});
  if(authAccountsError)document.getElementById('authGateError').textContent=authAccountsError;
  if(!AUTH_ENV_SUPPORTED){document.getElementById('authGateError').textContent=authT('目前登入功能需要安全瀏覽環境，本測試版請使用本機檔案或受信任HTTPS。','Cần môi trường an toàn. Hãy dùng tệp cục bộ hoặc HTTPS đáng tin cậy.');gate.querySelectorAll('input,button[type=submit],#authLoginSubmit').forEach(el=>el.disabled=true);}
 }
@@ -2394,17 +2302,51 @@ function adminSavePersonnel(){
 }
 function adminNameValid(name){return typeof name==='string'&&!!name.trim()&&name.length<=60&&!/[<>\x00-\x1f]/.test(name);}
 function adminAudit(action,target,before,after,reason,actor=authActorFields()){
- const rows=JSON.parse(localStorage.getItem(ADMIN_KEYS.lifecycle)||'[]');
- rows.unshift({eventId:crypto.randomUUID(),action,targetEmployeeId:target.employeeId,targetName:target.name,
-  before,after,reason,actor,time:Date.now(),...(action==='CHANGE_ROLE'?{oldRole:before.roleCode,newRole:after.roleCode,changedBy:actor.actorEmployeeId,changedAt:Date.now()}: {})});
- localStorage.setItem(ADMIN_KEYS.lifecycle,JSON.stringify(rows));
+ // 帳號生命週期稽核功能已移除；既有本機紀錄保留但不再新增。
 }
-function adminCommit(write){
- const keys=[...Object.values(ADMIN_KEYS),AUTH_KEYS.accounts],storage=keys.map(k=>[k,localStorage.getItem(k)]);
+function adminCommit(write,extraKeys=[]){
+ const keys=[...new Set([...Object.values(ADMIN_KEYS),AUTH_KEYS.accounts,...extraKeys])],storage=keys.map(k=>[k,localStorage.getItem(k)]);
  const before=JSON.stringify({personnelStore,authAccounts,systemAdminAccount});
  try{write();}catch(e){for(const [k,v]of storage){v===null?localStorage.removeItem(k):localStorage.setItem(k,v);}
   const old=JSON.parse(before);personnelStore=old.personnelStore;authAccounts=old.authAccounts;systemAdminAccount=old.systemAdminAccount;adminSavePersonnel();throw e;}
 }
+const COMPANY_ADMIN_CREDENTIAL=Object.freeze({salt:'c4be0e45b4ca6ed8673c4e768165d4ea',hash:'82fc29739bcb1a3fd7ca13863f7c58ab0ab7e7acbf1395d44a4209d579cc4b08',iterations:120000});
+function migrateCompanyAdmin(){
+ if(authAccountsError||systemAdminAccount?.credentialMigration===1)return;
+ if(personnelStore.ADMIN)throw Error('員工編號 ADMIN 已存在，無法建立公司主帳號 admin。');
+ const now=Date.now();
+ const p={...systemAdminAccount,employeeId:'admin',name:'DeYao',roleCode:'systemAdmin',defaultLanguage:'zh',status:'ACTIVE',
+  createdAt:systemAdminAccount?.createdAt||now,updatedAt:now,
+  password:{...COMPANY_ADMIN_CREDENTIAL,mustChange:false,updatedAt:now},credentialMigration:1};
+ localStorage.setItem(ADMIN_KEYS.systemAdmin,JSON.stringify(p));systemAdminAccount=p;
+}
+function isTestAccount(id,p){return /^TEST\d{3}$/i.test(id)||p?.temporaryEmployeeId===true;}
+function migrateCompanyAccounts(){
+ if(authAccountsError)return;
+ const removed=new Set([...Object.entries(personnelStore).filter(([id,p])=>isTestAccount(id,p)||p?.status==='DISABLED').map(([id])=>id),...Object.keys(authAccounts).filter(id=>isTestAccount(id))]);
+ const seedNeeded=localStorage.getItem(ADMIN_KEYS.seeded)!=='1';
+ const correctDy046=personnelStore.DY046?.name==='楊若凱'&&!removed.has('DY046');
+ const pending=seedNeeded?COMPANY_INITIAL_EMPLOYEES.filter(p=>!personnelStore[p.employeeId]&&!authAccounts[p.employeeId]&&!removed.has(p.employeeId)&&systemAdminAccount?.employeeId!==p.employeeId):[];
+ if(!removed.size&&!pending.length&&!seedNeeded&&!correctDy046)return;
+ const now=Date.now(),languageKeys=[...removed].map(id=>'deyao_test_personnel_lang_'+id);
+ adminCommit(()=>{
+  const nextAccounts={...authAccounts};
+  for(const id of removed){
+   const p=personnelStore[id];
+   if(p?.status==='DISABLED'&&!isTestAccount(id,p))adminAudit('DELETE_ACCOUNT',p,{...p},{deleted:true},'舊停用帳號清理');
+   delete personnelStore[id];delete nextAccounts[id];localStorage.removeItem('deyao_test_personnel_lang_'+id);
+  }
+  for(const {salt,hash,...person} of pending){
+   personnelStore[person.employeeId]={...person,temporaryEmployeeId:false,status:'PENDING_FIRST_LOGIN',createdAt:now,updatedAt:now,createdBy:'SYSTEM_INITIAL'};
+   nextAccounts[person.employeeId]={salt,hash,iterations:120000,mustChange:true,updatedAt:now};
+  }
+  if(correctDy046){const before={...personnelStore.DY046};personnelStore.DY046={...before,name:'楊茗凱',updatedAt:now};adminAudit('CHANGE_NAME',personnelStore.DY046,{name:before.name},{name:'楊茗凱'},'員工姓名錯字修正');}
+  authSaveAccounts(nextAccounts);adminSavePersonnel();
+  for(const {employeeId} of pending)adminAudit('CREATE_EMPLOYEE',personnelStore[employeeId],null,{...personnelStore[employeeId],passwordStatus:'待首次變更'},'初始名單匯入');
+  localStorage.setItem(ADMIN_KEYS.seeded,'1');
+ },languageKeys);
+}
+try{migrateCompanyAdmin();migrateCompanyAccounts();}catch(e){console.error('帳號初始化失敗',e);authAccountsError='帳號初始化失敗：'+e.message;document.getElementById('authAccountStatus').textContent=authAccountsError;}
 async function adminVerifyOperation(ownPassword,context){
  if(!authCan('canManageAccounts'))return false;
  return ownPassword===undefined?authRequestReverification(context):authReverify(ownPassword);
@@ -2414,41 +2356,47 @@ function adminSummary(action,p,before,after){
  const actor=authPerson(authSession.employeeId);
  return confirm(`目前登入：${actor.name}（${actor.employeeId}）\n目標帳號：${p.name}（${p.employeeId}）\n修改：${action}\n修改前：${JSON.stringify(before)}\n修改後：${JSON.stringify(after)}\n\n確認此變更？`);
 }
-async function adminCreateEmployee(id,name,roleCode,defaultLanguage,reason){
+async function adminCreateEmployee(id,name,roleCode,defaultLanguage){
  if(!authCan('canManageAccounts'))return {ok:false,message:'只有公司主帳號可新增員工。'};
- id=String(id||'').trim().toUpperCase();name=String(name||'').trim();reason=String(reason||'').trim();
- if(!/^[A-Z0-9_.-]{1,40}$/.test(id)||personnelStore[id]||systemAdminAccount?.employeeId===id)return {ok:false,message:'員工編號必填且不可重複，建立後不可直接更改。'};
- if(!adminNameValid(name)||!reason||reason.length>200||!['owner','supervisor','operator','qualitySupervisor'].includes(roleCode)||!['zh','vi'].includes(defaultLanguage))return {ok:false,message:'姓名、合法角色、語言、原因皆必填；姓名不可含HTML標記。'};
+ id=String(id||'').trim().toUpperCase();name=String(name||'').trim();
+ if(/^TEST\d{3}$/.test(id))return {ok:false,message:'TEST 暫時編號已移除，請使用正式員工編號。'};
+ if(!/^[A-Z0-9_.-]{1,40}$/.test(id)||personnelStore[id]||systemAdminAccount?.employeeId?.toUpperCase()===id)return {ok:false,message:'員工編號必填且不可重複，建立後不可直接更改。'};
+ if(!adminNameValid(name)||!['owner','supervisor','operator','qualitySupervisor'].includes(roleCode)||!['zh','vi'].includes(defaultLanguage))return {ok:false,message:'姓名、合法角色、語言皆必填；姓名不可含HTML標記。'};
  const p={employeeId:id,name,roleCode,defaultLanguage,status:'ACTIVE',createdAt:Date.now(),updatedAt:Date.now(),createdBy:authSession.employeeId};
  if(!adminSummary('新增員工',p,null,{id,name,roleCode,defaultLanguage,status:'ACTIVE',passwordStatus:'尚未建立正式密碼'}))return {ok:false,message:'已取消。'};
- adminCommit(()=>{personnelStore[id]=p;adminSavePersonnel();adminAudit('CREATE_EMPLOYEE',p,null,{...p},reason);});
+ adminCommit(()=>{personnelStore[id]=p;adminSavePersonnel();adminAudit('CREATE_EMPLOYEE',p,null,{...p},'主帳號新增員工');});
  renderAuthAccounts();return {ok:true};
 }
 async function adminChangeEmployee(id,action,value,reason,ownPassword){
  if(!authCan('canManageAccounts')||!personnelStore[id])return {ok:false,message:'只有公司主帳號可管理員工；主帳號不在員工管理範圍。'};
  reason=String(reason||'').trim();if(!reason||reason.length>200)return {ok:false,message:'修改原因必填（最多200字）。'};
  const p=personnelStore[id],before={status:p.status,roleCode:p.roleCode,name:p.name,defaultLanguage:p.defaultLanguage},after={...before};
+ if(action==='DELETE_ACCOUNT'){
+  if(!confirm(`確定永久刪除 ${p.name}（${id}）的員工帳號與登入密碼？\n\n刪除後無法登入；生產與稽核歷史仍保留。\n刪除原因：${reason}`))return {ok:false,message:'已取消。'};
+  const sessionId=authSession.id;
+  if(!await adminVerifyOperation(ownPassword,'永久刪除帳號：'+id))return {ok:false,message:'請重新驗證目前公司主帳號本人。'};
+  authAssertSession(sessionId);
+  if(personnelStore[id]!==p)return {ok:false,message:'目標帳號已變更，請重新操作。'};
+  const languageKey='deyao_test_personnel_lang_'+id;
+  adminCommit(()=>{const next={...authAccounts};delete next[id];delete personnelStore[id];authSaveAccounts(next);adminSavePersonnel();localStorage.removeItem(languageKey);adminAudit('DELETE_ACCOUNT',p,before,{deleted:true},reason);},[languageKey]);
+  renderAuthAccounts();return {ok:true};
+ }
  if(action==='RESET_TEMP_PASSWORD'){
   if(!authPasswordValid(value))return {ok:false,message:'暫時密碼須8～128字元。'};
   if(!adminSummary(action,p,{passwordStatus:authAccounts[id]?'已設定':'尚未建立'},{passwordStatus:'待首次登入（不顯示密碼）'}))return {ok:false,message:'已取消。'};
   return authSetTemporaryPassword(id,value,ownPassword,reason);
  }
- if(action==='DISABLE_ACCOUNT'){if(p.status==='DISABLED')return {ok:false,message:'帳號已停用。'};after.status='DISABLED';}
- else if(action==='ENABLE_ACCOUNT'){if(p.status!=='DISABLED')return {ok:false,message:'帳號未停用。'};after.status='PENDING_FIRST_LOGIN';}
- else if(action==='CHANGE_ROLE'){if(!['owner','supervisor','operator','qualitySupervisor'].includes(value))return {ok:false,message:'角色不合法。'};after.roleCode=value;}
+ if(action==='CHANGE_ROLE'){if(!['owner','supervisor','operator','qualitySupervisor'].includes(value))return {ok:false,message:'角色不合法。'};after.roleCode=value;}
  else if(action==='CHANGE_LANGUAGE'){if(!['zh','vi'].includes(value))return {ok:false,message:'語言不合法。'};after.defaultLanguage=value;}
  else if(action==='CHANGE_NAME'){value=String(value||'').trim();if(!adminNameValid(value))return {ok:false,message:'姓名必填（最多60字），不可含HTML標記。'};after.name=value;}
  else return {ok:false,message:'不支援此管理操作。'};
  if(!adminSummary(action,p,before,after))return {ok:false,message:'已取消。'};
  const sessionId=authSession.id;
- if(['DISABLE_ACCOUNT','ENABLE_ACCOUNT','CHANGE_ROLE'].includes(action)&&!await adminVerifyOperation(ownPassword,'高風險帳號操作：'+action))return {ok:false,message:'請重新驗證目前公司主帳號本人。'};
+ if(action==='CHANGE_ROLE'&&!await adminVerifyOperation(ownPassword,'高風險帳號操作：'+action))return {ok:false,message:'請重新驗證目前公司主帳號本人。'};
  authAssertSession(sessionId);
  if(JSON.stringify(before)!==JSON.stringify({status:p.status,roleCode:p.roleCode,name:p.name,defaultLanguage:p.defaultLanguage}))return {ok:false,message:'目標已變更，請重新操作。'};
  adminCommit(()=>{
-  const actor=authActorFields(),now=Date.now();personnelStore[id]={...p,...after,updatedAt:now};
-  if(action==='DISABLE_ACCOUNT')Object.assign(personnelStore[id],{disabledAt:now,disabledBy:actor.actorEmployeeId,disableReason:reason});
-  if(action==='ENABLE_ACCOUNT'){Object.assign(personnelStore[id],{enabledAt:now,enabledBy:actor.actorEmployeeId,enableReason:reason});
-   const next={...authAccounts};delete next[id];authSaveAccounts(next);}
+  const now=Date.now();personnelStore[id]={...p,...after,updatedAt:now};
   adminSavePersonnel();adminAudit(action,personnelStore[id],before,after,reason);
  });renderAuthAccounts();return {ok:true};
 }
@@ -2470,7 +2418,7 @@ function initializeAdminUI(){
  const status=r=>document.getElementById('authAccountStatus').textContent=r.ok?'管理操作完成。':r.message;
  let busy=false;
  const handle=async fn=>{if(busy)return;busy=true;try{status(await fn());}catch(e){status({message:e.message});}finally{busy=false;}};
- document.getElementById('adminCreateForm').onsubmit=e=>{e.preventDefault();handle(()=>adminCreateEmployee(document.getElementById('adminNewId').value,document.getElementById('adminNewName').value,document.getElementById('adminNewRole').value,document.getElementById('adminNewLanguage').value,document.getElementById('adminNewReason').value));};
+ document.getElementById('adminCreateForm').onsubmit=e=>{e.preventDefault();handle(()=>adminCreateEmployee(document.getElementById('adminNewId').value,document.getElementById('adminNewName').value,document.getElementById('adminNewRole').value,document.getElementById('adminNewLanguage').value));};
  document.getElementById('adminEditForm').onsubmit=e=>{e.preventDefault();const action=document.getElementById('adminAction').value;
   const value=action==='CHANGE_ROLE'?document.getElementById('adminRole').value:action==='CHANGE_LANGUAGE'?document.getElementById('adminLanguage').value:document.getElementById('adminValue').value;
   handle(async()=>{const r=await adminChangeEmployee(document.getElementById('authAccountSelect').value,action,value,document.getElementById('adminReason').value);document.getElementById('adminValue').value='';return r;});};
@@ -2557,16 +2505,18 @@ function currentShiftOutputFor(m){
 
 
 /* V18.26 Availability only. Existing PCS/defect/downtime/AUTH formula functions remain independent. */
-let avCutId="",avWorkTarget=null,avLastRender=0;
-const AV_KEYS=Object.freeze({waits:'deyao_v18_26_wait_events',setups:'deyao_v18_26_setup_events',gaps:'deyao_v18_26_administrative_gaps',windows:'deyao_v18_26_work_windows',corrections:'deyao_v18_26_wait_corrections'});
+const AV_KEYS=Object.freeze({waits:'deyao_v18_26_wait_events',setups:'deyao_v18_26_setup_events',gaps:'deyao_v18_26_administrative_gaps',corrections:'deyao_v18_26_wait_corrections'});
 function avReadData(){
  const data=Object.fromEntries(Object.entries(AV_KEYS).map(([name,key])=>{const value=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(value))throw Error(key+' 必須是事件陣列');return [name,value];}));
- if(avStorageFault)return data;
- data.windows=avNormalizeWindows(data.windows);return data;
+ return data;
 }
-let avData=avReadData(),avCorrectionId='',avSelectedMachine='';
+let avData=avReadData();
 const AV_WAIT_REASONS=Object.freeze({'等人員':'Chờ nhân viên','等材料':'Chờ vật liệu','等品管':'Chờ QC','等工程／技術':'Chờ kỹ thuật','下一製令尚未排定':'Chưa lên kế hoạch lệnh tiếp theo','其他':'Khác'});
-function avSave(){avAssertWritable(); /* V18.26.2 write guard */ for(const [name,key]of Object.entries(AV_KEYS))localStorage.setItem(key,JSON.stringify(avData[name]));}
+function avSave(){avAssertWritable();for(const [name,key]of Object.entries(AV_KEYS))localStorage.setItem(key,JSON.stringify(avData[name]));}
+function avEffectiveWait(e){
+ const correction=avData.corrections.filter(c=>c.waitEventId===e.id).slice(-1)[0];
+ return correction?{...e,scheduledProduction:correction.scheduledProduction,classification:correction.classification}:e;
+}
 function avWorkflowPermission(m,action){
  if(!['waitsetup','setup','setupcomplete','order'].includes(action))return null;
  if(m.responsible&&(!authIsResponsible(m)||m.responsibleSettled))return {ok:false,zh:'只有目前有效機台責任人可執行等待／校車／換製令。請先依合法責任流程接手。',vi:'Chỉ người phụ trách máy hiện tại được thao tác chờ / chỉnh máy / đổi lệnh.'};
@@ -2622,7 +2572,6 @@ function avBeginWait(m,ts,scheduledProduction,reason,reasonDetail){
  avRequireOperation(m,'waitsetup');if(!isOrderClosedStatus(m.status)||typeof scheduledProduction!=='boolean'||!AV_WAIT_REASONS[reason]||(reason==='其他'&&!reasonDetail?.trim())||avOpenEvent('waits',m.id)||avOpenEvent('setups',m.id))throw Error('等待分類不合法或已有進行中事件。');
  const e={id:makeEventId('WAIT'),groupId:makeEventId('WAITGROUP'),machine:m.id,startTime:ts,endTime:null,minutes:0,...avShiftIdentity(ts),scheduledProduction,classification:scheduledProduction?'LOSS':'EXCLUDED',reason,reasonDetail,workOrderId:ensureWorkOrderRecord(m)?.id||'',wo:m.wo,drawing:m.drawing,...avActor('startedBy'),endedByEmployeeId:'',endedByName:'',endedByRole:'',endedBySessionId:'',status:'open'};
  avData.waits.push(e);m.waitEventId=e.id;m.waitGroupId=e.groupId;m.waitSetupStart=ts;m.status='待換線／待校車';
- if(scheduledProduction)markWorkActivity(m,ts,'排定生產等待LOSS');
  avLink(m,'待換線開始',e,`${e.classification}｜${reason}${reasonDetail?'｜'+reasonDetail:''}`,ts);avSave();return e;
 }
 function avBeginSetup(m,ts){
@@ -2632,7 +2581,7 @@ function avBeginSetup(m,ts){
  else if(m.waitSetupStart){m.waitSetup=(m.waitSetup||0)+Math.max(0,(ts-m.waitSetupStart)/60000);m.avLegacyWait=true;}
  delete m.waitSetupStart;delete m.waitEventId;
  const e={id:makeEventId('SETUP'),groupId:makeEventId('SETUPGROUP'),machine:m.id,startTime:ts,endTime:null,minutes:0,...avShiftIdentity(ts),workOrderId:ensureWorkOrderRecord(m)?.id||'',oldWO:m.wo,nextWO:m.nextWO||'',reason:'架機／校車／調整',setupType:'架機／校車／調整',...avActor('startedBy'),completedByEmployeeId:'',completedByName:'',completedByRole:'',completedBySessionId:'',status:'open'};
- avData.setups.push(e);m.setupEventId=e.id;m.setupGroupId=e.groupId;m.setupStart=ts;m.status='校車中';markWorkActivity(m,ts,'開始校車');avLink(m,'開始校車',e,'架機／校車／調整',ts);avSave();return e;
+ avData.setups.push(e);m.setupEventId=e.id;m.setupGroupId=e.groupId;m.setupStart=ts;m.status='校車中';avLink(m,'開始校車',e,'架機／校車／調整',ts);avSave();return e;
 }
 function avCompleteSetup(m,ts){
  avRequireOperation(m,'setupcomplete');if(m.status!=='校車中')throw Error('只有校車中可以完成校車。');
@@ -2642,122 +2591,29 @@ function avCompleteSetup(m,ts){
  delete m.setupStart;delete m.setupEventId;m.status='校車完成待換製令';m.setupCompletedAt=ts;
  avData.gaps.push({id:makeEventId('ADMGAP'),groupId:makeEventId('ADMGROUP'),machine:m.id,startTime:ts,endTime:null,status:'open',classification:'EXCLUDED',reason:'校車完成待換製令',...avShiftIdentity(ts),workOrderId:m.workOrderRecordId||'',wo:m.wo,...avActor('startedBy')});
  m.administrativeGapEventId=avData.gaps[avData.gaps.length-1].id;
- markWorkActivity(m,ts,'校車完成');avSave();return e;
+ avSave();return e;
 }
 function avEndAdministrativeGap(m,ts){avAssertWritable(); /* V18.26.2 write guard */ const e=avOpenEvent('gaps',m.id);if(e){e.endTime=ts;e.minutes=(ts-e.startTime)/60000;e.status='closed';Object.assign(e,avActor('endedBy'));avLink({...m,wo:e.wo},'行政等待結束',e,'校車完成後換製令，行政空檔結束',ts);}delete m.administrativeGapEventId;avSave();}
-function markWorkActivity(m,ts=Date.now(),source='工作活動'){
- avAssertWritable(); // V18.26.2 write guard
-
- const i=avShiftIdentity(ts);let w=avFindWindow(m.id,i.productionDate,i.shift);if(!w){w=avNewWindow(m.id,i.productionDate,i.shift,'ACTIVITY_EVIDENCE');avData.windows.push(w);}
- w.activities.push({time:ts,source,...authActorFields()});w.firstActivityTime=w.firstActivityTime??ts;w.lastActivity=ts;
- if(ts>normalShiftEndTs(i.productionDate,i.shift)&&ts<maxShiftEndTs(i.productionDate,i.shift)){
-  const first=!w.extendedDetected;w.extendedDetected=true;w.extendedDetectedAt=w.extendedDetectedAt||ts;
-  if(w.actualWorkEndedAt==null&&!w.overtimeConfirmed){w.overtimeStatus='OVERTIME_PENDING';if(first)avLink(m,'加班待確認',{id:w.id,groupId:'',workOrderId:m.workOrderRecordId},source+'；活動不自動延長工作終點',ts);}
- }return w.extendedDetected;
-}
-function avEndWork(m,ts){markWorkActivity(m,ts,'製令結束活動（不等於機台工作結束）');}
 function avObserveCommittedAction(m,action,snapshot,ts){
- avAssertWritable(); // V18.26.2 write guard
-
- const before=snapshot?.machines.find(x=>x.id===m.id);
- if(['complete','exception'].includes(action))avEndWork(m,ts);
- else if(['takeMachine','down','resume','order'].includes(action)||action==='qty'&&m.cum>(before?.cum??m.cum))markWorkActivity(m,ts,action==='qty'?'生產數量增加':action);
- if(action==='order'){for(const e of avData.setups.filter(e=>e.machine===m.id&&e.groupId===before?.setupGroupId))e.nextWO=m.wo;
-  const e=avData.setups.filter(e=>e.machine===m.id&&e.groupId===before?.setupGroupId).pop();if(e)recordWorkOrderEvent(m,'校車事件關聯',e.id,{availabilityEventId:e.id,availabilityGroupId:e.groupId});}
- avSave();
-}
-// Interval engine works in milliseconds, retaining fractional minutes until presentation.
-function avMerge(intervals){
- const out=[];for(const x of intervals.filter(x=>Number.isFinite(x.start)&&Number.isFinite(x.end)&&x.end>x.start).map(x=>({start:+x.start,end:+x.end})).sort((a,b)=>a.start-b.start)){
-  const last=out[out.length-1];if(last&&x.start<=last.end)last.end=Math.max(last.end,x.end);else out.push(x);
- }return out;
-}
-function avIntersect(a,b){const out=[];for(const x of avMerge(a))for(const y of avMerge(b)){const start=Math.max(x.start,y.start),end=Math.min(x.end,y.end);if(end>start)out.push({start,end});}return avMerge(out);}
-function avSubtract(a,b){let out=avMerge(a);for(const cut of avMerge(b)){const next=[];for(const x of out){if(cut.end<=x.start||cut.start>=x.end)next.push(x);else{if(cut.start>x.start)next.push({start:x.start,end:cut.start});if(cut.end<x.end)next.push({start:cut.end,end:x.end});}}out=next;}return out;}
-function avMinutes(xs){return avMerge(xs).reduce((a,x)=>a+(x.end-x.start)/60000,0);}
-function avEffectiveWait(e){const c=avData.corrections.filter(c=>c.waitEventId===e.id).slice(-1)[0];return c?{...e,scheduledProduction:c.scheduledProduction,classification:c.classification}:e;}
-function availabilityIntervals({start,end,scheduledIntervals=[{start,end}],breakIntervals=[],waits=[],setups=[],downtimes=[],gaps=[]}){
- const limit=[{start,end}],base=avIntersect(scheduledIntervals,limit);
- const project=rows=>avIntersect(rows.map(e=>({start:+(e.start??e.startTime),end:+(e.end??e.endTime??end)})),limit);
- const breaks=avIntersect(base,breakIntervals),afterBreak=avSubtract(base,breaks);
- const excluded=avIntersect(afterBreak,project(waits.filter(e=>e.classification==='EXCLUDED'))),afterWait=avSubtract(afterBreak,excluded);
- const setupRaw=project(setups),setup=avIntersect(afterWait,setupRaw),afterSetup=avSubtract(afterWait,setup);
- const administrative=avIntersect(afterSetup,project(gaps)),denominator=avSubtract(afterSetup,administrative);
- const down=avIntersect(denominator,project(downtimes)),waitLoss=avIntersect(avSubtract(denominator,down),project(waits.filter(e=>e.classification==='LOSS')));
- const losses=avMerge([...down,...waitLoss]),running=avSubtract(denominator,losses);
- const denominatorMinutes=avMinutes(denominator),actualRunningMinutes=avMinutes(running);
- return {scheduledMinutes:avMinutes(base),fixedBreakMinutes:avMinutes(breaks),excludedWaitMinutes:avMinutes(excluded),setupMinutes:avMinutes(setup),setupRawMinutes:avMinutes(setupRaw),administrativeGapMinutes:avMinutes(administrative),downtimeLossMinutes:avMinutes(down),waitLossMinutes:avMinutes(waitLoss),lossMinutes:avMinutes(losses),denominatorMinutes,actualRunningMinutes,utilizationRate:denominatorMinutes>0?actualRunningMinutes/denominatorMinutes*100:null,intervals:{base,breaks,excluded,setup,administrative,denominator,down,waitLoss,running}};
-}
-function availabilityShift(machine,pd,shift,now=Date.now()){
- const full=shiftWindow(pd,shift,true),end=Math.max(full.start,Math.min(now,full.end)),w=avFindWindow(machine,pd,shift),status=w?.status||'INCOMPLETE';
- const effectiveWorkEnd=w?.actualWorkEndedAt??(w?.overtimeConfirmed?w.overtimeEndTime:w?.plannedEndTime)??null;
- const scheduledIntervals=(status==='CONFIRMED'&&w.confirmedStart&&w.confirmedEnd?[{start:w.plannedStartTime,end:w.plannedEndTime},...(w.overtimeConfirmed?[{start:w.overtimeStart,end:w.overtimeEndTime}]:[])]:[]).map(x=>({...x,end:w.actualWorkEndedAt!=null?Math.min(x.end,w.actualWorkEndedAt):x.end})).filter(x=>x.end>x.start);
- const events=kind=>avData[kind].filter(e=>e.machine===machine&&e.startTime<end&&avEventEnd(e,now)>full.start).map(e=>({...e,endTime:avEventEnd(e,now)}));
- const waits=events('waits').map(avEffectiveWait),setups=events('setups'),gaps=events('gaps'),downtimes=downtimeEvents.filter(e=>e.machine===machine&&e.startTime<end&&avEventEnd(e,now)>full.start).map(e=>({...e,endTime:avEventEnd(e,now)}));
- const result=availabilityIntervals({start:full.start,end,scheduledIntervals,breakIntervals:manualBreakIntervals(pd,shift,true),waits,setups,gaps,downtimes});
- const issues=avCrossCheck({...avData,windows:w?[w]:[]},machines,{machine,start:full.start,end:full.end});
- return {...result,utilizationRate:issues.length?null:result.utilizationRate,dataIntegrityStatus:issues.length?'INVALID':'VALID',dataIntegrityIssues:issues,machine,productionDate:pd,shift,coverageStatus:issues.length?'INVALID':status,plannedStartTime:w?.plannedStartTime??null,plannedEndTime:w?.plannedEndTime??null,actualWorkEndedAt:w?.actualWorkEndedAt??null,effectiveWorkEnd,overtimeConfirmed:!!w?.overtimeConfirmed,overtimeEndTime:w?.overtimeEndTime??null,overtimeStatus:w?.overtimeStatus||'NONE',lastActivity:w?.lastActivity||null,extendedDetected:!!w?.extendedDetected,dataStart:status==='CONFIRMED'?w.plannedStartTime:null};
-}
-function avSum(rows){
- const names=['scheduledMinutes','fixedBreakMinutes','excludedWaitMinutes','setupMinutes','setupRawMinutes','administrativeGapMinutes','downtimeLossMinutes','waitLossMinutes','lossMinutes','denominatorMinutes','actualRunningMinutes'];
- const total=Object.fromEntries(names.map(n=>[n,rows.reduce((a,r)=>a+(r[n]||0),0)]));total.utilizationRate=total.denominatorMinutes>0?total.actualRunningMinutes/total.denominatorMinutes*100:null;return total;
-}
-function availabilityMonth(month,now=Date.now()){
- const rows=[];if(/^\d{4}-\d{2}$/.test(month)){const [year,mo]=month.split('-').map(Number),last=new Date(year,mo,0).getDate();for(const m of machines)for(let day=1;day<=last;day++){const pd=month+'-'+String(day).padStart(2,'0');for(const shift of ['早班','晚班'])if(officialShiftStartTs(pd,shift)<=now)rows.push(availabilityShift(m.id,pd,shift,now));}}
- return {rows,machines:machines.map(m=>{const rr=rows.filter(r=>r.machine===m.id);return {machine:m.id,...avSum(rr),...avCoverage(rr)};}),company:{...avSum(rows),...avCoverage(rows)}};
-}
-function avFormatRate(value,status='INCOMPLETE'){return status==='INVALID'?'—／資料衝突，請主管檢查 / Dữ liệu mâu thuẫn, báo quản lý':value===null?(status==='NO_PRODUCTION'?'—／未排產 / Không sản xuất':status==='CONFIRMED'?'—／應運轉為0 / Thời gian dự kiến bằng 0':'—／資料不足／未確認 / Thiếu dữ liệu, chưa xác nhận'):value.toFixed(1)+'%';}
-function avM(value){return Number(value||0).toLocaleString('zh-TW',{maximumFractionDigits:2});}
-function avOpenReport(){document.getElementById('avMonth').value=selectedMonth();authShowView('availability');renderAvailability();}
-function renderAvailability(){
- if(!document.getElementById('avMachineRows'))return;
- const month=document.getElementById('avMonth').value||selectedMonth(),report=availabilityMonth(month),monthly=month===selectedMonth()?report:availabilityMonth(selectedMonth());
- for(const [c,prefix]of [[report.company,'av'],[monthly.company,'avMonthly']]){document.getElementById(prefix==='av'?'avCompanyRate':'avMonthlyKPI').textContent=avFormatRate(c.utilizationRate,c.coverageStatus);document.getElementById(prefix+'Coverage').textContent=avCoverageText(c);document.getElementById(prefix+'Title').textContent=c.coverageComplete?'公司月稼動率 / Tỷ lệ vận hành tháng':'已確認區間稼動率 / Tỷ lệ trong thời gian đã xác nhận';}
- document.getElementById('avDenominator').textContent=avM(report.company.denominatorMinutes)+' 分';document.getElementById('avRunning').textContent=avM(report.company.actualRunningMinutes)+' 分';
- document.getElementById('avFormula').textContent=`實際運轉 ${avM(report.company.actualRunningMinutes)} ÷ 應運轉 ${avM(report.company.denominatorMinutes)} × 100%`;
- document.getElementById('avMachineRows').innerHTML=report.machines.map(r=>`<tr><td><button class="btn secondary" data-av-machine="${escapeAttr(r.machine)}">${escapeHTML(r.machine)}</button></td><td>${avM(r.denominatorMinutes)}</td><td>${avM(r.actualRunningMinutes)}</td><td>${avM(r.downtimeLossMinutes)}</td><td>${avM(r.waitLossMinutes)}</td><td>${avM(r.setupRawMinutes)}／${avM(r.setupMinutes)}</td><td>${avM(r.excludedWaitMinutes)}</td><td>${avFormatRate(r.utilizationRate,r.coverageStatus)}<br>${avCoverageText(r)}</td></tr>`).join('');
- const detailMachine=avSelectedMachine||report.machines.find(r=>r.confirmed)?.machine||machines[0]?.id,selected=report.rows.filter(r=>r.machine===detailMachine),days=[...new Set(selected.map(r=>r.machine+'|'+r.productionDate))];
- const render=r=>`<tr><td>${escapeHTML(r.machine)}</td><td>${r.productionDate}</td><td>${r.shift}</td><td>${r.coverageStatus}<br>${r.confirmed===undefined?'':avCoverageText(r)}</td><td>${avFmt(r.plannedStartTime)}</td><td>${avFmt(r.plannedEndTime)}</td><td>${avFmt(r.overtimeEndTime)}<br>${r.overtimeStatus||''}</td><td>${avM(r.scheduledMinutes)}</td><td>${avM(r.fixedBreakMinutes)}</td><td>${avM(r.excludedWaitMinutes)}</td><td>${avM(r.setupRawMinutes)}／${avM(r.setupMinutes)}</td><td>${avM(r.administrativeGapMinutes)}</td><td>${avM(r.downtimeLossMinutes)}</td><td>${avM(r.waitLossMinutes)}</td><td>${avM(r.denominatorMinutes)}</td><td>${avM(r.actualRunningMinutes)}</td><td>${avFormatRate(r.utilizationRate,r.coverageStatus)}</td></tr>`;
- document.getElementById('avDetailTitle').textContent=`${detailMachine||'—'}｜每日／班別（點上方機台切換）`;
- document.getElementById('avDetailRows').innerHTML=days.map(key=>{const [machine,productionDate]=key.split('|'),rr=selected.filter(r=>r.machine===machine&&r.productionDate===productionDate);return render({machine,productionDate,shift:'每日總計',...avSum(rr),...avCoverage(rr)})+rr.map(render).join('');}).join('')||'<tr><td colspan="17">資料不足／未確認</td></tr>';
- document.getElementById('avEventRows').innerHTML=[...avData.waits.map(e=>({...avEffectiveWait(e),kind:'Wait'})),...avData.setups.map(e=>({...e,kind:'Setup'}))].filter(e=>e.productionDate?.startsWith(month)).sort((a,b)=>b.startTime-a.startTime).map(e=>`<tr><td>${escapeHTML(e.id)}<br>${escapeHTML(e.groupId)}</td><td>${e.kind}／${e.classification||'PREPARATION'}<br>${e.changeKind||''}</td><td>${escapeHTML(e.machine)}／${escapeHTML(e.wo||e.oldWO)}</td><td>${e.productionDate}／${e.shift}</td><td>${avFmt(e.startTime)}～${e.endTime?avFmt(e.endTime):'進行中'}</td><td>${avM((avEventEnd(e,Date.now())-e.startTime)/60000)}</td><td>${escapeHTML(e.reason)} ${escapeHTML(e.reasonDetail||'')}</td><td>${escapeHTML(e.startedByName)}（${escapeHTML(e.startedByEmployeeId)}）<br>${escapeHTML(e.endedByName||e.completedByName||'')}（${escapeHTML(e.endedByEmployeeId||e.completedByEmployeeId||'')}）</td><td>${e.status}${e.kind==='Wait'&&authCan('canCorrectProduction')?`<button class="btn secondary" data-av-correct="${escapeAttr(e.id)}">主管分類修正</button>${e.status==='open'?`<button class="btn secondary" data-av-cut="${escapeAttr(e.id)}">從現在開始變更分類</button>`:''}`:''}</td></tr>`).join('')||'<tr><td colspan="9">沒有正式Wait／Setup事件</td></tr>';
- document.getElementById('avLegacyNote').textContent=avData.windows.some(w=>w.source==='LEGACY_ACTIVITY')?'legacy activity：舊版工作活動只作為證據，須另確認工作區間；不得自動當作排產。':'';
- document.getElementById('avPlanTools').hidden=!authCan('canCorrectProduction');
- const missing=report.rows.filter(r=>r.coverageStatus==='INCOMPLETE'&&r.productionDate===productionDate()&&r.shift===shiftAt()).map(r=>r.machine);document.getElementById('avPlanNotice').textContent=missing.length?'⚠ 本班工作區間未確認：'+missing.join('、'):'';
- renderAvailabilityCards();avRenderOperatorNotice();
-}
-function avOpenCorrection(id){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- if(!authCan('canCorrectProduction'))return;const e=avData.waits.find(e=>e.id===id);if(!e)return;avCorrectionId=id;const effective=avEffectiveWait(e);
- document.getElementById('avCorrectionWho').textContent=`${e.machine}｜製令 ${e.wo}｜${e.id}｜Group ${e.groupId}｜${e.productionDate} ${e.shift}｜${avFmt(e.startTime)}～${e.endTime?avFmt(e.endTime):'進行中'}`;
- document.getElementById('avCorrectionOriginal').textContent=`原始：${e.classification}／排產${e.scheduledProduction?'是':'否'}｜目前有效：${effective.classification}／排產${effective.scheduledProduction?'是':'否'}｜原因：${e.reason} ${e.reasonDetail||''}`;
- document.getElementById('avCorrectionScope').value='slice';document.getElementById('avCorrectionScheduled').value=effective.scheduledProduction?'yes':'no';document.getElementById('avCorrectionReason').value='';document.getElementById('avCorrectionModal').classList.add('open');
-}
-async function avConfirmCorrection(){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- if(!authCan('canCorrectProduction')||document.getElementById('avCorrectionModal').inert)return false;
- try{const e=avData.waits.find(e=>e.id===avCorrectionId),reason=document.getElementById('avCorrectionReason').value.trim(),scheduledProduction=document.getElementById('avCorrectionScheduled').value==='yes',scope=document.getElementById('avCorrectionScope').value;if(!e||!reason)return false;
-  const session=authSession.id,targets=scope==='group'?avData.waits.filter(x=>x.groupId===e.groupId):[e],stamp=JSON.stringify({waits:avData.waits,corrections:avData.corrections});
-  for(const x of targets)if(authProtectedRecord({machine:x.machine,wo:x.wo,productionDate:x.productionDate,shift:x.shift,time:x.startTime,workOrderId:x.workOrderId})&&!await authRequestReverification(`${x.id}｜${x.productionDate} ${x.shift} 已封存／曾月結等待分類修正`))return false;
-  authAssertSession(session);if(stamp!==JSON.stringify({waits:avData.waits,corrections:avData.corrections}))throw Error('驗證期間事件變更，請重新選取');if(!authConfirmAction('等待歷史分類修正（'+(scope==='group'?'整組逐片':'只修本片')+'）',{id:e.machine,wo:e.wo}))return false;
-  avTransaction(()=>{for(const x of targets){const before=avEffectiveWait(x),classification=scheduledProduction?'LOSS':'EXCLUDED',c={id:makeEventId('WAITCOR'),changeKind:'HISTORY_CORRECTION',scope,waitEventId:x.id,groupId:x.groupId,productionDate:x.productionDate,shift:x.shift,startTime:x.startTime,endTime:x.endTime,time:Date.now(),machine:x.machine,wo:x.wo,oldClassification:before.classification,classification,oldScheduledProduction:before.scheduledProduction,scheduledProduction,before:{classification:before.classification,scheduledProduction:before.scheduledProduction},after:{classification,scheduledProduction},reason,...authActorFields()};avData.corrections.push(c);audit('等待歷史分類修正',{id:x.machine,wo:x.wo},reason,c.before,c.after,{productionDate:x.productionDate,shift:x.shift,availabilityEventId:x.id,correctionEventId:c.id,before:c.before,after:c.after,scope});recordWorkOrderEventById(x.workOrderId,'等待歷史分類修正',reason,{availabilityEventId:x.id,correctionEventId:c.id,availabilityGroupId:x.groupId});}});
-  document.getElementById('avCorrectionModal').classList.remove('open');renderAvailability();return true;
- }catch(e){alert('分類修正未完成：'+e.message);return false;}
+  avAssertWritable();
+  if(action==='order'){
+    const before=snapshot?.machines.find(x=>x.id===m.id);
+    for(const e of avData.setups.filter(e=>e.machine===m.id&&e.groupId===before?.setupGroupId))e.nextWO=m.wo;
+    const e=avData.setups.filter(e=>e.machine===m.id&&e.groupId===before?.setupGroupId).pop();
+    if(e)recordWorkOrderEvent(m,'校車事件關聯',e.id,{availabilityEventId:e.id,availabilityGroupId:e.groupId});
+  }
+  avSave();
 }
 function availabilityTick(){
- if(avStorageFault)return;const now=Date.now(),i=avShiftIdentity(now),pending=machines.some(m=>['waits','setups'].some(kind=>{const e=avOpenEvent(kind,m.id);return e&&(now>=maxShiftEndTs(e.productionDate,e.shift)||(kind==='setups'||avEffectiveWait(e).classification==='LOSS')&&now>normalShiftEndTs(i.productionDate,i.shift)&&now<maxShiftEndTs(i.productionDate,i.shift)&&!avFindWindow(m.id,i.productionDate,i.shift)?.extendedDetected);}));
- if(pending)try{avTransaction(()=>{for(const m of machines){for(const kind of ['waits','setups'])if(avOpenEvent(kind,m.id)&&now>=maxShiftEndTs(avOpenEvent(kind,m.id).productionDate,avOpenEvent(kind,m.id).shift))avSplitOpen(kind,m.id,now);const wait=avOpenEvent('waits',m.id),setup=avOpenEvent('setups',m.id);if((setup||wait&&avEffectiveWait(wait).classification==='LOSS')&&now>normalShiftEndTs(i.productionDate,i.shift)&&now<maxShiftEndTs(i.productionDate,i.shift)&&!avFindWindow(m.id,i.productionDate,i.shift)?.extendedDetected)markWorkActivity(m,now,setup?'持續校車工作':'持續排定等待LOSS');}});}catch(e){console.error('稼動事件切班保存失敗',e);}
- if(document.getElementById('availability')?.classList.contains('active')&&now-avLastRender>=3000){avLastRender=now;renderAvailability();}avRenderOperatorNotice();
+  if(avStorageFault)return;
+  const now=Date.now();
+  const pending=machines.some(m=>['waits','setups'].some(kind=>{const e=avOpenEvent(kind,m.id);return e&&now>=maxShiftEndTs(e.productionDate,e.shift);}));
+  if(pending)try{avTransaction(()=>{for(const m of machines)for(const kind of ['waits','setups']){const e=avOpenEvent(kind,m.id);if(e&&now>=maxShiftEndTs(e.productionDate,e.shift))avSplitOpen(kind,m.id,now);}});}catch(e){console.error('稼動事件切班保存失敗',e);}
 }
 function initializeAvailability(){
- document.getElementById('avMonth').onchange=()=>{avSelectedMachine='';renderAvailability();};document.getElementById('avMachineRows').addEventListener('click',e=>{const b=e.target.closest('[data-av-machine]');if(b){avSelectedMachine=b.dataset.avMachine;renderAvailability();}});document.getElementById('avEventRows').addEventListener('click',e=>{const b=e.target.closest('[data-av-correct],[data-av-cut]');if(b?.dataset.avCorrect)avOpenCorrection(b.dataset.avCorrect);else if(b?.dataset.avCut)avOpenCut(b.dataset.avCut);});
- document.getElementById('avCorrectionSubmit').onclick=avConfirmCorrection;document.getElementById('avCorrectionCancel').onclick=()=>document.getElementById('avCorrectionModal').classList.remove('open');document.getElementById('avCutSubmit').onclick=avConfirmCut;
- document.getElementById('avPlanMachine').innerHTML=machines.map(m=>`<option value="${m.id}">${m.id}</option>`).join('');document.getElementById('avPlanBatch').innerHTML=machines.map(m=>`<label><input type="checkbox" value="${m.id}">${m.id}</label>`).join('');document.getElementById('avPlanDate').value=productionDate();document.getElementById('avPlanShift').value=shiftAt();for(const id of ['avPlanMachine','avPlanDate','avPlanShift'])document.getElementById(id).onchange=avPlanDefaults;document.getElementById('avPlanScheduled').onchange=avPlanVisibility;document.getElementById('avPlanSubmit').onclick=avConfirmPlan;document.getElementById('avPlanWork').onclick=()=>avOpenWork(document.getElementById('avPlanMachine').value,document.getElementById('avPlanDate').value,document.getElementById('avPlanShift').value);document.getElementById('avOperatorWork').onclick=()=>avOpenWork(opMachine.value);document.getElementById('avOvertimeSubmit').onclick=()=>avCommitWork('overtime');document.getElementById('avWorkEnd').onclick=()=>avCommitWork('end');document.querySelectorAll('[data-av-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.avClose).classList.remove('open'));opMachine.addEventListener('change',avRenderOperatorNotice);avPlanDefaults();
- avInitializeFaultUI();
- const raw=localStorage.getItem(AV_KEYS.windows);if(!avStorageFault&&raw&&JSON.stringify(JSON.parse(raw))!==JSON.stringify(avData.windows))try{localStorage.setItem(AV_KEYS.windows,JSON.stringify(avData.windows));}catch(e){avError('舊活動資料升級保存失敗：'+e.message,true);}
- availabilityTick();setInterval(availabilityTick,1000);renderAvailability();
+  avInitializeFaultUI();
+  availabilityTick();
+  setInterval(availabilityTick,1000);
 }
 function avReadFault(){
  for(const storage of [localStorage,sessionStorage])try{if(storage.getItem('deyao_availability_write_fault'))return true;}catch(e){}
@@ -2801,7 +2657,6 @@ function avCrossCheck(all,machineRows,{legacy=false,machine=null,start=-Infinity
   if(ref&&!open.some(e=>e.id===ref))issues.push(`${m.id} administrativeGapEventId 引用不存在、已關閉或不同機台Gap`);
   for(const e of open)if(m.status!=='校車完成待換製令'||ref!==e.id)issues.push(`${m.id} open Gap 與機台狀態／引用不一致`);
  }
- for(const w of (all.windows||[]).filter(w=>(!machine||w.machine===machine)&&w.schemaVersion===2))try{avValidateWindow(w);}catch(e){issues.push(w.id+'：'+e.message);}
  return [...new Set(issues)];
 }
 function avIsLegacyGapBackup(version){const v=/^18\.(\d+)(?:\.(\d+))?(?:[.-]|$)/.exec(String(version||''));return !!v&&(+v[1]<26||+v[1]===26&&+(v[2]||0)<3);}
@@ -2840,12 +2695,12 @@ async function avReleaseFault(){
    auditLogs.unshift(entry);localStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));if(localStorage.getItem('deyao_v8_audit')!==JSON.stringify(auditLogs))throw Error('解除稽核保存失敗');
    localStorage.removeItem(AV_FAULT_KEY);sessionStorage.removeItem(AV_FAULT_KEY);if(avReadFault())throw Error('故障鎖移除失敗');
   }catch(e){auditLogs=JSON.parse(beforeAudit);try{if(rawAudit===null)localStorage.removeItem('deyao_v8_audit');else localStorage.setItem('deyao_v8_audit',rawAudit);}catch(x){}avPersistFault('解除失敗：'+e.message);throw e;}
-  avStorageFault=false;document.getElementById('avStorageError').hidden=true;avRenderFaultUI();syncOpMachine();renderAll();renderAvailability();return true;
+  avStorageFault=false;document.getElementById('avStorageError').hidden=true;avRenderFaultUI();syncOpMachine();renderAll();return true;
  }catch(e){alert('無法解除資料鎖定：'+e.message+'。請先保留備份並通知主管處理。 / Không thể mở khóa; hãy lưu bản sao và báo quản lý.');return false;}
 }
 function avInitializeFaultUI(){
  document.getElementById('avFaultRelease').onclick=avReleaseFault;
- document.addEventListener('click',e=>{if(avStorageFault&&e.target.closest('.action-btn,#submitAction,#avPlanSubmit,#avOvertimeSubmit,#avWorkEnd,#avCutSubmit,#avCorrectionSubmit,[data-av-correct],[data-av-cut],#authProductionCorrectionBtn,#monthCheckBtn,#monthCloseBtn,#monthReopenBtn,#selectJsonRestore,#enterCleanTestMode,#loadDemoData')){e.preventDefault();e.stopImmediatePropagation();avRenderFaultUI();}},true);
+ document.addEventListener('click',e=>{if(avStorageFault&&e.target.closest('.action-btn,#submitAction,#authProductionCorrectionBtn,#monthCheckBtn,#monthCloseBtn,#monthReopenBtn,#selectJsonRestore,#enterCleanTestMode,#loadDemoData')){e.preventDefault();e.stopImmediatePropagation();avRenderFaultUI();}},true);
  avRenderFaultUI();
 }
 function avRehydrateLockedState(){
@@ -2860,26 +2715,6 @@ function avMarkLegacyMachineStates(){
 }
 
 
-function avNewWindow(machine,pd,shift,source='未確認'){
- return {schemaVersion:2,id:makeEventId('WORKWIN'),machine,productionDate:pd,shift,status:'INCOMPLETE',scheduledProduction:null,plannedStartTime:null,plannedEndTime:null,confirmedStart:false,confirmedEnd:false,overtimeConfirmed:false,overtimeStart:null,overtimeEndTime:null,overtimeStatus:'NONE',source,createdAt:Date.now(),...avActor('createdBy'),updatedAt:Date.now(),...avActor('updatedBy'),reason:'',activities:[],extendedDetected:false};
-}
-function avNormalizeWindows(rows){
- const out=[];for(const row of rows){if(!row||typeof row!=='object')throw Error('工作區間包含損壞資料');if(row.schemaVersion===2){out.push(row);continue;}
-  let w=out.find(x=>x.machine===row.machine&&x.productionDate===row.productionDate&&x.shift===row.shift);
-  if(!w){w={...avNewWindow(row.machine,row.productionDate,row.shift,'LEGACY_ACTIVITY'),id:row.id,createdAt:row.startTime,createdByEmployeeId:row.startedByEmployeeId||'',createdByName:row.startedByName||'',createdByRole:row.startedByRole||'',createdBySessionId:row.startedBySessionId||'',updatedAt:row.lastActivity||row.startTime,updatedByEmployeeId:'',updatedByName:'',updatedByRole:'',updatedBySessionId:'',reason:'舊版活動證據，尚未由主管確認排產',legacyActivityWindows:[]};out.push(w);}
-  w.legacyActivityWindows.push({...row});w.activities.push(...(row.activities||[]));w.lastActivity=Math.max(w.lastActivity||0,row.lastActivity||row.startTime||0);w.extendedDetected=!!(w.extendedDetected||row.extendedDetected);
- }return out;
-}
-function avFindWindow(machine,pd,shift){return avData.windows.find(w=>w.machine===machine&&w.productionDate===pd&&w.shift===shift&&w.schemaVersion===2);}
-function avCoverage(rows){
- const expected=rows.length,confirmed=rows.filter(r=>['CONFIRMED','NO_PRODUCTION'].includes(r.coverageStatus)).length,invalid=rows.some(r=>r.coverageStatus==='INVALID'||r.dataIntegrityStatus==='INVALID');
- return {expected,confirmed,incomplete:expected-confirmed,coveragePercent:expected?confirmed/expected*100:null,coverageComplete:!invalid&&expected>0&&expected===confirmed,coverageStatus:invalid?'INVALID':expected&&rows.every(r=>r.coverageStatus==='NO_PRODUCTION')?'NO_PRODUCTION':expected===confirmed&&expected?'CONFIRMED':'INCOMPLETE',dataIntegrityStatus:invalid?'INVALID':'VALID',...(invalid?{utilizationRate:null}:{})};
-}
-function avCoverageText(c){return `已確認 ${c.confirmed}／應確認 ${c.expected}；涵蓋 ${c.coveragePercent===null?'—':avM(c.coveragePercent)+'%'}${c.coverageComplete?'':'｜⚠ 排產資料未完整 / Kế hoạch chưa đầy đủ'}`;}
-function avFmt(ts){return ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'—';}
-function renderAvailabilityCards(){
- document.querySelectorAll('#machineCards .card[data-id]').forEach(card=>{const r=availabilityShift(card.dataset.id,productionDate(),shiftAt());let label=card.querySelector('.av-card-rate');if(!label){label=document.createElement('div');label.className='av-card-rate note';card.appendChild(label);}label.textContent='稼動率 / Tỷ lệ vận hành '+avFormatRate(r.utilizationRate,r.coverageStatus);});
-}
 function avError(message,high=false){
  if(high){avPersistFault(message);return;}
  const el=document.getElementById('avStorageError');el.hidden=false;el.querySelector('[data-av-fault-text]').textContent='稼動率操作未保存，已回復原資料。 / Thao tác chưa lưu, đã khôi phục dữ liệu. '+message;
@@ -2889,73 +2724,13 @@ function avRollback(snapshot){const errors=restoreActionState(snapshot);for(cons
 function avTransaction(change){
  avAssertWritable();const snapshot=captureActionState();try{const result=change();if(avSave()===false)throw Error('稼動率保存回傳false');if(saveMachineState()===false)throw Error('機台保存回傳false');return result;}catch(e){const errors=avRollback(snapshot);avError(e.message+(errors.length?'；回復失敗：'+errors.join('、'):''),errors.length>0);throw e;}
 }
-function avProtectedWindow(w){return authMonthEverClosed(w.productionDate.slice(0,7))||shiftRecordsData.some(r=>r.machine===w.machine&&r.productionDate===w.productionDate&&r.shift===w.shift)||operatorSettlementEvents.some(r=>r.machine===w.machine&&r.productionDate===w.productionDate&&r.shift===w.shift);}
-function avWindowRevision(w){if(!w)return null;const {history,activities,legacyActivityWindows,...state}=w;return JSON.parse(JSON.stringify(state));}
-function avWindowWithHistory(before,after,kind){return {...after,history:[...(before?.history||[]),{id:makeEventId('WORKWINREV'),kind,time:Date.now(),before:avWindowRevision(before),after:avWindowRevision(after),reason:after.reason,...authActorFields()}]};}
-function avValidateWindow(w,{historical=false}={}){
- const full=shiftWindow(w.productionDate,w.shift,true),normal=normalShiftEndTs(w.productionDate,w.shift);if(!['早班','晚班'].includes(w.shift))throw Error('工作區間班別錯誤');
- if(w.status==='CONFIRMED'){if(w.scheduledProduction!==true||w.confirmedStart!==true||w.confirmedEnd!==true||!Number.isFinite(w.plannedStartTime)||!Number.isFinite(w.plannedEndTime)||w.plannedStartTime<full.start||w.plannedEndTime>normal||w.plannedEndTime<=w.plannedStartTime)throw Error('排定起迄須在本班正常工作範圍內且結束晚於開始');}
- else if(w.status==='NO_PRODUCTION'){if(w.scheduledProduction!==false||w.confirmedStart!==true||w.confirmedEnd!==true||w.plannedStartTime!==null||w.plannedEndTime!==null||w.overtimeConfirmed)throw Error('未排產資料矛盾');}
- else if(w.status==='INCOMPLETE'){if(w.scheduledProduction!==null||w.confirmedStart||w.confirmedEnd||w.plannedStartTime!==null||w.plannedEndTime!==null||w.overtimeConfirmed)throw Error('未確認資料矛盾');}else throw Error('工作區間status錯誤');
- if(typeof w.overtimeConfirmed!=='boolean'||typeof w.confirmedStart!=='boolean'||typeof w.confirmedEnd!=='boolean')throw Error('確認欄位須為boolean');
- if(!w.overtimeConfirmed&&(w.overtimeStart!==null||w.overtimeEndTime!==null))throw Error('尚未確認不得含正式加班起迄');
- if(!['NONE','OVERTIME_PENDING','CONFIRMED','ENDED','CANCELLED'].includes(w.overtimeStatus)||w.overtimeConfirmed&&!['CONFIRMED','ENDED'].includes(w.overtimeStatus)||!w.overtimeConfirmed&&['CONFIRMED','ENDED'].includes(w.overtimeStatus))throw Error('加班狀態矛盾');
- if(w.overtimeConfirmed&&(!Number.isFinite(w.overtimeStart)||!Number.isFinite(w.overtimeEndTime)||w.overtimeStart<normal||w.overtimeEndTime>full.end||w.overtimeEndTime<=w.overtimeStart))throw Error('加班起迄超出本班真實邊界（早班20:30／晚班08:00）');
- if(w.actualWorkEndedAt!=null){if(!Number.isFinite(w.actualWorkEndedAt)||w.status!=='CONFIRMED'||w.actualWorkEndedAt<=w.plannedStartTime||w.actualWorkEndedAt>full.end)throw Error('實際工作終點格式／班界錯誤');if(!historical&&(w.plannedEndTime>w.actualWorkEndedAt||w.overtimeConfirmed&&(w.overtimeStart>=w.actualWorkEndedAt||w.overtimeEndTime>w.actualWorkEndedAt)))throw Error('正式工作區間超過actualWorkEndedAt硬截止');}
- return true;
-}
-function avLocalInput(ts){const d=new Date(ts);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
-function avPlanDefaults(){const pd=document.getElementById('avPlanDate').value,shift=document.getElementById('avPlanShift').value,w=avFindWindow(document.getElementById('avPlanMachine').value,pd,shift);document.getElementById('avPlanStart').value=avLocalInput(w?.plannedStartTime||officialShiftStartTs(pd,shift));document.getElementById('avPlanEnd').value=avLocalInput(w?.plannedEndTime||normalShiftEndTs(pd,shift));document.getElementById('avPlanScheduled').value=w?.status==='NO_PRODUCTION'?'no':'yes';document.getElementById('avPlanReconfirm').checked=false;document.getElementById('avPlanReconfirmRow').hidden=w?.actualWorkEndedAt==null;avPlanVisibility();}
-function avPlanVisibility(){document.getElementById('avPlanTimes').hidden=document.getElementById('avPlanScheduled').value!=='yes';document.getElementById('avNoProductionFields').hidden=document.getElementById('avPlanScheduled').value==='yes';}
-async function avConfirmPlan(){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- if(!authCan('canCorrectProduction')||document.getElementById('avPlanTools').inert)return false;
- try{const session=authSession.id,pd=document.getElementById('avPlanDate').value,shift=document.getElementById('avPlanShift').value,yes=document.getElementById('avPlanScheduled').value==='yes',reason=document.getElementById('avPlanReason').value.trim(),noReason=document.getElementById('avNoReason').value,detail=document.getElementById('avNoDetail').value.trim();
-  if(!reason||!/^\d{4}-\d{2}-\d{2}$/.test(pd)||!yes&&noReason==='其他'&&!detail)throw Error('請填寫確認／修改原因；未排產「其他」須補充');
-  const ids=[...document.querySelectorAll('#avPlanBatch input:checked')].map(e=>e.value);if(!ids.length)ids.push(document.getElementById('avPlanMachine').value);
-  const plans=ids.map(machine=>{const old=avFindWindow(machine,pd,shift);if(old?.actualWorkEndedAt!=null&&!document.getElementById('avPlanReconfirm').checked)throw Error('工作區間已結束；請勾選明確重新確認並填寫原因。 / Hãy chọn xác nhận lại và nhập lý do.');const after={...(old||avNewWindow(machine,pd,shift,'SUPERVISOR_CONFIRM')),status:yes?'CONFIRMED':'NO_PRODUCTION',scheduledProduction:yes,plannedStartTime:yes?new Date(document.getElementById('avPlanStart').value).getTime():null,plannedEndTime:yes?new Date(document.getElementById('avPlanEnd').value).getTime():null,confirmedStart:true,confirmedEnd:true,source:'SUPERVISOR_CONFIRM',updatedAt:Date.now(),...avActor('updatedBy'),reason:yes?reason:noReason+(detail?'｜'+detail:'')+'｜'+reason};if(!yes)Object.assign(after,{overtimeConfirmed:false,overtimeStart:null,overtimeEndTime:null,overtimeStatus:'NONE'});if(old?.actualWorkEndedAt!=null&&document.getElementById('avPlanReconfirm').checked){after.actualWorkEndedAt=null;for(const k of Object.keys(after))if(k.startsWith('workEndedBy'))delete after[k];Object.assign(after,{overtimeConfirmed:false,overtimeStart:null,overtimeEndTime:null,overtimeStatus:'NONE',reason:after.reason+'｜主管明確重新確認；舊加班不恢復'});}avValidateWindow(after);return {machine,before:old?JSON.parse(JSON.stringify(old)):null,after};});
-  const stamp=JSON.stringify(avData.windows);for(const p of plans)if(avProtectedWindow(p.after)&&!await authRequestReverification(p.machine+'｜'+pd+'｜'+shift+' 已結算／曾月結工作區間'))return false;authAssertSession(session);if(stamp!==JSON.stringify(avData.windows))throw Error('驗證期間資料有變更，請重新確認');
-  if(!authConfirmAction('班別工作區間確認',{id:ids.join('、'),wo:''}))return false;
-  avTransaction(()=>{for(const p of plans){p.after=avWindowWithHistory(p.before,p.after,'PLAN_CONFIRM');const n=avData.windows.findIndex(w=>w.machine===p.machine&&w.productionDate===pd&&w.shift===shift);if(n<0)avData.windows.push(p.after);else avData.windows[n]=p.after;audit('班別工作區間確認',{id:p.machine,wo:''},p.after.reason,p.before,p.after,{productionDate:pd,shift,availabilityEventId:p.after.id,before:p.before,after:p.after,batchMachines:ids});}});renderAvailability();avPlanDefaults();return true;
- }catch(e){alert('工作區間未完成：'+e.message);return false;}
-}
-function avOpenCut(id){if(!avGuardWrite())return false; /* V18.26.2 write guard */ if(!authCan('canCorrectProduction'))return;const selected=avData.waits.find(e=>e.id===id),e=selected?.status==='open'?selected:avData.waits.find(e=>e.groupId===selected?.groupId&&e.status==='open');if(!e)return;avCutId=e.id;document.getElementById('avCutWho').textContent=`${e.machine}｜${e.wo}｜${e.id}｜Group ${e.groupId}｜${e.productionDate} ${e.shift}｜${avFmt(e.startTime)}起｜${avEffectiveWait(e).classification}`;document.getElementById('avCutScheduled').value=avEffectiveWait(e).scheduledProduction?'no':'yes';document.getElementById('avCutReason').value='';document.getElementById('avCutModal').classList.add('open');}
-function avConfirmCut(){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- if(!authCan('canCorrectProduction')||document.getElementById('avCutModal').inert)return false;
- try{const original=avData.waits.find(e=>e.id===avCutId),selected=original?.status==='open'?original:avData.waits.find(e=>e.groupId===original?.groupId&&e.status==='open'),reason=document.getElementById('avCutReason').value.trim(),scheduledProduction=document.getElementById('avCutScheduled').value==='yes';if(!selected||!reason)return false;if(!authConfirmAction('從現在開始變更等待分類',{id:selected.machine,wo:selected.wo}))return false;const now=Date.now();if(now<=selected.startTime)throw Error('分類切點須晚於事件開始');
-  avTransaction(()=>{const old=avSplitOpen('waits',selected.machine,now),before=avEffectiveWait(old);if(now<=old.startTime)throw Error('班界同一時刻請稍後操作，避免0分鐘切片');old.status='closed';old.endTime=now;old.minutes=(now-old.startTime)/60000;Object.assign(old,avActor('endedBy'));const next={...before,id:makeEventId('WAIT'),...avShiftIdentity(now),startTime:now,endTime:null,minutes:0,status:'open',classification:scheduledProduction?'LOSS':'EXCLUDED',scheduledProduction,changeKind:'STATE_CHANGE',previousWaitEventId:old.id,transitionReason:reason,...avActor('startedBy'),endedByEmployeeId:'',endedByName:'',endedByRole:'',endedBySessionId:''};delete next.continuedFrom;delete next.endedBySystem;avData.waits.push(next);const m=machines.find(m=>m.id===old.machine);m.waitEventId=next.id;if(scheduledProduction)markWorkActivity(m,now,'等待分類狀態切換LOSS');audit('等待分類狀態變更',m,reason,{classification:before.classification,scheduledProduction:before.scheduledProduction},{classification:next.classification,scheduledProduction},{eventTime:now,availabilityEventId:next.id,availabilityGroupId:next.groupId,previousWaitEventId:old.id,changeKind:'STATE_CHANGE'});recordWorkOrderEventById(old.workOrderId,'等待分類狀態變更',`${old.id} → ${next.id}｜${reason}`,{time:now,availabilityEventId:next.id,availabilityGroupId:next.groupId});});document.getElementById('avCutModal').classList.remove('open');renderAvailability();return true;
- }catch(e){alert('分類切點未完成：'+e.message);return false;}
-}
-function avWorkPermission(machine){const m=machines.find(m=>m.id===machine);return authCan('canCorrectProduction')||authCan('canOperate')&&m&&authIsResponsible(m)&&!m.responsibleSettled;}
-function avOpenWork(machine,pd=productionDate(),shift=shiftAt()){
- if(!avWorkPermission(machine))return;avWorkTarget={machine,productionDate:pd,shift};const w=avFindWindow(machine,pd,shift);document.getElementById('avWorkWho').textContent=`${machine}｜${pd} ${shift}｜排產 ${w?.status||'INCOMPLETE'}｜正常終點 ${avFmt(w?.plannedEndTime)}｜加班截止 ${avFmt(w?.overtimeEndTime)}`;document.getElementById('avOvertimeStart').value=avLocalInput(w?.overtimeStart||normalShiftEndTs(pd,shift));document.getElementById('avOvertimeEnd').value=w?.overtimeEndTime?avLocalInput(w.overtimeEndTime):'';document.getElementById('avWorkReason').value='';document.getElementById('avWorkModal').classList.add('open');
-}
-async function avCommitWork(kind){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- if(!avWorkTarget||!avWorkPermission(avWorkTarget.machine)||document.getElementById('avWorkModal').inert)return false;
- try{const target={...avWorkTarget};if(!authCan('canCorrectProduction')&&(target.productionDate!==productionDate()||target.shift!==shiftAt()))throw Error('責任人僅可確認目前班別，歷史工作區間須由主管處理');const w=avFindWindow(target.machine,target.productionDate,target.shift),reason=document.getElementById('avWorkReason').value.trim();if(!w||w.status!=='CONFIRMED')throw Error('須先請主管確認本班工作區間');if(!reason)throw Error('請填寫原因');if(w.actualWorkEndedAt!=null)throw Error('此工作區間已結束；請主管先重新確認工作區間，不會自動恢復舊加班。');const before=JSON.parse(JSON.stringify(w)),after={...w,updatedAt:Date.now(),...avActor('updatedBy'),reason};
-  if(kind==='overtime')Object.assign(after,{overtimeConfirmed:true,overtimeStart:new Date(document.getElementById('avOvertimeStart').value).getTime(),overtimeEndTime:new Date(document.getElementById('avOvertimeEnd').value).getTime(),overtimeStatus:'CONFIRMED'});
-  else{const now=Date.now(),normal=normalShiftEndTs(w.productionDate,w.shift);if(now<=normal)after.plannedEndTime=now;if(w.overtimeConfirmed&&now<=w.overtimeStart){Object.assign(after,{overtimeConfirmed:false,overtimeStart:null,overtimeEndTime:null,overtimeStatus:'CANCELLED'});}else if(now>normal){if(!w.overtimeConfirmed)throw Error('正常下班後須先明確確認加班，才能以現在時間結束加班');after.overtimeEndTime=now;after.overtimeStatus='ENDED';}after.actualWorkEndedAt=now;Object.assign(after,avActor('workEndedBy'));}
-  avValidateWindow(after);const session=authSession.id;if(avProtectedWindow(w)&&!await authRequestReverification('已結算／曾月結機台工作終點'))return false;authAssertSession(session);if(JSON.stringify(avFindWindow(target.machine,target.productionDate,target.shift))!==JSON.stringify(before))throw Error('驗證期間工作區間變更，請重開');if(!authConfirmAction(kind==='overtime'?'明確確認加班':'機台工作結束',{id:w.machine,wo:machines.find(m=>m.id===w.machine)?.wo||''}))return false;
-  avTransaction(()=>{const saved=avWindowWithHistory(before,after,kind==='overtime'?'OVERTIME_CONFIRM':'WORK_END');avData.windows[avData.windows.findIndex(x=>x.id===w.id)]=saved;const m=machines.find(m=>m.id===w.machine);audit(kind==='overtime'?'加班確認':'機台工作結束',m,reason,before,saved,{productionDate:w.productionDate,shift:w.shift,availabilityEventId:w.id,before,after:saved});recordWorkOrderEventById(m.workOrderRecordId,kind==='overtime'?'加班確認':'機台工作結束',`${reason}｜${avFmt(after.plannedEndTime)}｜加班 ${avFmt(after.overtimeEndTime)}`,{availabilityEventId:w.id});});document.getElementById('avWorkModal').classList.remove('open');renderAvailability();avPlanDefaults();return true;
- }catch(e){alert('工作終點未完成：'+e.message);return false;}
-}
-function avRenderOperatorNotice(){
- const el=document.getElementById('avOperatorWorkNotice'),m=machines.find(m=>m.id===opMachine.value);if(!el||!m)return;const w=avFindWindow(m.id,productionDate(),shiftAt());el.querySelector('span').textContent=!w||w.status==='INCOMPLETE'?'工作區間未確認，請通知主管 / Chưa xác nhận kế hoạch, báo quản lý':w.overtimeStatus==='OVERTIME_PENDING'?'加班待確認；正常下班後尚不列入正式稼動率 / Chờ xác nhận tăng ca':'工作區間 / Thời gian làm việc：'+w.status+'｜'+avFmt(w.actualWorkEndedAt??(w.overtimeConfirmed?w.overtimeEndTime:w.plannedEndTime));el.querySelector('button').hidden=!avWorkPermission(m.id);
-}
 function avValidateBackupRows(data,context={}){
  const all=Object.fromEntries(Object.entries(AV_KEYS).map(([kind,key])=>[kind,data[key]===undefined?[]:JSON.parse(data[key])]));const ids=new Set(),validMachines=new Set(machines.map(m=>m.id));
  const base=(r,kind)=>{if(!r||typeof r!=='object'||Array.isArray(r))throw Error(kind+' 包含非事件物件');if(typeof r.id!=='string'||!r.id.trim()||ids.has(r.id))throw Error(kind+' 事件ID空白或重複');ids.add(r.id);if(!validMachines.has(r.machine)||!['早班','晚班'].includes(r.shift)||!/^\d{4}-\d{2}-\d{2}$/.test(r.productionDate)||productionDate(officialShiftStartTs(r.productionDate,r.shift))!==r.productionDate)throw Error(kind+' 機台／生產日／班別錯誤');};
  for(const kind of ['waits','setups','gaps']){const open=new Set();for(const r of all[kind]){base(r,kind);if(typeof r.groupId!=='string'||!r.groupId||!Number.isFinite(r.startTime)||r.startTime<=0||!['open','closed'].includes(r.status))throw Error(kind+' 群組／時間／狀態錯誤');if(r.status==='open'){if(r.endTime!==null||open.has(r.machine))throw Error(kind+' 重複開啟事件或endTime錯誤');open.add(r.machine);}else if(!Number.isFinite(r.endTime)||r.endTime<=r.startTime)throw Error(kind+' 結束必須晚於開始');if(r.minutes!==undefined&&(!Number.isFinite(r.minutes)||r.minutes<0||r.status==='closed'&&Math.abs(r.minutes-(r.endTime-r.startTime)/60000)>1e-7))throw Error(kind+' 分鐘資料錯誤');if(productionDate(r.startTime)!==r.productionDate||shiftAt(r.startTime)!==r.shift||kind!=='gaps'&&r.endTime!==null&&r.endTime>maxShiftEndTs(r.productionDate,r.shift))throw Error(kind+' 班別切片錯誤');if(kind==='waits'&&(!['LOSS','EXCLUDED'].includes(r.classification)||typeof r.scheduledProduction!=='boolean'||r.scheduledProduction!==(r.classification==='LOSS')))throw Error('Wait分類錯誤');if(kind==='gaps'&&r.classification!=='EXCLUDED')throw Error('行政空檔分類錯誤');}}
  for(const kind of ['waits','setups'])for(const r of all[kind])for(const field of ['continuedFrom','previousWaitEventId'])if(r[field]){const prev=all[kind].find(x=>x.id===r[field]),ancestor=field==='previousWaitEventId'&&!!r.continuedFrom;if(!prev||prev.machine!==r.machine||prev.groupId!==r.groupId||prev.status!=='closed'||(ancestor?prev.endTime>r.startTime:prev.endTime!==r.startTime))throw Error(kind+' 延續／切點引用錯誤');}
- const windows=new Map(),legacyOpen=new Set();for(const w of all.windows){base(w,'windows');const k=w.machine+'|'+w.productionDate+'|'+w.shift,version=w.schemaVersion===2?2:1;if(windows.has(k)&&(version===2||windows.get(k)===2))throw Error('同機台同班別工作區間重複／版本混合');windows.set(k,version);if(version===2){avValidateWindow(w);if(!Number.isFinite(w.createdAt)||w.createdAt<=0||!Number.isFinite(w.updatedAt)||w.updatedAt<w.createdAt||typeof w.reason!=='string'||typeof w.source!=='string'||['createdBy','updatedBy'].some(p=>['EmployeeId','Name','Role','SessionId'].some(s=>typeof w[p+s]!=='string')))throw Error('工作區間稽核欄位錯誤');}else{if(!['open','closed'].includes(w.status)||!Number.isFinite(w.startTime)||w.startTime<=0||productionDate(w.startTime)!==w.productionDate||shiftAt(w.startTime)!==w.shift||w.status==='open'&&w.endTime!==null||w.status==='closed'&&(!Number.isFinite(w.endTime)||w.endTime<=w.startTime))throw Error('舊版工作活動資料錯誤');if(w.status==='open'){if(legacyOpen.has(w.machine))throw Error('舊活動重複open');legacyOpen.add(w.machine);}}if(w.activities!==undefined&&(!Array.isArray(w.activities)||w.activities.some(a=>!a||typeof a!=='object'||!Number.isFinite(a.time)||a.time<=0)))throw Error('工作活動證據錯誤');if(w.legacyActivityWindows!==undefined&&(!Array.isArray(w.legacyActivityWindows)||w.legacyActivityWindows.some(a=>!a||typeof a!=='object'||a.machine!==w.machine||a.productionDate!==w.productionDate||a.shift!==w.shift||!Number.isFinite(a.startTime)||a.startTime<=0||!['open','closed'].includes(a.status)||a.status==='open'&&a.endTime!==null||a.status==='closed'&&(!Number.isFinite(a.endTime)||a.endTime<=a.startTime))))throw Error('舊活動證據引用錯誤');}
  for(const c of all.corrections){if(!c||typeof c!=='object'||typeof c.id!=='string'||!c.id||ids.has(c.id))throw Error('分類修正ID錯誤');ids.add(c.id);const e=all.waits.find(e=>e.id===c.waitEventId);if(!e||e.machine!==c.machine||!Number.isFinite(c.time)||c.time<=0||typeof c.reason!=='string'||!c.reason.trim()||!['LOSS','EXCLUDED'].includes(c.classification)||typeof c.scheduledProduction!=='boolean'||c.scheduledProduction!==(c.classification==='LOSS'))throw Error('分類修正內容／引用錯誤');if(c.groupId&&c.groupId!==e.groupId||c.productionDate&&c.productionDate!==e.productionDate||c.shift&&c.shift!==e.shift)throw Error('分類修正切片引用錯誤');if(!c.actorEmployeeId||!c.actorName||!c.actorRole||!c.actorSessionId)throw Error('分類修正缺少操作者');if(c.before&&(!['LOSS','EXCLUDED'].includes(c.before.classification)||c.before.scheduledProduction!==(c.before.classification==='LOSS'))||c.after&&(c.after.classification!==c.classification||c.after.scheduledProduction!==c.scheduledProduction))throw Error('修正before／after矛盾');}
- for(const w of all.windows)if(w.history!==undefined){if(!Array.isArray(w.history))throw Error('工作區間修訂歷史格式錯誤');for(const h of w.history){if(!h||typeof h!=='object'||typeof h.id!=='string'||!h.id||ids.has(h.id)||!['PLAN_CONFIRM','OVERTIME_CONFIRM','WORK_END'].includes(h.kind)||!Number.isFinite(h.time)||h.time<=0||typeof h.reason!=='string'||!h.reason.trim()||!h.actorEmployeeId||!h.actorName||!h.actorRole||!h.actorSessionId||!h.after)throw Error('工作區間修訂歷史內容錯誤');ids.add(h.id);for(const state of [h.before,h.after].filter(Boolean)){if(state.machine!==w.machine||state.productionDate!==w.productionDate||state.shift!==w.shift||state.id!==w.id)throw Error('工作區間修訂引用不一致');avValidateWindow(state,{historical:true});}}}
- const machineRows=JSON.parse(data['deyao_v10_machine_state']||'[]'),legacy=Object.values(AV_KEYS).every(k=>data[k]===undefined)&&!/^18\.26\.[23](?:-|$)/.test(String(context.appVersion||''));const issues=avCrossCheck(all,machineRows,{legacy});if(issues.length)throw Error(issues.join('；'));
+ const machineRows=JSON.parse(data['deyao_v10_machine_state']||'[]'),legacy=Object.values(AV_KEYS).every(k=>data[k]===undefined)&&!/^18\.(?:26\.[23]|27(?:\.\d+)?)(?:-|$)/.test(String(context.appVersion||''));const issues=avCrossCheck(all,machineRows,{legacy});if(issues.length)throw Error(issues.join('；'));
  return true;
 }
 
@@ -3025,7 +2800,7 @@ function clearTestProductionStorage(){if(!avGuardWrite())return false; /* V18.26
 
 const JSON_BACKUP_SCHEMA='deyao-cnc-test-backup';
 const JSON_BACKUP_SCHEMA_VERSION=1;
-const JSON_BACKUP_APP_VERSION='18.26.3-Availability';
+const JSON_BACKUP_APP_VERSION='18.27.2';
 const JSON_BACKUP_KEYS=[
  ...TEST_DATA_KEYS,
  TEST_MODE_KEY,
@@ -3136,7 +2911,7 @@ function validateJsonBackupPayload(payload){
  if(!payload.data || typeof payload.data!=='object' || Array.isArray(payload.data)){
   return {ok:false,msg:'備份缺少 data 區塊。'};
  }
- const data={...payload.data};
+ const data=Object.fromEntries(Object.entries(payload.data).filter(([key])=>JSON_BACKUP_KEYS.includes(key)));
  if(typeof data['deyao_v10_machine_state']!=='string'){
   return {ok:false,msg:'備份缺少機台狀態，不能進行完整還原。'};
  }
@@ -3966,93 +3741,6 @@ function registerMachineTakeover(m,newResponsible,actualCum,reason=''){
  });
 }
 
-
-// ===== Supabase 雲端資料整合（V18.26.4 正式整合測試版） =====
-// 保留原 localStorage 與既有防呆；雲端同步失敗不會刪除本機資料。
-const CNC_SUPABASE_URL='https://guaelwbzobbprbuvpagu.supabase.co';
-const CNC_SUPABASE_KEY='sb_publishable_e3YZfx97UXm4QlnXHpmCXg_ISRftWVv';
-const CNC_CLOUD_HEADERS={'apikey':CNC_SUPABASE_KEY,'Authorization':'Bearer '+CNC_SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
-async function cncCloudGet(table,query=''){
- const r=await fetch(`${CNC_SUPABASE_URL}/rest/v1/${table}${query?'?'+query:''}`,{headers:CNC_CLOUD_HEADERS});
- if(!r.ok)throw new Error(`${table} GET ${r.status}: ${await r.text()}`); return r.json();
-}
-async function cncCloudInsert(table,row){
- const r=await fetch(`${CNC_SUPABASE_URL}/rest/v1/${table}`,{method:'POST',headers:CNC_CLOUD_HEADERS,body:JSON.stringify(row)});
- if(!r.ok)throw new Error(`${table} POST ${r.status}: ${await r.text()}`);
-}
-async function cncCloudPatch(table,query,row){
- const r=await fetch(`${CNC_SUPABASE_URL}/rest/v1/${table}?${query}`,{method:'PATCH',headers:CNC_CLOUD_HEADERS,body:JSON.stringify(row)});
- if(!r.ok)throw new Error(`${table} PATCH ${r.status}: ${await r.text()}`);
-}
-
-async function cncCloudIds(row){
- const [ops,ms,wos]=await Promise.all([
-  cncCloudGet('operators',`select=id&name=eq.${encodeURIComponent(row.operator)}`),
-  cncCloudGet('machines',`select=id&machine_code=eq.${encodeURIComponent(row.machine)}`),
-  row.wo?cncCloudGet('work_orders',`select=id&work_order_no=eq.${encodeURIComponent(row.wo)}`):Promise.resolve([])
- ]);
- return {operator_id:ops[0]?.id||null,machine_id:ms[0]?.id||null,work_order_id:wos[0]?.id||null};
-}
-async function cncCloudSyncAudit(row){
- try{
-  const ids=await cncCloudIds(row);
-  // 操作員尚未存在雲端主檔時，只保留本機紀錄，避免寫入錯誤的人員歸屬。
-  if(!ids.operator_id){console.warn('Supabase：找不到操作員主檔',row.operator);return;}
-  await cncCloudInsert('audit_logs',{...ids,action_type:row.action,action_detail:{production_date:row.productionDate,shift:row.shift,operator:row.operator,role:row.role,machine:row.machine,work_order:row.wo,content:row.content,old_value:row.oldValue,new_value:row.newValue,client:'CNC V18.26.4 Supabase integration test'}});
-  if(!ids.machine_id)return;
-  if(row.action==='更新累積數'&&ids.work_order_id){const before=Number(row.oldValue),after=Number(row.newValue);if(Number.isFinite(before)&&Number.isFinite(after)&&after>=before)await cncCloudInsert('production_reports',{...ids,production_date:row.productionDate,shift_code:row.shift,quantity_before:before,quantity_after:after,quantity_added:after-before,report_type:'production',note:row.content});}
-  if(row.action==='登錄異常品'&&ids.work_order_id){const mm=String(row.content).match(/(\d+)\s*PCS/),qty=mm?Number(mm[1]):0;if(qty>0)await cncCloudInsert('defect_reports',{...ids,production_date:row.productionDate,defect_quantity:qty,defect_reason:row.content,note:'CNC V18.26.4'});}
-  const emap={'開始停機':'stop','恢復生產':'resume','換刀':'tool_change','待換線／待校車':'waiting_change','開始校車':'setup_start','換製令':'workorder_change','製令完成':'workorder_complete','例外結單':'exception_close'};
-  if(emap[row.action])await cncCloudInsert('machine_events',{...ids,production_date:row.productionDate,event_type:emap[row.action],event_reason:row.action,note:row.content});
-
-  // 接手機台：關閉同機台舊責任區段，再建立新責任區段。
-  if(row.action==='接手機台'&&ids.machine_id&&ids.operator_id){
-   await cncCloudPatch('machine_assignments',`machine_id=eq.${encodeURIComponent(ids.machine_id)}&active=eq.true`,{active:false,ended_at:new Date().toISOString()});
-   await cncCloudInsert('machine_assignments',{
-    machine_id:ids.machine_id,operator_id:ids.operator_id,work_order_id:ids.work_order_id,
-    shift_code:row.shift,production_date:row.productionDate,active:true
-   });
-  }
-
-  // 下班結算：將本次個人結算寫入雲端。
-  if(row.action==='下班結算'&&ids.machine_id&&ids.operator_id){
-   const s=String(row.content||'');
-   const out=(s.match(/個人產量\s*(\d+)\s*PCS/)||[])[1];
-   const cut=(s.match(/切點\s*(\d+)\s*PCS/)||[])[1];
-   const productionQty=out?Number(out):0;
-   const endQty=cut?Number(cut):0;
-   const startQty=Math.max(0,endQty-productionQty);
-   await cncCloudInsert('shift_settlements',{
-    operator_id:ids.operator_id,machine_id:ids.machine_id,work_order_id:ids.work_order_id,
-    production_date:row.productionDate,shift_code:row.shift,
-    shift_start_quantity:startQty,shift_end_quantity:endQty,
-    production_quantity:productionQty,defect_quantity:0,note:s
-   });
-   await cncCloudPatch('machine_assignments',`machine_id=eq.${encodeURIComponent(ids.machine_id)}&operator_id=eq.${encodeURIComponent(ids.operator_id)}&active=eq.true`,{active:false,ended_at:new Date().toISOString()});
-  }
- }catch(e){console.error('Supabase sync failed:',e);}
-}
-async function cncMergeCloudMasterData(){
- try{
-  const [cloudOperators,cloudMachines,cloudOrders]=await Promise.all([
-   cncCloudGet('operators','select=employee_no,name,role,active&active=eq.true'),
-   cncCloudGet('machines','select=machine_code,current_status,active&active=eq.true'),
-   cncCloudGet('work_orders','select=work_order_no,product_no,target_quantity,cycle_time_seconds,status&status=eq.active')
-  ]);
-  const localEmpIds=new Set(TEST_PERSONNEL.map(p=>p.employeeId));
-  const cloudEmpIds=new Set(cloudOperators.map(p=>p.employee_no).filter(Boolean));
-  const missingLocal=[...localEmpIds].filter(x=>!cloudEmpIds.has(x));
-  const extraCloud=[...cloudEmpIds].filter(x=>!localEmpIds.has(x));
-  if(missingLocal.length||extraCloud.length)console.warn('Supabase 人員主檔與網站不一致',{missingLocal,extraCloud});
-  const orderMap=new Map(cloudOrders.map(w=>[w.work_order_no,w]));
-  for(const cm of cloudMachines){const m=machines.find(x=>x.id===cm.machine_code);if(!m)continue; if(cm.current_status)m.status=cm.current_status; const w=orderMap.get(m.wo);if(w){m.drawing=w.product_no||m.drawing;m.orderQty=Number(w.target_quantity)||m.orderQty;m.cycle=Number(w.cycle_time_seconds)||m.cycle;}}
-  try{localStorage.setItem('deyao_v10_machine_state',JSON.stringify(machines));}catch(e){}
-  if(typeof renderAll==='function')renderAll();
-  console.info(`Supabase 主檔已合併：${cloudOperators.length} 名人員、${cloudMachines.length} 台機台、${cloudOrders.length} 張製令`);
- }catch(e){console.error('Supabase master merge failed:',e);}
-}
-window.addEventListener('DOMContentLoaded',()=>setTimeout(cncMergeCloudMasterData,600));
-
 function audit(action,m,content='',oldValue='',newValue='',extra={}){
  avAssertWritable(); // V18.26.2 write guard
 
@@ -4068,7 +3756,6 @@ function audit(action,m,content='',oldValue='',newValue='',extra={}){
  auditLogs=auditLogs.slice(0,500);
  localStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));
  renderHistory();
- cncCloudSyncAudit(row);
 }
 function auditAs(operatorName,role,action,m,content='',oldValue='',newValue=''){
  avAssertWritable(); // V18.26.2 write guard
@@ -4084,7 +3771,6 @@ function auditAs(operatorName,role,action,m,content='',oldValue='',newValue=''){
  auditLogs=auditLogs.slice(0,500);
  localStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));
  renderHistory();
- cncCloudSyncAudit(row);
 }
 function auditResponsibilityEnd(m,segment,ts,reason){
  if(!segment)return;
@@ -4096,9 +3782,10 @@ function auditResponsibilityEnd(m,segment,ts,reason){
 
 function currentShiftProgress(m){return scheduledProgressFor(m);}
 function shiftName(){ return shiftAt(); }
-function shiftOutput(m){return currentShiftOutputFor(m)}
-function expectedNow(m){return Math.max(1,shiftSegmentExpected(m));}
+function shiftOutput(m){return isAwaitingWorkOrder(m)?0:currentShiftOutputFor(m)}
+function expectedNow(m){return isAwaitingWorkOrder(m)?0:Math.max(1,shiftSegmentExpected(m));}
 function rateNow(m){return shiftOutput(m)/Math.max(1,expectedNow(m))*100}
+function rateNowText(m){return isAwaitingWorkOrder(m)?'—':rateNow(m).toFixed(1)+'%';}
 function remain(m){return Math.max(0,m.orderQty-m.cum)}
 
 function overproductionQty(m,cum=m.cum){
@@ -4396,7 +4083,7 @@ function renderOwner(){
  const ab=machines.filter(isAbnormalForOwner).length;
  const stale=machines.filter(m=>ageMin(m)>120).length;
  kRun.textContent=`${run}/${machines.length}`; kOutput.textContent=out.toLocaleString(); kExpected.textContent=exp.toLocaleString();
- kRate.textContent=(out/exp*100).toFixed(1)+'%'; kAbnormal.textContent=ab; kStale.textContent=stale;
+ kRate.textContent=exp>0?(out/exp*100).toFixed(1)+'%':'—'; kAbnormal.textContent=ab; kStale.textContent=stale;
  ownerRows.innerHTML=machines.map(m=>{
   const o=shiftOutput(m), e=expectedNow(m), diff=o-e, f=freshInfo(m);
   return `<tr><td><b>${m.id}</b></td><td>${badge(m.status)}</td>
@@ -4414,7 +4101,7 @@ function renderOwner(){
   const f=freshInfo(m), down=m.status==='停機'?` · ${m.downReason||'停機'} 已停 ${Math.floor((Date.now()-m.downStart)/60000)} 分鐘`:'';
   const wait=m.status==='待換線／待校車'?` · 已等待 ${liveWaitSetup(m)} 分鐘`:'';
   const setup=m.status==='校車中'?` · 校車 ${liveSetup(m)} 分鐘`:'';
-  return `<div class="alert"><strong>${m.id}｜${m.status}</strong><small>本班 ${shiftOutput(m)} / 分段應達 ${expectedNow(m)} · 即時達成率 ${rateNow(m).toFixed(1)}% · 當班異常 ${m.defectShift} PCS${down}${wait}${setup}</small><small class="${f.cls}">${f.txt}</small></div>`;
+  return `<div class="alert"><strong>${m.id}｜${m.status}</strong><small>本班 ${shiftOutput(m)} / 分段應達 ${expectedNow(m)} · 即時達成率 ${rateNowText(m)} · 當班異常 ${m.defectShift} PCS${down}${wait}${setup}</small><small class="${f.cls}">${f.txt}</small></div>`;
  }).join('')||'<div class="note">目前沒有需要優先處理的機台。</div>';
 }
 function renderCards(){
@@ -4485,7 +4172,6 @@ function renderCards(){
   </div>`;
  }).join('');
  document.querySelectorAll('.card').forEach(el=>el.onclick=()=>showDetail(el.dataset.id));
- renderAvailabilityCards();
 }
 function showDetail(id){
  const m=machines.find(x=>x.id===id), f=freshInfo(m);
@@ -4539,7 +4225,7 @@ function showDetail(id){
    <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
     <div class="kpi"><div class="lab">本班實際</div><div class="val">${shiftOutput(m)}</div></div>
     <div class="kpi"><div class="lab">目前分段應達</div><div class="val">${expectedNow(m)}</div></div>
-    <div class="kpi"><div class="lab">即時達成率</div><div class="val">${rateNow(m).toFixed(1)}%</div></div>
+    <div class="kpi"><div class="lab">即時達成率</div><div class="val">${rateNowText(m)}</div></div>
     <div class="kpi"><div class="lab">製令已加工</div><div class="val">${m.cum}</div></div>
     <div class="kpi"><div class="lab">製令尚欠</div><div class="val">${remain(m)}</div></div>
     <div class="kpi"><div class="lab">製令良品</div><div class="val">${good(m)}</div></div>
@@ -4548,6 +4234,7 @@ function showDetail(id){
     <tr><th>狀態</th><td>${badge(m.status)}</td><th>資料狀態</th><td><span class="${f.cls}">${f.txt}</span></td></tr>
     <tr><th>目前負責人</th><td>${m.responsible||'未指定'}${m.responsibleSince?`（${formatClock(m.responsibleSince)}起）`:''}</td><th>生產日 / 計數班別</th><td>${m.shiftSession?m.shiftSession.productionDate+' '+m.shiftSession.shift:productionDate()+' '+shiftAt()}</td></tr>
     <tr><th>本班操作員</th><td colspan="3">${m.shiftSession?.operators?.join('、')||'-'}</td></tr>
+    <tr><th>本班差異</th><td colspan="3">${shiftOutput(m)-expectedNow(m)} PCS</td></tr>
     <tr><th>圖號</th><td>${m.drawing}</td><th>程式號碼</th><td>${escapeHTML(m.program||'-')}</td></tr>
     <tr><th>加工模式</th><td>${m.processMode}</td><th>加工秒數</th><td>${m.cycle} 秒/PCS</td></tr>
     <tr><th>系統判斷</th><td colspan="3">${autoShiftStateText(m)}</td></tr>
@@ -4814,8 +4501,6 @@ function applyOperatorLanguage(){
  langToggle.textContent=operatorLang==='zh'?'🇻🇳 Tiếng Việt':'🇹🇼 中文';
  opPageTitle.textContent=opT('操作員輸入','Nhập liệu vận hành');
  opPageSub.textContent=opT('僅操作員頁支援中越雙語；管理端維持繁體中文','Chỉ trang vận hành hỗ trợ song ngữ; màn hình quản lý chỉ dùng tiếng Trung phồn thể');
- const personnelNote=document.getElementById('testPersonnelNote');
- if(personnelNote)personnelNote.textContent=opT('TEST 編號為現場測試暫時編號；目前登入者與機台責任人分開顯示。','Mã TEST chỉ để kiểm thử; người đăng nhập và người phụ trách máy là hai vai trò riêng.');
  opEntryTitle.textContent=opT('請選擇操作','Chọn thao tác');
  submitAction.textContent=opT('確認送出 / Xác nhận','Xác nhận / 確認送出');
  opQrNote.textContent=opT('正式版掃機台 QR Code 後可直接帶入機台，不必再選。','Bản chính thức có thể quét QR để chọn máy tự động.');
@@ -5392,14 +5077,14 @@ function closeSupervisorUnlockModal(result={ok:false}){
 function requestSupervisorUnlock(m,q,risk,context='更新數量'){
  if(!authCan('canCorrectProduction')){alert('此筆需主管登入後確認，舊共用 PIN 已停用。');return Promise.resolve({ok:false});}
  const supervisors=operators.filter(o=>o.role==='主管');
- if(!supervisors.length){
+ if(!supervisors.length && currentOperator().roleCode!=='systemAdmin'){
   alert('目前沒有設定主管帳號，無法解鎖。');
   return Promise.resolve({ok:false});
  }
 
  supervisorUnlockName.innerHTML=personnelOption(currentOperator());supervisorUnlockName.disabled=true;supervisorUnlockPin.closest('label').hidden=true;
  const current=currentOperator();
- if(current.role==='主管' && supervisors.some(o=>o.name===current.name)){
+ if(current.roleCode==='systemAdmin' || (current.role==='主管' && supervisors.some(o=>o.name===current.name))){
   supervisorUnlockName.value=current.name;
  }
  supervisorUnlockPin.value='';
@@ -6513,7 +6198,7 @@ function openDefectCorrection(eventId){
  defectCorrectionSupervisor.innerHTML=personnelOption(currentOperator());defectCorrectionSupervisor.disabled=true;
  defectCorrectionPin.closest('label').hidden=!authProtectedDefect(e);
  const current=currentOperator();
- if(current.role==='主管'&&supervisors.some(o=>o.name===current.name))defectCorrectionSupervisor.value=current.name;
+ if(current.roleCode==='systemAdmin'||(current.role==='主管'&&supervisors.some(o=>o.name===current.name)))defectCorrectionSupervisor.value=current.name;
 
  activeDefectCorrectionId=eventId;
  defectCorrectionPin.value='';
@@ -7294,7 +6979,6 @@ function renderMonthly(){
  monthAuditRows.innerHTML=ma.slice(0,80).map(a=>`<tr><td>${escapeHTML(a.time)}</td><td>${escapeHTML(a.productionDate||'-')}</td><td>${escapeHTML(a.shift||'-')}</td><td>${escapeHTML(a.operator||'-')}</td><td>${escapeHTML(a.machine||'-')}</td><td>${escapeHTML(a.wo||'-')}</td><td>${escapeHTML(a.action||'-')}</td><td>${escapeHTML(a.content||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">目前沒有本月操作紀錄。</td></tr>';
 
  if(!monthDetail.dataset.machine) renderMonthlySummaryDetail();
- renderAvailability();
 }
 function renderMonthlySummaryDetail(){
  const month=selectedMonth(), rows=monthRecords(month);
@@ -7449,8 +7133,11 @@ kpiStale.onclick=()=>showIssueList('stale');
 closeIssueModal.onclick=()=>issueModal.classList.remove('open');
 issueModal.onclick=e=>{if(e.target===issueModal)issueModal.classList.remove('open')};
 closeModal.onclick=()=>detailModal.classList.remove('open');detailModal.onclick=e=>{if(e.target===detailModal)detailModal.classList.remove('open')};
-setInterval(()=>{
+function updateClock(){
  clock.textContent=new Date().toLocaleString('zh-TW',{hour12:false})+'｜'+shiftName();
+}
+setInterval(updateClock,1000);
+setInterval(()=>{
  if(avStorageFault){avRenderFaultUI();return;}
  machines.forEach(x=>ensureAutoShiftSession(x));
  renderOwner();renderCards();
@@ -7472,7 +7159,6 @@ monthPdfBtn.onclick=()=>exportMonth('PDF');
 machines.forEach(x=>ensureAutoShiftSession(x));
 initializeWorkOrderHistory();
 renderTestModeBanner();
-renderTestPersonnelRoster();
 fillMachineSelect();
 opMachine.dataset.prev=opMachine.value;
 document.getElementById('resetTestData')?.addEventListener('click',resetLocalTestData);
@@ -7553,7 +7239,7 @@ document.getElementById('jsonRestoreFile')?.addEventListener('change',async e=>{
  e.target.value='';
  if(file)await restoreJsonBackupFile(file);
 });
-renderAll();applyOperatorLanguage();clock.textContent=new Date().toLocaleString('zh-TW',{hour12:false})+'｜'+shiftName();
+renderAll();applyOperatorLanguage();updateClock();
 initializeAuthUI();initializeAvailability();
 </script>
 
@@ -7561,29 +7247,6 @@ initializeAuthUI();initializeAvailability();
  <b id="opToastTitle"></b>
  <small id="opToastText"></small>
 </div>
-
-
-<script id="cnc-cloud-health-v18264">
-window.addEventListener('DOMContentLoaded',()=>{
- const b=document.createElement('div'); b.id='cncCloudStatus'; b.textContent='雲端連線檢查中…'; document.body.appendChild(b);
- setTimeout(async()=>{
-  try{
-   const [o,m,w]=await Promise.all([
-    cncCloudGet('operators','select=id&limit=1'),
-    cncCloudGet('machines','select=id&limit=1'),
-    cncCloudGet('work_orders','select=id&limit=1')
-   ]);
-   b.dataset.ok='1'; b.textContent='☁ Supabase 已連線';
-  }catch(e){b.dataset.ok='0'; b.textContent='⚠ 雲端未連線'; console.error(e);}
- },800);
-});
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
-}
-</script>
 
 </body>
 </html>
