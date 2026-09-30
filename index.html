@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC 18.26.4｜Supabase 正式整合測試版</title>
+<title>德曜精密｜CNC 18.26.5｜Supabase 正式整合 PWA版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -582,6 +582,11 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 #cncCloudStatus[data-ok="0"]{border-color:#fca5a5}
 @media(max-width:640px){#cncCloudStatus{font-size:11px;right:6px;bottom:6px;padding:6px 8px}}
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1020">
+<meta name="application-name" content="德曜精密 CNC 報工">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="德曜精密 CNC 報工">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><b id="authIdentityName"></b><span id="authIdentityRole"></span><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -7573,5 +7578,12 @@ window.addEventListener('DOMContentLoaded',()=>{
  },800);
 });
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+}
+</script>
+
 </body>
 </html>
