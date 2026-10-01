@@ -1,15 +1,15 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.2｜等待校車介面簡化測試版</title>
+<title>德曜精密｜CNC V18.27.10｜製令生產紀錄・月報 Excel 匯出測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
  --blue:#3b82f6;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--cyan:#38bdf8;
 }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
+*{box-sizing:border-box} body{margin:0;padding-top:var(--auth-header-height,0px);background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
 button,input,select,textarea{font:inherit}.wrap{max-width:1680px;margin:auto;padding:18px}
 header{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4px}.clock{color:var(--muted);font-variant-numeric:tabular-nums}
@@ -30,7 +30,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 .action-grid{display:grid;grid-template-columns:repeat(2,minmax(170px,1fr));gap:10px;margin:12px 0}.action-btn{border:1px solid var(--line);background:#0f172a;color:white;border-radius:14px;padding:18px 12px;font-weight:800;font-size:16px;cursor:pointer}.action-btn.active{background:#1d4ed8;border-color:#60a5fa}.action-btn.danger.active{background:#991b1b}.action-btn.success.active{background:#166534}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:10px}.full{grid-column:1/-1}.btn{border:0;border-radius:10px;padding:10px 14px;color:white;cursor:pointer;font-weight:800}.primary{background:#2563eb}.secondary{background:#334155}.dangerbtn{background:#b91c1c}.successbtn{background:#15803d}
 .note{font-size:12px;color:var(--muted);line-height:1.55}.log{max-height:360px;overflow:auto}.log-item{padding:9px 0;border-bottom:1px solid #1c2a42}.log-item b{font-size:13px}.log-item small{display:block;color:var(--muted);margin-top:3px}
-.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:30}.modal.open{display:flex}.modal-card{width:min(780px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20000}.modal.open{display:flex}.modal-card{width:min(780px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}.modal-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:transparent;color:var(--muted);font-size:24px;cursor:pointer}
 .unlock-summary{margin:12px 0;padding:12px;border:1px solid #7c2d12;background:#32180b;border-radius:12px;line-height:1.7}
 .unlock-summary b{color:#fed7aa}
 .unlock-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -556,7 +556,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 
 /* AUTH 現場功能驗證版；隱藏頁面不影響原生產計時。 */
 [hidden]{display:none!important}body[data-auth-blocked="1"] .wrap{visibility:hidden}
-.auth-identity{position:sticky;top:0;z-index:10000;background:#10213a;border:1px solid #60a5fa;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.auth-identity{position:fixed;top:0;left:0;right:0;z-index:10000;background:#10213a;border:1px solid #60a5fa;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .auth-identity b{font-size:19px}.auth-identity button{min-height:46px}.auth-identity small{flex-basis:100%}
 .test-mode-banner{position:static}.auth-gate{position:fixed;inset:0;z-index:30000;background:#0a1020;overflow:auto;display:flex;align-items:center;justify-content:center;padding:20px}
 .auth-card{width:min(520px,100%);padding:24px;border:1px solid #3b82f6;border-radius:18px;background:#111a2b}
@@ -574,7 +574,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 #avStorageError{top:var(--auth-header-height,0px);z-index:11000}#avStorageError input{display:inline-block;max-width:300px;min-height:44px;margin:8px;font-size:18px}#avStorageError .btn{min-height:48px}#avFaultRelease{background:#174bb4;color:#fff;border:2px solid #fff}.av-write-locked .action-btn{opacity:.55;cursor:not-allowed}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.2 等待校車介面簡化測試版">
+<meta name="version" content="V18.27.10 製令生產紀錄・月報 Excel 匯出測試版">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><b id="authIdentityName"></b><span id="authIdentityRole"></span><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -582,7 +582,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 <div id="avStorageError" role="alert" hidden><div data-av-fault-text></div><label>解除原因 / Lý do mở khóa<input id="avFaultReason" maxlength="200"></label><button id="avFaultRelease" type="button" class="btn" hidden>主管解除稼動率資料鎖定 / Mở khóa dữ liệu</button></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.2 測試版｜操作介面簡化｜保留 Wait／Setup／Gap 底層事件</div></div>
+  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.10 測試版｜製令生產紀錄｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -1143,17 +1143,16 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
    <button class="btn primary" id="monthCloseBtn">確認月結</button>
    <button class="btn" id="monthReopenBtn">主管重新開啟</button>
    <button class="btn" id="monthExcelBtn">匯出 Excel</button>
-   <button class="btn" id="monthPdfBtn">匯出 PDF</button>
   </div>
   <div class="history-note">
-   月報以「生產歸屬日」統計。例：9/30 20:30～10/1 08:00 的晚班全部算 9 月；跨月製令不歸零，只將各月份實際加工量分開統計。<b>「本月生產製令」看 segments；「本月結單製令」只看真正按下「製令完成／例外結單」所建立的結單事件。</b> 有生產不等於已結單。已月結月份的原始紀錄不可直接覆蓋。
+   月報以「生產歸屬日」統計。例：9/30 20:30～10/1 08:00 的晚班全部算 9 月；跨月製令不歸零，只將各月份實際加工量分開統計。<b>「本月生產製令數」是有生產紀錄的不同製令張數；「本月結單製令」只看真正按下「製令完成／例外結單」所建立的結單事件。</b> 有生產不等於已結單。已月結月份的原始紀錄不可直接覆蓋。
   </div>
   <div class="month-kpis">
    <div class="kpi"><div class="lab">總加工數</div><div class="val" id="mTotal">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">良品數</div><div class="val" id="mGood">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">異常數</div><div class="val" id="mDefect">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">不良率</div><div class="val" id="mDefectRate">-</div><div class="hint">異常 ÷ 加工</div></div>
-   <div class="kpi"><div class="lab">本月生產製令</div><div class="val" id="mOrders">-</div><div class="hint">有生產的製令</div></div>
+   <div class="kpi"><div class="lab">本月生產製令數</div><div class="val" id="mOrders">-</div><div class="hint">有生產的製令</div></div>
    <div class="kpi"><div class="lab">本月結單製令</div><div class="val" id="mClosedOrders">-</div><div class="hint">依結單事件</div></div>
    <div class="kpi"><div class="lab">正常完成</div><div class="val" id="mNormalClosed">-</div><div class="hint">製令完成</div></div>
    <div class="kpi"><div class="lab">例外結單</div><div class="val" id="mExceptionClosed">-</div><div class="hint">例外結單事件</div></div>
@@ -1161,11 +1160,20 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
   </div>
  </div>
 
+ <div class="panel" style="margin-top:12px">
+  <h2>每日個人 × 機台績效</h2>
+  <div class="history-note">依上方所選月份的生產歸屬日、人員、機台分組；同組已封存且可確認的責任區段相加。責任時間優先使用封存的有效分鐘，舊資料缺少此欄時才以責任起訖時間計算。任一段尚未封存或資料未確認，該組績效顯示「待確認」；不同機台不合併。</div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>生產歸屬日</th><th>人員</th><th>機台</th><th>責任段數</th><th>責任時間（分）</th><th>實際產量（PCS）</th><th>應達產量（PCS）</th><th>個人機台達成率</th><th>停機分鐘</th><th>確認狀態</th></tr></thead>
+   <tbody id="monthPersonMachineRows"></tbody>
+  </table></div>
+ </div>
+
  <div class="month-drill">
   <div class="panel">
    <h2>機台月分析 <small class="muted">點機台可下鑽</small></h2>
    <div class="table-wrap"><table>
-    <thead><tr><th>機台</th><th>月產量</th><th>良品</th><th>異常</th><th>不良率</th><th>停機</th><th>製令數</th></tr></thead>
+    <thead><tr><th>機台</th><th>月產量</th><th>良品</th><th>異常</th><th>不良率</th><th>停機</th><th>生產製令數</th></tr></thead>
     <tbody id="monthMachineRows"></tbody>
    </table></div>
   </div>
@@ -1190,12 +1198,20 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
  </div>
 
  <div class="panel" style="margin-top:12px">
-  <h2>製令明細 <small class="muted">依每個製令分段 segments 統計</small></h2>
-  <div class="table-wrap"><table>
-   <thead><tr><th>製令</th><th>機台</th><th>圖號</th><th>加工模式</th><th>歷史加工秒數</th><th>本月加工</th><th>異常</th><th>良品</th><th>本月結單</th><th>統計來源</th></tr></thead>
-   <tbody id="monthOrderRows"></tbody>
-  </table></div>
- </div>
+   <h2>生產製令彙總 <small class="muted">相同製令號合併計算本月加工量</small></h2>
+   <div class="table-wrap"><table>
+    <thead><tr><th>製令</th><th>機台</th><th>本月加工</th><th>異常</th><th>良品</th><th>停機分鐘</th><th>生產紀錄</th><th>資料來源</th><th>本月結單</th></tr></thead>
+    <tbody id="monthOrderSummaryRows"></tbody>
+   </table></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
+   <h2>製令生產紀錄 <small class="muted">逐筆顯示每次製令生產，依生產歸屬日列入本月</small></h2>
+   <div class="table-wrap"><table>
+    <thead><tr><th>生產歸屬日</th><th>班別</th><th>製令</th><th>機台</th><th>圖號</th><th>加工模式</th><th>歷史加工秒數</th><th>生產時間（開始–結束）</th><th>開始累積</th><th>結束累積</th><th>本段加工</th><th>異常</th><th>良品</th><th>應達</th><th>停機分鐘</th><th>資料來源</th></tr></thead>
+    <tbody id="monthOrderRows"></tbody>
+   </table></div>
+  </div>
 
  <div class="panel" style="margin-top:12px">
   <h2>本月結單事件明細</h2>
@@ -1284,8 +1300,8 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
     <tr><td>跨月晚班</td><td>9/30 晚班即使做到 10/1 早上，仍以生產歸屬日 9/30 計入 9 月。</td></tr>
     <tr><td>跨月製令</td><td>製令不因換月歸零；月報只統計該月實際加工量，製令累積仍持續到換製令。</td></tr>
     <tr><td>歷史加工秒數</td><td>月報保存當時使用的加工秒數快照。之後標準秒數修改，不回頭改變歷史達成數據。</td></tr>
-    <tr><td>月報製令分段統計</td><td>同一班若換多張製令，月報的「製令明細／製令數／機台製令數／機台月下鑽」一律從該班 segments 製令分段統計，不直接使用整班 wo 欄位。例：MO-A 150 PCS → MO-B 280 PCS，月報分別記 MO-A=150、MO-B=280，機台班別總量仍為430 PCS。</td></tr>
-    <tr><td>月報結單製令數</td><td>「本月生產製令」與「本月結單製令」分開。生產製令數依 segments 去重；結單製令數只計真正執行「製令完成」或「例外結單」所建立的獨立結單事件，不再用本月出現過幾個製令號推算。</td></tr>
+    <tr><td>月報製令生產紀錄</td><td>同一班若換多張製令，月報的「製令明細／生產製令數／機台生產製令數／機台月下鑽」一律從該班生產紀錄統計，不直接使用整班 wo 欄位。例：MO-A 150 PCS → MO-B 280 PCS，月報分別記 MO-A=150、MO-B=280，機台班別總量仍為430 PCS。</td></tr>
+    <tr><td>月報結單製令數</td><td>「本月生產製令數」與「本月結單製令」分開。生產製令數依生產紀錄中的製令號去重；結單製令數只計真正執行「製令完成」或「例外結單」所建立的獨立結單事件，不再用本月出現過幾個製令號推算。</td></tr>
     <tr><td>結單類型分開</td><td>月報同時顯示「正常完成」與「例外結單」件數。正常完成＋例外結單＝本月結單製令數。</td></tr>
     <tr><td>結單事件保存</td><td>每次結單保存生產歸屬日、班別、機台、製令、實際完成數、製令數量、操作員、結單類型與例外原因。跨月晚班仍依既有生產歸屬日規則歸月。</td></tr>
     <tr><td>月結日期</td><td>月結稽核紀錄使用該月份真正的最後一天，不再固定寫成「月份-31」。系統會自動判斷大小月與閏年：例如 2026-09 → 2026-09-30、2026-02 → 2026-02-28、2028-02 → 2028-02-29。舊測試資料若曾寫成不存在的月底日期，開啟本版時會自動修正月結 audit 日期。</td></tr>
@@ -2122,6 +2138,10 @@ function authShowView(view){
  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===view));
  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));return true;
 }
+function syncAuthHeaderHeight(){
+ const identity=document.getElementById('authIdentity');
+ document.documentElement.style.setProperty('--auth-header-height',`${identity.hidden?0:identity.getBoundingClientRect().height}px`);
+}
 function authApplyAccess(){
  const active=authActive(),p=active?authPerson(authSession.employeeId):null;
  document.body.dataset.authBlocked=active?'0':'1';document.querySelector('.wrap').inert=!active;
@@ -2130,7 +2150,7 @@ function authApplyAccess(){
  const identity=document.getElementById('authIdentity');identity.hidden=!active;
  if(p){document.getElementById('authIdentityName').textContent=`👤 ${operatorLang==='vi'?'Đang đăng nhập':'目前登入'}：${p.name}（${p.employeeId}）`;
   document.getElementById('authIdentityRole').textContent=`${operatorLang==='vi'?'Vai trò':'角色'}：${PERSONNEL_ROLES[p.roleCode].labels[operatorLang]}`;}
- document.documentElement.style.setProperty('--auth-header-height',`${identity.getBoundingClientRect().height}px`);
+ syncAuthHeaderHeight();
  document.querySelectorAll('.tab').forEach(t=>{t.hidden=!authAllowedView(t.dataset.view);});
  if(p?.roleCode==='operator' && document.querySelector('.view.active')?.id!=='operator')authShowView('operator');
  ['monthCheckBtn','monthCloseBtn','monthReopenBtn','loadDemoData','enterCleanTestMode','selectJsonRestore','downloadJsonBackup'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=!authCan('canCorrectProduction');});
@@ -2281,7 +2301,8 @@ async function confirmAuthProductionCorrection(){
 }
 function initializeAuthUI(){
  document.getElementById('authLogout').onclick=authLogout;
- new ResizeObserver(()=>document.documentElement.style.setProperty('--auth-header-height',`${document.getElementById('authIdentity').getBoundingClientRect().height}px`)).observe(document.getElementById('authIdentity'));
+ new ResizeObserver(syncAuthHeaderHeight).observe(document.getElementById('authIdentity'));
+ window.addEventListener('resize',syncAuthHeaderHeight);
  document.getElementById('authAccountForm').onsubmit=async e=>{e.preventDefault();const status=document.getElementById('authAccountStatus');
   try{const r=await authSetTemporaryPassword(document.getElementById('authAccountSelect').value,document.getElementById('authTemporaryPassword').value);status.textContent=r.ok?'暫時密碼已建立，下次登入須變更。':r.message;document.getElementById('authTemporaryPassword').value='';}catch(e){status.textContent=e.message;}};
  document.getElementById('authReauthForm').onsubmit=async e=>{e.preventDefault();if(authBusy)return;authBusy=true;
@@ -6399,7 +6420,7 @@ function renderWorkOrderDetail(id){
    <div class="shift-box"><span>製令數量</span><b>${w.orderQty||0} PCS</b></div>
    <div class="shift-box"><span>目前／最終加工</span><b>${w.actualQty||0} PCS</b></div>
    <div class="shift-box"><span>異常</span><b>${w.defectQty||0} PCS</b></div>
-   <div class="shift-box"><span>segments加工</span><b>${segOutput} PCS</b></div>
+   <div class="shift-box"><span>生產紀錄加工</span><b>${segOutput} PCS</b></div>
    <div class="shift-box"><span>事件數</span><b>${events.length}</b></div>
   </div>
   <div class="history-note">
@@ -6418,7 +6439,7 @@ function renderWorkOrderDetail(id){
    </tbody>
   </table></div>
   <div class="history-note" style="margin-top:10px">
-   製令分段：${segs.length} 段｜segments加工 ${segOutput} PCS｜segments異常 ${segDefect} PCS。
+   生產紀錄 ${segs.length} 段｜加工 ${segOutput} PCS｜異常 ${segDefect} PCS。
    WorkOrderEvent 保存重要生命週期事件；班別加工細節仍由 segments 保存，兩者用途分開。
   </div>`;
 }
@@ -6492,7 +6513,7 @@ function renderShiftRecords(){
     <td>${fmtMin(+r.downMinutes||0)}</td>
     <td>${r.segmentTargetSnapshot??'-'}</td>
     <td>${segEffective===null?'-':fmtMin(segEffective)}</td>
-    <td>${escapeHTML(r.note||'-')}${segs.length?`｜共 ${segs.length} 個製令分段`:''}</td>
+    <td>${escapeHTML(r.note||'-')}${segs.length?`｜生產紀錄 ${segs.length} 段`:''}</td>
    </tr>`;
 
    if(!segs.length) return summary;
@@ -6508,7 +6529,7 @@ function renderShiftRecords(){
     <td>${fmtMin(+s.downMinutes||0)}</td>
     <td>${s.target??'-'}</td>
     <td>${fmtMin(+s.effectiveMinutes||0)}</td>
-    <td>製令分段</td>
+    <td>製令生產紀錄</td>
    </tr>`).join('');
    return summary+details;
  }).join(''):'<tr><td colspan="17" class="muted">目前沒有已完成的班別加工紀錄。</td></tr>';
@@ -6857,14 +6878,87 @@ function monthOrderSegments(month=selectedMonth()){
 }
 function segmentTimeLabel(s){
  if(!s?.startTime && !s?.endTime)return '-';
- const fmt=ts=>ts?new Date(ts).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}):'-';
+ const fmt=ts=>ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'-';
  return `${fmt(s.startTime)}–${fmt(s.endTime)}`;
 }
+function hasProductionWorkOrder(s){return !!s.wo&&s.wo!=='-';}
+function monthProductionRecordSource(s){
+ return s.legacyFallback?'舊資料：整班回退':`生產紀錄 ${s.segmentIndex}/${s.segmentCount}`;
+}
+function monthOrderSummary(segments){
+ const groups=new Map();
+ segments.forEach(s=>{
+  const wo=s.wo||'-';
+  if(!groups.has(wo))groups.set(wo,{wo,machines:new Set(),output:0,defect:0,down:0,records:0,legacy:0});
+  const g=groups.get(wo);
+  g.machines.add(s.machine||'-');
+  g.output+=+s.output||0;g.defect+=+s.defect||0;g.down+=+s.downMinutes||0;
+  g.records++;if(s.legacyFallback)g.legacy++;
+ });
+ return [...groups.values()].sort((a,b)=>a.wo.localeCompare(b.wo,undefined,{numeric:true}));
+}
+function monthOrderSummarySource(g){
+ if(g.wo==='-')return g.legacy?'缺少製令號／舊資料回退':'缺少製令號';
+ return g.legacy===0?'逐筆生產紀錄':g.legacy===g.records?'舊資料：整班回退':`含 ${g.legacy} 筆舊資料回退`;
+}
 
+function monthOrderCloseSummary(wo,closes){
+ const linked=closes.filter(e=>e.wo===wo);
+ return linked.length?linked.map(closeTypeLabel).join(' / '):'未於本月結單';
+}
 function monthStateLabel(s){return s==='closed'?'已月結':s==='review'?'待確認':'進行中'}
+// 只彙整責任事件的封存快照；一組含未確認區段時不輸出部分績效。
+function dailyPersonMachinePerformance(month, events=responsibilityEvents){
+ const groups=new Map();
+ events.forEach((e,index)=>{
+  if(e?.type!=='segment'||!e.productionDate||monthKeyFromDate(e.productionDate)!==month)return;
+  const operator=String(e.operator||'').trim(),machine=String(e.machine||'').trim();
+  const key=JSON.stringify([e.productionDate,operator||`未確認人員:${e.id||index}`,machine||`未確認機台:${e.id||index}`]);
+  if(!groups.has(key))groups.set(key,{productionDate:e.productionDate,operator:operator||'待確認',machine:machine||'待確認',
+   segmentCount:0,output:0,target:0,effectiveMinutes:0,downMinutes:0,performanceIssues:new Set(),otherIssues:new Set(),employeeIds:new Set()});
+  const g=groups.get(key);g.segmentCount++;
+  if(e.operatorEmployeeId)g.employeeIds.add(String(e.operatorEmployeeId).trim().toUpperCase());
+  if(!operator||!machine)g.performanceIssues.add('人員／機台未確認');
+  if(e.status!=='closed'){g.performanceIssues.add('責任區段未封存');return;}
+  if(e.legacyUnverified)g.performanceIssues.add('舊資料未確認');
+  if(Number.isInteger(e.output)&&e.output>=0)g.output+=e.output;
+  else g.performanceIssues.add('產量未確認');
+  if(typeof e.target==='number'&&Number.isFinite(e.target)&&e.target>0)g.target+=e.target;
+  else g.performanceIssues.add('應達未確認');
+  if(typeof e.effectiveMinutes==='number'&&Number.isFinite(e.effectiveMinutes)&&e.effectiveMinutes>=0)
+   g.effectiveMinutes+=e.effectiveMinutes;
+  else if(e.effectiveMinutes===null||e.effectiveMinutes===undefined){
+   if(Number.isFinite(e.startTime)&&Number.isFinite(e.endTime)&&e.endTime>=e.startTime)
+    g.effectiveMinutes+=(e.endTime-e.startTime)/60000;
+   else g.otherIssues.add('責任時間未確認');
+  }else g.otherIssues.add('責任時間未確認');
+  if(typeof e.downMinutes==='number'&&Number.isFinite(e.downMinutes)&&e.downMinutes>=0)g.downMinutes+=e.downMinutes;
+  else g.otherIssues.add('停機分鐘未確認');
+ });
+ return [...groups.values()].map(g=>{
+  if(g.employeeIds.size>1)g.performanceIssues.add('同名人員編號不一致');
+  const confirmed=g.performanceIssues.size===0&&g.target>0;
+  const issues=[...g.performanceIssues,...g.otherIssues];
+  return {productionDate:g.productionDate,operator:g.operator,machine:g.machine,segmentCount:g.segmentCount,
+   effectiveMinutes:confirmed&&!g.otherIssues.has('責任時間未確認')?g.effectiveMinutes:null,
+   output:confirmed?g.output:null,target:confirmed?g.target:null,rate:confirmed?g.output/g.target*100:null,
+   downMinutes:confirmed&&!g.otherIssues.has('停機分鐘未確認')?g.downMinutes:null,
+   status:issues.length?'待確認：'+issues.join('、'):'已確認'};
+ }).sort((a,b)=>b.productionDate.localeCompare(a.productionDate)||a.operator.localeCompare(b.operator,'zh-TW')||a.machine.localeCompare(b.machine,undefined,{numeric:true}));
+}
+function renderDailyPersonMachinePerformance(month){
+ const el=document.getElementById('monthPersonMachineRows');if(!el)return;
+ const rows=dailyPersonMachinePerformance(month),number=v=>v===null?'待確認':v.toLocaleString('zh-TW',{maximumFractionDigits:2});
+ el.innerHTML=rows.length?rows.map(g=>`<tr>
+  <td>${escapeHTML(g.productionDate)}</td><td>${escapeHTML(g.operator)}</td><td>${escapeHTML(g.machine)}</td>
+  <td>${g.segmentCount}</td><td>${number(g.effectiveMinutes)}</td><td>${number(g.output)}</td><td>${number(g.target)}</td>
+  <td>${g.rate===null?'待確認':g.rate.toFixed(1)+'%'}</td><td>${number(g.downMinutes)}</td><td>${escapeHTML(g.status)}</td>
+ </tr>`).join(''):'<tr><td colspan="10" class="muted">所選月份尚無責任區段紀錄。</td></tr>';
+}
 function renderMonthly(){
  if(!document.getElementById('monthSelect')) return;
  const month=selectedMonth(), rows=monthRecords(month), orderSegments=monthOrderSegments(month), closeEvents=monthOrderCloseEvents(month);
+ renderDailyPersonMachinePerformance(month);
  const total=rows.reduce((a,r)=>a+(+r.output||0),0);
  const defect=rows.reduce((a,r)=>a+(+r.defect||0),0);
  const good=Math.max(0,total-defect);
@@ -6872,7 +6966,7 @@ function renderMonthly(){
  const demoDown=rows.filter(r=>r.note==='歷史月報示意資料').reduce((a,r)=>a+(+r.downMinutes||0),0);
  const realDown=monthDownEvents.reduce((a,e)=>a+(+e.minutes||0),0);
  const down=demoDown+realDown;
- const orders=[...new Set(orderSegments.map(s=>s.wo).filter(Boolean))].length;
+ const orders=[...new Set(orderSegments.filter(hasProductionWorkOrder).map(s=>s.wo))].length;
  const normalClosed=closeEvents.filter(e=>e.closeType==='normal').length;
  const exceptionClosed=closeEvents.filter(e=>e.closeType==='exception').length;
  const closedOrders=closeEvents.length;
@@ -6893,7 +6987,7 @@ function renderMonthly(){
  });
  orderSegments.forEach(s=>{
    const g=grouped[s.machine]||(grouped[s.machine]={output:0,defect:0,down:0,orders:new Set()});
-   if(s.wo)g.orders.add(s.wo);
+   if(hasProductionWorkOrder(s))g.orders.add(s.wo);
  });
  monthDownEvents.forEach(e=>{
    const g=grouped[e.machine]||(grouped[e.machine]={output:0,defect:0,down:0,orders:new Set()});
@@ -6912,45 +7006,24 @@ function renderMonthly(){
  });
  monthShiftRows.innerHTML=shifts.map(s=>`<tr><td>${s.sh}</td><td>${s.out.toLocaleString()}</td><td>${s.df}</td><td>${s.good.toLocaleString()}</td><td>${total?(s.out/total*100).toFixed(1):0}%</td></tr>`).join('');
 
- const orderGroups={};
- orderSegments.forEach(s=>{
-   const key=`${s.machine}||${s.wo}`;
-   const g=orderGroups[key]||(orderGroups[key]={
-     wo:s.wo,machine:s.machine,
-     drawings:new Set(),modes:new Set(),cycles:new Set(),
-     output:0,defect:0,segmentCount:0,legacyCount:0
-   });
-   if(s.drawing)g.drawings.add(s.drawing);
-   if(s.processMode)g.modes.add(s.processMode);
-   if(s.cycle!==''&&s.cycle!==null&&s.cycle!==undefined)g.cycles.add(String(s.cycle));
-   g.output+=+s.output||0;
-   g.defect+=+s.defect||0;
-   g.segmentCount++;
-   if(s.legacyFallback)g.legacyCount++;
- });
- const closeByOrder={};
- closeEvents.forEach(e=>{
-   const key=`${e.machine}||${e.wo}`;
-   (closeByOrder[key]||(closeByOrder[key]=[])).push(e);
- });
- const orderRows=Object.values(orderGroups).sort((a,b)=>a.wo.localeCompare(b.wo,undefined,{numeric:true})||a.machine.localeCompare(b.machine,undefined,{numeric:true}));
- monthOrderRows.innerHTML=orderRows.slice(0,120).map(g=>{
-   const source=g.legacyCount===0
-    ? `${g.segmentCount} 個製令分段`
-    : g.legacyCount===g.segmentCount
-      ? '舊資料：整班回退'
-      : `${g.segmentCount} 段（含 ${g.legacyCount} 筆舊資料回退）`;
-   const closes=closeByOrder[`${g.machine}||${g.wo}`]||[];
-   const closeText=closes.length?closes.map(closeTypeLabel).join(' / '):'未於本月結單';
-   return `<tr>
-    <td>${escapeHTML(g.wo)}</td><td>${escapeHTML(g.machine)}</td>
-    <td>${escapeHTML([...g.drawings].join(' / ')||'-')}</td>
-    <td>${escapeHTML([...g.modes].join(' / ')||'-')}</td>
-    <td>${[...g.cycles].map(x=>`${x} 秒`).join(' / ')||'-'}</td>
-    <td>${g.output}</td><td>${g.defect}</td><td>${Math.max(0,g.output-g.defect)}</td>
-    <td>${closeText}</td><td>${source}</td>
-   </tr>`;
- }).join('')||'<tr><td colspan="10" class="muted">尚無製令歷史。</td></tr>';
+ const orderSummary=monthOrderSummary(orderSegments);
+  monthOrderSummaryRows.innerHTML=orderSummary.map(g=>`<tr>
+   <td>${escapeHTML(g.wo)}</td><td>${escapeHTML([...g.machines].join('、'))}</td>
+   <td>${g.output.toLocaleString()}</td><td>${g.defect.toLocaleString()}</td>
+   <td>${Math.max(0,g.output-g.defect).toLocaleString()}</td><td>${g.down.toLocaleString()}</td>
+   <td>${g.records} 段</td><td>${escapeHTML(monthOrderSummarySource(g))}</td><td>${escapeHTML(monthOrderCloseSummary(g.wo,closeEvents))}</td>
+  </tr>`).join('')||'<tr><td colspan="9" class="muted">尚無製令生產紀錄。</td></tr>';
+
+  const detailRows=[...orderSegments].sort((a,b)=>
+   a.productionDate.localeCompare(b.productionDate)||(+a.startTime||0)-(+b.startTime||0)||a.machine.localeCompare(b.machine,undefined,{numeric:true}));
+  monthOrderRows.innerHTML=detailRows.map(s=>`<tr>
+   <td>${escapeHTML(s.productionDate)}</td><td>${escapeHTML(s.shift)}</td>
+   <td>${escapeHTML(s.wo)}</td><td>${escapeHTML(s.machine)}</td><td>${escapeHTML(s.drawing)}</td><td>${escapeHTML(s.processMode)}</td><td>${escapeHTML(s.cycle)}</td><td>${escapeHTML(segmentTimeLabel(s))}</td>
+   <td>${escapeHTML(s.startCum??'-')}</td><td>${escapeHTML(s.endCum??'-')}</td>
+   <td>${(+s.output||0).toLocaleString()}</td><td>${(+s.defect||0).toLocaleString()}</td>
+   <td>${(+s.good||0).toLocaleString()}</td><td>${(+s.target||0).toLocaleString()}</td>
+   <td>${(+s.downMinutes||0).toLocaleString()}</td><td>${escapeHTML(monthProductionRecordSource(s))}</td>
+  </tr>`).join('')||'<tr><td colspan="16" class="muted">尚無製令生產紀錄。</td></tr>';
 
  const closeRows=[...closeEvents].sort((a,b)=>(+b.time||0)-(+a.time||0));
  if(typeof monthOrderCloseRows!=='undefined'){
@@ -6998,19 +7071,20 @@ function renderMonthlyMachineDetail(id){
    a.shift.localeCompare(b.shift) ||
    (+a.startTime||0)-(+b.startTime||0)
  );
- monthDetail.dataset.machine=id;monthDetailTitle.textContent=`${id}｜${month} 製令分段明細`;
- const out=segs.reduce((a,s)=>a+(+s.output||0),0);
- const df=segs.reduce((a,s)=>a+(+s.defect||0),0);
- const dn=rows.reduce((a,r)=>a+(+r.downMinutes||0),0);
- const legacy=segs.filter(s=>s.legacyFallback).length;
- monthDetail.innerHTML=`<div class="shift-strip"><div class="shift-box"><span>月加工</span><b>${out.toLocaleString()} PCS</b></div><div class="shift-box"><span>異常</span><b>${df} PCS</b></div><div class="shift-box"><span>良品</span><b>${Math.max(0,out-df).toLocaleString()}</b></div><div class="shift-box"><span>停機</span><b>${dn} 分</b></div></div>
- ${legacy?`<div class="bilingual-warning">⚠ 有 ${legacy} 筆舊班別資料沒有 segments，只能整班回退顯示；新產生的班別紀錄會逐製令精準統計。</div>`:''}
- <div class="table-wrap"><table><thead><tr><th>生產日</th><th>班別</th><th>製令</th><th>分段時間</th><th>產量</th><th>異常</th><th>來源</th></tr></thead><tbody>
- ${segs.map(s=>`<tr>
-   <td>${escapeHTML(s.productionDate)}</td><td>${escapeHTML(s.shift)}</td><td>${escapeHTML(s.wo)}</td><td>${escapeHTML(segmentTimeLabel(s))}</td>
-   <td>${s.output}</td><td>${s.defect}</td><td>${s.legacyFallback?'整班回退':`第 ${s.segmentIndex}/${s.segmentCount} 段`}</td>
- </tr>`).join('')}
- </tbody></table></div>`;
+ monthDetail.dataset.machine=id;monthDetailTitle.textContent=`${id}｜${month} 製令生產紀錄`;
+  const out=segs.reduce((a,s)=>a+(+s.output||0),0);
+  const df=segs.reduce((a,s)=>a+(+s.defect||0),0);
+  const dn=rows.reduce((a,r)=>a+(+r.downMinutes||0),0);
+  const legacy=segs.filter(s=>s.legacyFallback).length;
+  const orderCount=new Set(segs.filter(hasProductionWorkOrder).map(s=>s.wo)).size;
+  monthDetail.innerHTML=`<div class="shift-strip"><div class="shift-box"><span>月加工</span><b>${out.toLocaleString()} PCS</b></div><div class="shift-box"><span>異常</span><b>${df} PCS</b></div><div class="shift-box"><span>良品</span><b>${Math.max(0,out-df).toLocaleString()}</b></div><div class="shift-box"><span>生產製令數</span><b>${orderCount} 張</b></div><div class="shift-box"><span>生產紀錄</span><b>${segs.length} 段</b></div><div class="shift-box"><span>停機</span><b>${dn} 分</b></div></div>
+  ${legacy?`<div class="bilingual-warning">⚠ 有 ${legacy} 筆舊班別資料沒有逐筆生產紀錄，只能整班回退顯示；新產生的班別紀錄會逐製令精準統計。</div>`:''}
+  <div class="table-wrap"><table><thead><tr><th>生產歸屬日</th><th>班別</th><th>製令</th><th>機台</th><th>圖號</th><th>加工模式</th><th>歷史加工秒數</th><th>生產時間（開始–結束）</th><th>開始累積</th><th>結束累積</th><th>本段加工</th><th>異常</th><th>良品</th><th>應達</th><th>停機分鐘</th><th>資料來源</th></tr></thead><tbody>
+  ${segs.map(s=>`<tr>
+    <td>${escapeHTML(s.productionDate)}</td><td>${escapeHTML(s.shift)}</td><td>${escapeHTML(s.wo)}</td><td>${escapeHTML(s.machine)}</td><td>${escapeHTML(s.drawing)}</td><td>${escapeHTML(s.processMode)}</td><td>${escapeHTML(s.cycle)}</td><td>${escapeHTML(segmentTimeLabel(s))}</td>
+    <td>${escapeHTML(s.startCum??'-')}</td><td>${escapeHTML(s.endCum??'-')}</td><td>${(+s.output||0).toLocaleString()}</td><td>${(+s.defect||0).toLocaleString()}</td><td>${(+s.good||0).toLocaleString()}</td><td>${(+s.target||0).toLocaleString()}</td><td>${(+s.downMinutes||0).toLocaleString()}</td><td>${escapeHTML(monthProductionRecordSource(s))}</td>
+  </tr>`).join('')||'<tr><td colspan="16" class="muted">尚無製令生產紀錄。</td></tr>'}
+  </tbody></table></div>`;
 }
 function runMonthCheck(){
  if(!avGuardWrite())return false; // V18.26.2 write guard
@@ -7096,7 +7170,111 @@ async function reopenMonth(){
  auditLogs.unshift({time:new Date().toLocaleString('zh-TW',{hour12:false}),productionDate:month+'-01',shift:'-',operator:currentOperator().name,role:currentOperator().role,machine:'-',wo:'-',...authActorFields(),action:'月結後修正',content:`重新開啟原因：${reason}`,oldValue:'已月結',newValue:'待確認'});
  localStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));renderMonthly();
 }
-function exportMonth(kind){alert(`${kind} 匯出入口已保留。正式版會輸出 ${selectedMonth()} 的月總覽、機台、班別、製令與異常/停機明細。`);}
+// V18.27.7: 單檔、無 CDN 的月報 Excel 匯出。資料沿用月報既有 effective* 與生產歸屬日規則。
+function buildMonthWorkbookData(month=selectedMonth()){
+ const rows=monthRecords(month), segments=monthOrderSegments(month), closes=monthOrderCloseEvents(month);
+ const downEvents=downtimeEvents.filter(e=>e.productionDate&&monthKeyFromDate(e.productionDate)===month&&e.status==='closed');
+ const fmt=ts=>ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'';
+ const sum=(list,key)=>list.reduce((a,x)=>a+(+x[key]||0),0);
+ const total=sum(rows,'output'), defect=sum(rows,'defect');
+ const demoDown=rows.filter(r=>r.note==='歷史月報示意資料').reduce((a,r)=>a+(+r.downMinutes||0),0);
+ const down=demoDown+sum(downEvents,'minutes');
+ const orderCount=new Set(segments.filter(hasProductionWorkOrder).map(s=>s.wo)).size;
+ const summary=[
+  ['月份',month],['月結狀態',monthStateLabel(monthCloseState[month]||'open')],
+  ['統計依據','生產歸屬日；跨日及跨月晚班歸開始生產日'],
+  ['資料範圍','已封存班別；停機僅計已結束事件，另加歷史月報示意停機分鐘'],
+  ['總加工數 PCS',total],['良品數 PCS',Math.max(0,total-defect)],['異常數 PCS',defect],
+  ['不良率',total?defect/total:0],['本月生產製令數',orderCount],
+  ['本月結單製令',closes.length],['正常完成',closes.filter(e=>e.closeType==='normal').length],
+  ['例外結單',closes.filter(e=>e.closeType==='exception').length],['總停機 分鐘',down]
+ ];
+ const machineMap=new Map();
+ const machine=id=>{if(!machineMap.has(id))machineMap.set(id,{output:0,defect:0,down:0,orders:new Set()});return machineMap.get(id)};
+ rows.forEach(r=>{const g=machine(r.machine);g.output+=+r.output||0;g.defect+=+r.defect||0;if(r.note==='歷史月報示意資料')g.down+=+r.downMinutes||0});
+ segments.forEach(s=>{if(hasProductionWorkOrder(s))machine(s.machine).orders.add(s.wo)});
+ downEvents.forEach(e=>{machine(e.machine).down+=+e.minutes||0});
+ const machineRows=[...machineMap].sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true})).map(([id,g])=>
+  [id,g.output,Math.max(0,g.output-g.defect),g.defect,g.output?g.defect/g.output:0,g.down,g.orders.size]);
+ const shiftRows=[...rows].sort((a,b)=>a.productionDate.localeCompare(b.productionDate)||a.shift.localeCompare(b.shift)||a.machine.localeCompare(b.machine,undefined,{numeric:true})).map(r=>
+  [r.productionDate,r.shift,r.machine,r.operator||'',r.wo||'',r.startTime?fmt(r.startTime):'',r.endTime?fmt(r.endTime):'',+r.output||0,+r.defect||0,Math.max(0,(+r.output||0)-(+r.defect||0)),+r.downMinutes||0,r.note||'']);
+ const orderRows=[...segments].sort((a,b)=>a.productionDate.localeCompare(b.productionDate)||(+a.startTime||0)-(+b.startTime||0)||a.machine.localeCompare(b.machine,undefined,{numeric:true})).map(s=>
+   [s.productionDate,s.shift,s.wo,s.machine,s.drawing,s.processMode,s.cycle,segmentTimeLabel(s),s.startCum??null,s.endCum??null,+s.output||0,+s.defect||0,+s.good||0,+s.target||0,+s.downMinutes||0,monthProductionRecordSource(s)]);
+  const orderSummaryRows=monthOrderSummary(segments).map(g=>
+   [g.wo,[...g.machines].join('、'),g.output,g.defect,Math.max(0,g.output-g.defect),g.down,g.records,monthOrderSummarySource(g),monthOrderCloseSummary(g.wo,closes)]);
+ const defectRows=defectEvents.filter(e=>monthKeyFromDate(e.attributedProductionDate)===month).map(e=>{
+  const info=effectiveDefectInfo(e);
+  return [fmt(e.time),e.attributedProductionDate||'',e.attributedShift||'',e.machine||'',e.wo||'',e.operator||'',e.originalQty??e.qty??0,info.qty,reasonDisplay(info.reason,info.reasonDetail),info.correctionCount,e.discoveredProductionDate||'',e.discoveredShift||''];
+ });
+ const downtimeRows=[...downEvents].sort((a,b)=>(+a.startTime||0)-(+b.startTime||0)).map(e=>
+  [e.productionDate,e.shift,e.machine,e.wo||'',e.operator||'',e.reasonText||reasonDisplay(e.reason||'-',e.reasonDetail||''),fmt(e.startTime),fmt(e.endTime),+e.minutes||0,'已結束',e.groupId||'']);
+ const personMachineRows=dailyPersonMachinePerformance(month).map(g=>
+  [g.productionDate,g.operator,g.machine,g.segmentCount,g.effectiveMinutes??'待確認',g.output??'待確認',g.target??'待確認',g.rate===null?'待確認':g.rate/100,g.downMinutes??'待確認',g.status]);
+ const closeRows=[...closes].sort((a,b)=>(+a.time||0)-(+b.time||0)).map(e=>
+  [fmt(e.time)||e.timeText||'',e.productionDate||'',e.shift||'',e.machine||'',e.wo||'',closeTypeLabel(e),e.actualQty??null,e.orderQty??null,e.operator||'',closeReasonLabel(e),e.source||'']);
+ return [
+  {name:'月總覽',columns:[['項目','text',31],['數值','text',58]],rows:summary,summary:true},
+  {name:'機台統計',columns:[['機台','text',14],['月產量 PCS','int',17],['良品 PCS','int',17],['異常 PCS','int',17],['不良率','percent',15],['停機 分鐘','decimal',18],['生產製令數','int',16]],rows:machineRows},
+  {name:'班別加工紀錄',columns:[['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['操作員','text',18],['製令','text',22],['開始時間','text',23],['結束時間','text',23],['加工 PCS','int',15],['異常 PCS','int',15],['良品 PCS','int',15],['停機 分鐘','decimal',17],['備註','text',28]],rows:shiftRows},
+  {name:'製令明細',columns:[['生產歸屬日','text',17],['班別','text',12],['製令','text',22],['機台','text',13],['圖號','text',22],['加工模式','text',18],['歷史加工秒數','text',20],['生產時間（開始–結束）','text',45],['開始累積 PCS','int',18],['結束累積 PCS','int',18],['本段加工 PCS','int',18],['異常 PCS','int',15],['良品 PCS','int',15],['應達 PCS','int',15],['停機 分鐘','decimal',17],['資料來源','text',27]],rows:orderRows},
+  {name:'製令彙總',columns:[['製令','text',22],['機台','text',25],['本月加工 PCS','int',18],['異常 PCS','int',15],['良品 PCS','int',15],['停機 分鐘','decimal',17],['生產紀錄 段','int',16],['資料來源','text',27],['本月結單','text',22]],rows:orderSummaryRows},
+  {name:'異常品明細',columns:[['登錄時間','text',23],['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['操作員','text',18],['原始數 PCS','int',16],['目前數 PCS','int',16],['原因','text',38],['修正次數','int',14],['發現生產日','text',17],['發現班別','text',12]],rows:defectRows},
+  {name:'停機明細',columns:[['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['操作員','text',18],['原因','text',38],['開始時間','text',23],['結束時間','text',23],['分鐘','decimal',14],['狀態','text',12],['群組','text',24]],rows:downtimeRows},
+  {name:'每日個人 × 機台績效',columns:[['生產歸屬日','text',17],['人員','text',18],['機台','text',13],['責任段數','int',14],['責任時間（分）','decimal',19],['實際產量（PCS）','int',20],['應達產量（PCS）','int',20],['個人機台達成率','percent',21],['停機分鐘','decimal',16],['確認狀態','text',44]],rows:personMachineRows},
+  {name:'結單事件',columns:[['結單時間','text',23],['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['類型','text',16],['實際完成 PCS','int',18],['製令數量 PCS','int',18],['操作員','text',18],['原因','text',38],['來源','text',22]],rows:closeRows}
+ ];
+}
+
+function xlsxEscape(value){return String(value??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function xlsxCol(index){let out='';for(let n=index+1;n>0;n=Math.floor((n-1)/26))out=String.fromCharCode(65+(n-1)%26)+out;return out}
+function xlsxSheetXml(spec){
+ const cell=(value,row,col,type)=>{
+  const ref=xlsxCol(col)+row;
+  if(value===null||value===undefined||value==='')return '';
+  if(type!=='text'&&Number.isFinite(value))return `<c r="${ref}" s="${type==='percent'?3:type==='decimal'?2:1}"><v>${value}</v></c>`;
+  return `<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${xlsxEscape(value)}</t></is></c>`;
+ };
+ const headers=spec.columns.map((c,i)=>`<c r="${xlsxCol(i)}1" s="4" t="inlineStr"><is><t>${xlsxEscape(c[0])}</t></is></c>`).join('');
+ const data=spec.rows.map((values,i)=>`<row r="${i+2}">${values.map((v,j)=>cell(v,i+2,j,spec.summary?(j===1&&typeof v==='number'?(i===7?'percent':'int'):'text'):spec.columns[j][1])).join('')}</row>`).join('');
+ const last=xlsxCol(spec.columns.length-1),height=Math.max(1,spec.rows.length+1);
+ const cols=spec.columns.map((c,i)=>`<col min="${i+1}" max="${i+1}" width="${c[2]}" customWidth="1"/>`).join('');
+ return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${last}${height}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="17"/><cols>${cols}</cols><sheetData><row r="1" ht="24" customHeight="1">${headers}</row>${data}</sheetData><autoFilter ref="A1:${last}${height}"/></worksheet>`;
+}
+function xlsxZip(files){
+ const encoder=new TextEncoder(),parts=[],central=[];let offset=0;
+ const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;table[n]=c>>>0}
+ const crc32=data=>{let crc=0xFFFFFFFF;for(const byte of data)crc=table[(crc^byte)&255]^(crc>>>8);return (crc^0xFFFFFFFF)>>>0};
+ const u16=(a,p,n)=>{a[p]=n&255;a[p+1]=(n>>>8)&255},u32=(a,p,n)=>{u16(a,p,n);u16(a,p+2,n>>>16)};
+ for(const [name,content] of files){
+  const nameBytes=encoder.encode(name),body=encoder.encode(content),crc=crc32(body);
+  const local=new Uint8Array(30+nameBytes.length);u32(local,0,0x04034B50);u16(local,4,20);u16(local,6,0x0800);u32(local,14,crc);u32(local,18,body.length);u32(local,22,body.length);u16(local,26,nameBytes.length);local.set(nameBytes,30);
+  parts.push(local,body);
+  const dir=new Uint8Array(46+nameBytes.length);u32(dir,0,0x02014B50);u16(dir,4,20);u16(dir,6,20);u16(dir,8,0x0800);u32(dir,16,crc);u32(dir,20,body.length);u32(dir,24,body.length);u16(dir,28,nameBytes.length);u32(dir,42,offset);dir.set(nameBytes,46);central.push(dir);
+  offset+=local.length+body.length;
+ }
+ const centralSize=central.reduce((a,x)=>a+x.length,0),end=new Uint8Array(22);
+ u32(end,0,0x06054B50);u16(end,8,files.length);u16(end,10,files.length);u32(end,12,centralSize);u32(end,16,offset);
+ return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+function createMonthXlsx(month=selectedMonth()){
+ const sheets=buildMonthWorkbookData(month);
+ const contentTypes=['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>',...sheets.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`),'</Types>'].join('');
+ const workbook=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((s,i)=>`<sheet name="${xlsxEscape(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`;
+ const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+ const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="3"><numFmt numFmtId="164" formatCode="#,##0"/><numFmt numFmtId="165" formatCode="#,##0.0"/><numFmt numFmtId="166" formatCode="0.00%"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Microsoft JhengHei"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Microsoft JhengHei"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF20395C"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="5"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="1" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+ const files=[['[Content_Types].xml',contentTypes],['_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],['xl/workbook.xml',workbook],['xl/_rels/workbook.xml.rels',rels],['xl/styles.xml',styles],...sheets.map((s,i)=>[`xl/worksheets/sheet${i+1}.xml`,xlsxSheetXml(s)])];
+ return xlsxZip(files);
+}
+function exportMonth(){
+ const month=selectedMonth();
+ try{
+  if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))throw Error('選擇月份格式不正確。');
+  const url=URL.createObjectURL(createMonthXlsx(month));
+  const link=document.createElement('a');link.href=url;link.download=`德曜_CNC_月報_${month}.xlsx`;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }catch(error){console.error('月報 Excel 匯出失敗',error);alert('Excel 匯出失敗：'+error.message)}
+}
 
 function renderAll(){machines.forEach(refreshTargetReached);renderOwner();renderCards();renderLog();renderHistory();renderDefectRecords();renderWorkOrderHistory();renderShiftRecords();renderResponsibilityHistory();renderMonthly();}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>authShowView(t.dataset.view));
@@ -7154,8 +7332,7 @@ monthSelect.onchange=()=>{monthDetail.dataset.machine='';monthCheckResults.inner
 monthCheckBtn.onclick=runMonthCheck;
 monthCloseBtn.onclick=closeMonth;
 monthReopenBtn.onclick=reopenMonth;
-monthExcelBtn.onclick=()=>exportMonth('Excel');
-monthPdfBtn.onclick=()=>exportMonth('PDF');
+monthExcelBtn.onclick=exportMonth;
 machines.forEach(x=>ensureAutoShiftSession(x));
 initializeWorkOrderHistory();
 renderTestModeBanner();
