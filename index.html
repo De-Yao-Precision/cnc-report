@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.18｜正式流程模擬時間・交接時段測試版</title>
+<title>德曜精密｜CNC V18.27.19｜正式流程模擬時間・交接時段測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -583,10 +583,13 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 .simulation-login-banner{position:fixed;top:0;left:0;right:0;z-index:20000;text-align:center;pointer-events:none}
 body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 .simulation-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-#simulationDateTime{max-width:100%;padding:10px}
+.simulation-date-time{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+.simulation-date-time label{display:flex;flex-direction:column;gap:6px;min-width:0}
+#simulationDate,#simulationTime{max-width:100%;padding:10px;box-sizing:border-box}
+#simulationTime{width:150px;font-variant-numeric:tabular-nums}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.18 正式流程模擬時間・交接時段測試版">
+<meta name="version" content="V18.27.19 正式流程模擬時間・交接時段測試版">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><div id="simulationBanner" class="simulation-banner" hidden></div><b id="authIdentityName"></b><span id="authIdentityRole"></span><span id="authPersonShiftLabel"></span><button class="btn secondary" id="authChangePersonShift" type="button">變更今日班別 / Đổi ca hôm nay</button><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -595,7 +598,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 <div id="simulationLoginBanner" class="simulation-login-banner" hidden></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.18 正式流程模擬時間・交接時段測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
+  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.19 正式流程模擬時間・交接時段測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -1278,7 +1281,11 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
   <h2>🧪 正式流程模擬</h2>
   <p id="simulationStatus"></p>
   <p>主管／系統管理員可操作。模擬時間停留在設定值，按鈕或跳轉才會前進；不用修改 Windows 時間。</p>
-  <label>模擬日期時間 <input id="simulationDateTime" type="datetime-local" min="2000-01-01T00:00" max="2099-12-31T23:59" step="60"></label>
+  <div class="simulation-date-time">
+   <label for="simulationDate">模擬日期<input id="simulationDate" type="date" min="2000-01-01" max="2099-12-31" required></label>
+   <label for="simulationTime">模擬時間（24小時制）<input id="simulationTime" type="text" placeholder="07:50" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" autocomplete="off" spellcheck="false" aria-describedby="simulationTimeHint" required></label>
+  </div>
+  <small id="simulationTimeHint">請輸入 HH:mm，範圍 00:00～23:59，例如 07:50、20:30。</small>
   <div class="simulation-actions">
    <button type="button" class="btn primary" id="simulationToggle" onclick="simulationToggle()">開啟模擬</button>
    <button type="button" class="btn secondary" data-simulation-active onclick="simulationJump()">跳轉到輸入時間</button>
@@ -1298,7 +1305,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
   <div class="table-wrap"><table>
    <thead><tr><th>項目</th><th>規則</th></tr></thead>
    <tbody>
-    <tr><td>V18.27.18 正式流程模擬</td><td>主管／系統管理員可開啟中央模擬時鐘，資料使用獨立 simulation/test 儲存區；手動前進逐一執行08:00／20:30切班，責任人延續。清除須二次確認，正常資料不受影響。模擬Excel與JSON均有標示，模擬JSON不可還原到正常模式。</td></tr>
+    <tr><td>V18.27.19 正式流程模擬</td><td>模擬時間採「日期＋24小時制時間」兩欄；時間固定輸入HH:mm，不使用上午／下午。主管／系統管理員可開啟中央模擬時鐘，資料使用獨立 simulation/test 儲存區；手動前進逐一執行08:00／20:30切班，責任人延續。清除須二次確認，正常資料不受影響。模擬Excel與JSON均有標示，模擬JSON不可還原到正常模式。</td></tr>
     <tr><td>交接時段</td><td>07:50～08:00為「晚班｜交接時段・早班可接手」；20:20～20:30為「早班｜交接時段・晚班可接手」。接手從實際時間與累積開始，系統正式班別不提前切換。人員每日班別記憶沿用原規則。</td></tr>
     <tr><td>班別時間</td><td>早班 08:00–17:00；早班加班至 20:30。晚班 20:30–05:00；晚班加班至 08:00。</td></tr>
     <tr><td>生產歸屬日</td><td>晚班跨日不拆班，例如 9/17 20:30～9/18 08:00 都歸屬 9/17 晚班。</td></tr>
@@ -1591,7 +1598,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 <div class="modal auth-modal" id="authReauthModal"><div class="modal-card" style="max-width:520px"><h2>目前登入者再次驗證</h2><p id="authReauthWho"></p><form id="authReauthForm"><label>目前登入者自己的密碼<input id="authReauthPassword" type="password" autocomplete="current-password" required></label><p id="authReauthError" role="alert"></p><button class="btn primary">驗證</button><button class="btn secondary" id="authReauthCancel" type="button">取消</button></form></div></div>
 <div class="modal auth-modal" id="authProductionCorrectionModal"><div class="modal-card" style="max-width:600px"><h2>主管累積數修正</h2><p>不切換機台責任人；新增修正事件，保留歷史切點與原值。</p><select id="authCorrectionMachine" aria-label="修正機台"></select><label>修正製令<select id="authCorrectionWorkOrder" aria-label="修正製令"></select></label><p id="authCorrectionOld"></p><label>修正後累積數<input id="authCorrectionQty" type="number" min="0" step="1"></label><label>修改原因<input id="authCorrectionReason" maxlength="200"></label><button class="btn primary" id="authCorrectionSubmit" type="button">確認修正</button><button class="btn secondary" id="authCorrectionCancel" type="button">取消</button></div></div>
 <script>
-// V18.27.18: clock and storage boundaries are selected before any data is loaded.
+// V18.27.19: clock and storage boundaries are selected before any data is loaded.
 const SIM_SESSION_KEY='deyao_v18_27_18_simulation_session';
 const SIM_PREFIX='deyao_simulation_v18_27_18:';
 const realNow=()=>Date.now();
@@ -1612,7 +1619,10 @@ const appSessionStorage=scopedStorage(window.sessionStorage);
 function simulationFields(){return simulationEnabled?{simulation:true,dataset:'simulation/test',simulationRunId:simulationState.id}:{};}
 function canManageSimulation(){return authActive()&&['supervisor','systemAdmin'].includes(authPerson(authSession.employeeId)?.roleCode);}
 function simulationInputTs(){
- const raw=document.getElementById('simulationDateTime').value;
+ const date=document.getElementById('simulationDate').value;
+ const time=document.getElementById('simulationTime').value.trim();
+ if(!/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(time))throw Error('模擬時間請用24小時制 HH:mm（00:00～23:59），例如07:50或20:30。');
+ const raw=date+'T'+time;
  const ts=new Date(raw).getTime();
  if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(raw)||!Number.isFinite(ts)||new Date(ts).getFullYear()<2000||new Date(ts).getFullYear()>2099)throw Error('請輸入 2000～2099 年有效日期時間。');
  if(pendingStopInputValue(ts).slice(0,16)!==raw)throw Error('日期時間不存在。');
@@ -1721,7 +1731,11 @@ function renderSimulation(resetInput=false){
  document.getElementById('simulationComputerTime').textContent='目前電腦時間：'+new Date(realNow()).toLocaleString('zh-TW',{hour12:false});
  document.getElementById('simulationToggle').textContent=simulationEnabled?'關閉模擬，回到真實時間':simulationState?.id?'繼續本次模擬':'開啟模擬';
  for(const el of card.querySelectorAll('[data-simulation-active]'))el.disabled=!simulationEnabled;
- const input=document.getElementById('simulationDateTime');if(resetInput||!input.value)input.value=simulationEnabled?pendingStopInputValue(appNow()).slice(0,16):'2026-08-03T07:50';
+ const date=document.getElementById('simulationDate'),time=document.getElementById('simulationTime');
+ if(resetInput||date.dataset.simulationInitialized!=='1'){
+  const value=simulationEnabled?pendingStopInputValue(appNow()).slice(0,16):'2026-08-03T07:50';
+  [date.value,time.value]=value.split('T');date.dataset.simulationInitialized='1';
+ }
 }
 
 
@@ -3126,7 +3140,7 @@ function clearTestProductionStorage(){if(!avGuardWrite())return false; /* V18.26
 
 const JSON_BACKUP_SCHEMA='deyao-cnc-test-backup';
 const JSON_BACKUP_SCHEMA_VERSION=1;
-const JSON_BACKUP_APP_VERSION='18.27.18';
+const JSON_BACKUP_APP_VERSION='18.27.19';
 const JSON_BACKUP_KEYS=[
  ...TEST_DATA_KEYS,
  TEST_MODE_KEY,
