@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.19｜正式流程模擬時間・交接時段測試版</title>
+<title>德曜精密｜CNC V18.27.23｜機台製令班報表・主管摘要版・測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -587,9 +587,11 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 .simulation-date-time label{display:flex;flex-direction:column;gap:6px;min-width:0}
 #simulationDate,#simulationTime{max-width:100%;padding:10px;box-sizing:border-box}
 #simulationTime{width:150px;font-variant-numeric:tabular-nums}
+#shiftRows .report-summary{cursor:pointer} #shiftRows .report-summary:hover{background:#edf5ff;color:#162b45}
+#shiftRows .report-detail[hidden]{display:none} .report-rate{font-weight:800;padding:5px;border-radius:4px;white-space:nowrap}.report-rate.green{background:#d7f7e0;color:#14532d}.report-rate.normal{background:#e5efff;color:#173b70}.report-rate.yellow{background:#fff0ad;color:#604900}.report-rate.red{background:#ffe0e0;color:#9d1616}.report-detail td{white-space:normal;min-width:0}.report-details-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.report-detail li{margin:6px 0}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.19 正式流程模擬時間・交接時段測試版">
+<meta name="version" content="V18.27.23 機台製令班報表・主管摘要版・測試版">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><div id="simulationBanner" class="simulation-banner" hidden></div><b id="authIdentityName"></b><span id="authIdentityRole"></span><span id="authPersonShiftLabel"></span><button class="btn secondary" id="authChangePersonShift" type="button">變更今日班別 / Đổi ca hôm nay</button><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -598,7 +600,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 <div id="simulationLoginBanner" class="simulation-login-banner" hidden></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.19 正式流程模擬時間・交接時段測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
+  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.23 機台製令班報表・主管摘要版・測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -618,7 +620,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
  <button class="tab mgmt-only-tab" data-view="defectRecords">🔒 異常品紀錄（主管）</button>
  <button class="tab mgmt-only-tab" data-view="workOrderHistory">🔒 製令歷史（主管）</button>
  <button class="tab mgmt-only-tab" data-view="erpImportPreview">🧩 ERP製令匯入（示意）</button>
- <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 班別加工紀錄（主管）</button>
+ <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 機台製令班報表（主管）</button>
  <button class="tab" data-view="monthly">歷史 / 月報</button>
  <button class="tab" data-view="systemAdmin" hidden>系統管理中心</button>
  <button class="tab" data-view="rules">規則說明</button>
@@ -883,28 +885,28 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 
 <section id="shiftRecords" class="view">
  <div class="panel">
-  <h2>班別加工紀錄</h2>
-  <div class="filters">
-   <input id="shiftSearch" placeholder="搜尋生產日 / 班別 / 操作員 / 機台 / 製令">
+  <h2>機台製令班報表（主管）</h2>
+  <p class="history-note">每人 × 機台 × 製令 × 責任段一列；點選列展開。加工時間依實際時段扣固定休息；個人目標沿用責任班別規則。待接手列不計個人績效。</p>
+  <div class="filters" id="reportFilters">
+   <label>月份 <input type="month" id="reportMonth"></label><label>日期 <input type="date" id="reportDate"></label>
+   <input id="reportMachine" placeholder="機台"><input id="reportOperator" placeholder="操作員"><input id="shiftSearch" placeholder="製令">
    <select id="shiftFilter"><option value="">全部班別</option><option>早班</option><option>晚班</option></select>
+   <select id="reportRate"><option value="">全部達成率</option><option value="green">≥100%</option><option value="normal">80–99.9%</option><option value="yellow">60–79.9%</option><option value="red">&lt;60%</option><option value="unknown">未確認／不計個人</option></select>
+   <select id="reportDefect"><option value="">全部異常狀態</option><option value="yes">有異常</option><option value="no">無異常</option></select>
+   <select id="reportTool"><option value="">全部換刀狀態</option><option value="yes">有換刀</option><option value="no">無換刀</option></select>
   </div>
-  <div class="table-wrap">
-   <table>
-    <thead><tr><th>生產日</th><th>班別</th><th>操作員</th><th>機台</th><th>紀錄 / 製令</th><th>圖號</th><th>模式 / 秒數</th><th>起訖累積</th><th>開始</th><th>結束</th><th>實際</th><th>異常</th><th>良品</th><th>停機</th><th>應達</th><th>有效時間</th><th>備註</th></tr></thead>
-    <tbody id="shiftRows"></tbody>
-   </table>
-  </div>
+  <div class="table-wrap"><table><thead><tr><th>日期</th><th>班別</th><th>機台</th><th>製令</th><th>圖號</th><th>圖名</th><th>操作員</th><th>時間</th><th>加工時間</th><th>停機時間</th><th>實際產量</th><th>目標產量</th><th>達成率</th><th>異常</th><th>換刀</th><th>備註／狀態</th></tr></thead><tbody id="shiftRows"></tbody></table></div>
  </div>
 
  <div class="panel" style="margin-top:12px">
-  <h2>機台負責人切換紀錄</h2>
+  <details><summary style="cursor:pointer;font-weight:bold">機台負責人切換紀錄（稽核明細）</summary>
   <div class="history-note">「接手機台」只切換目前負責人，不切換班別。每次保存原負責人、新負責人、接手時間、當時累積、製令與班別狀態。</div>
   <div class="table-wrap">
    <table>
     <thead><tr><th>時間</th><th>生產日</th><th>實際班別</th><th>責任區段</th><th>機台</th><th>原負責人</th><th>新負責人</th><th>接手累積</th><th>製令</th><th>備註</th></tr></thead>
     <tbody id="responsibilityRows"></tbody>
    </table>
-  </div>
+  </div></details>
  </div>
 </section>
 
@@ -1159,7 +1161,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
    <button class="btn" id="monthExcelBtn">匯出 Excel</button>
   </div>
   <div class="history-note">
-   月報以「生產歸屬日」統計。例：9/30 20:30～10/1 08:00 的晚班全部算 9 月；跨月製令不歸零，只將各月份實際加工量分開統計。<b>「本月生產製令數」是有生產紀錄的不同製令張數；「本月結單製令」只看真正按下「製令完成／例外結單」所建立的結單事件。</b> 有生產不等於已結單。已月結月份的原始紀錄不可直接覆蓋。
+   新個人紀錄依接手當日歸月，跨月責任不拆段；機台產量按實際操作切點保存並依區段開始日歸月，不推估午夜累積數。異常、停機與結單依事件日期歸月；舊封存日期保持原值。<b>「本月生產製令數」是有生產紀錄的不同製令張數；「本月結單製令」只看真正按下「製令完成／例外結單」所建立的結單事件。</b> 有生產不等於已結單。已月結月份的原始紀錄不可直接覆蓋。
   </div>
   <div class="month-kpis">
    <div class="kpi"><div class="lab">總加工數</div><div class="val" id="mTotal">-</div><div class="hint">PCS</div></div>
@@ -1176,9 +1178,9 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 
  <div class="panel" style="margin-top:12px">
   <h2>每日個人 × 機台績效</h2>
-  <div class="history-note">依上方所選月份的生產歸屬日、人員、機台分組；同組已封存且可確認的責任區段相加。責任時間優先使用封存的有效分鐘，舊資料缺少此欄時才以責任起訖時間計算。任一段尚未封存或資料未確認，該組績效顯示「待確認」；不同機台不合併。</div>
+  <div class="history-note">依上方所選月份的責任開始日、人員、保存班別、機台分組；同組已封存且可確認的責任區段相加。責任時間優先使用封存的有效分鐘，舊資料缺少此欄時才以責任起訖時間計算。任一段尚未封存或資料未確認，該組績效顯示「待確認」；不同機台不合併。</div>
   <div class="table-wrap"><table>
-   <thead><tr><th>生產歸屬日</th><th>人員</th><th>機台</th><th>責任段數</th><th>責任時間（分）</th><th>實際產量（PCS）</th><th>應達產量（PCS）</th><th>個人機台達成率</th><th>停機分鐘</th><th>確認狀態</th></tr></thead>
+   <thead><tr><th>責任開始日</th><th>人員</th><th>班別</th><th>機台</th><th>責任段數</th><th>責任時間（分）</th><th>實際產量（PCS）</th><th>應達產量（PCS）</th><th>個人機台達成率</th><th>停機分鐘</th><th>確認狀態</th></tr></thead>
    <tbody id="monthPersonMachineRows"></tbody>
   </table></div>
  </div>
@@ -1238,7 +1240,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 
  <div class="panel" style="margin-top:12px">
   <h2>本月停機事件明細</h2>
-  <div class="history-note">每次「開始停機」立即建立事件；「恢復生產」才結束。跨班停機只會依20:30／08:00真正換班時間切段，但保留同一停機群組編號。</div>
+  <div class="history-note">每次「開始停機」立即建立事件；「恢復生產」才結束。跨08:00／20:30不切段；只有實際責任交接或製令操作才分段，並保留同一停機群組編號。</div>
   <div class="table-wrap"><table>
    <thead><tr><th>生產日</th><th>班別</th><th>機台</th><th>製令</th><th>操作員</th><th>原因</th><th>開始</th><th>結束</th><th>分鐘</th><th>狀態</th><th>群組</th></tr></thead>
    <tbody id="monthDowntimeRows"></tbody>
@@ -1296,7 +1298,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
   </div>
   <small id="simulationComputerTime"></small>
   <p class="note">首次開啟建立空白模擬資料區，只複製人員設定。開關／清除後請重新登入；同一分頁重整會保留模擬。重新開啟會續跑；要改起始時間，請輸入時間後清除本次模擬資料。模擬期間的帳號變更也只在模擬區生效。</p>
-  <p class="note">07:50～08:00、20:20～20:30 可提前接手；正式切班仍為08:00／20:30。跨班不重接，不會自動產生PCS；請依測試情境輸入累積。07:50仍屬前一生產日晚班，沿用既有報表歸屬規則。</p>
+  <p class="note">依實際時間接手與結算；跨08:00／20:30只前進時間，不自動產生PCS或切責任。新紀錄依接手／事件實際日期保存。</p>
  </div>
 
 
@@ -1305,28 +1307,28 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
   <div class="table-wrap"><table>
    <thead><tr><th>項目</th><th>規則</th></tr></thead>
    <tbody>
-    <tr><td>V18.27.19 正式流程模擬</td><td>模擬時間採「日期＋24小時制時間」兩欄；時間固定輸入HH:mm，不使用上午／下午。主管／系統管理員可開啟中央模擬時鐘，資料使用獨立 simulation/test 儲存區；手動前進逐一執行08:00／20:30切班，責任人延續。清除須二次確認，正常資料不受影響。模擬Excel與JSON均有標示，模擬JSON不可還原到正常模式。</td></tr>
-    <tr><td>交接時段</td><td>07:50～08:00為「晚班｜交接時段・早班可接手」；20:20～20:30為「早班｜交接時段・晚班可接手」。接手從實際時間與累積開始，系統正式班別不提前切換。人員每日班別記憶沿用原規則。</td></tr>
-    <tr><td>班別時間</td><td>早班 08:00–17:00；早班加班至 20:30。晚班 20:30–05:00；晚班加班至 08:00。</td></tr>
-    <tr><td>生產歸屬日</td><td>晚班跨日不拆班，例如 9/17 20:30～9/18 08:00 都歸屬 9/17 晚班。</td></tr>
-    <tr><td>每日人員班別</td><td>每位員工每個生產日第一次登入選早班或晚班；同日重登自動帶回。變更今日班別須二次確認並記錄原班別、新班別、人員、時間與原因。此資料只代表本人工作班別，不切換系統正式班別。</td></tr>
+    <tr><td>V18.27.23 正式流程模擬</td><td>模擬時間採「日期＋24小時制時間」兩欄；時間固定輸入HH:mm，不使用上午／下午。主管／系統管理員可開啟中央模擬時鐘，資料使用獨立 simulation/test 儲存區；手動前進只更新時間，不執行切班、責任切段或班別封存。清除須二次確認，正常資料不受影響。模擬Excel與JSON均有標示，模擬JSON不可還原到正常模式。</td></tr>
+    <tr><td>交接時段</td><td>人員可依現場實際時間接手機台；接手開始責任，結算結束責任。08:00、17:00、20:30、05:00均不觸發責任流程。</td></tr>
+    <tr><td>班別時間</td><td>人員班別由登入選擇。08:00、17:00、20:30、05:00不封存、不重建責任，也不截斷應達。</td></tr>
+    <tr><td>生產歸屬日</td><td>新個人紀錄以實際接手的日曆日期歸屬，跨日／跨月直到結算仍是一段；異常、停機依事件開始日期保存。每天登入選班別以00:00～24:00為一天。舊封存日期不回改。</td></tr>
+    <tr><td>每日人員班別</td><td>每位員工每天第一次登入選早班或晚班；同一日重登沿用。主管可修正當日班別，保留原值、新值、修改人、時間與原因；已結算歷史不回改。</td></tr>
     <tr><td>待接手逾時</td><td>生產中待接手超過30分鐘只提醒，不自動停機。後續有操作權限的人員或主管可「接手機台」或「回報已停止」。回報須填實際停止時間、停止時實體累積與原因，保存回報人與時間；停機只從實際停止時間起算。</td></tr>
-    <tr><td>自動班別</td><td>操作員不需要接班／交班。系統保留目前計數班別；早班最晚20:30、晚班最晚08:00到時自動切到下一班。</td></tr>
-    <tr><td>同班換製令</td><td>換製令前先把該段產量加入本班累積，歸零後繼續計算，20:30／08:00班別最終封存時將各段加總。</td></tr>
+    <tr><td>責任制班別</td><td>人員班別由登入選擇，個人責任由接手到結算；時間前進不會封存班別或重建機台紀錄。</td></tr>
+    <tr><td>同班換製令</td><td>換製令時保存上一製令的產量、加工設定、起訖與停機；新製令累積歸零，機台紀錄持續。不等待08:00／20:30封存。</td></tr>
     <tr><td>加工模式自動切換</td><td>D1–D15、B1–B3 可依製令選「機械手 / 人工上下料」。A1–A6、B4–B5、MC1–MC2 固定人工上下料。達成率都依實際責任時間與加工秒數計算；人工模式扣重疊休息，機械手模式不扣休息。</td></tr>
     <tr><td>統一結算</td><td>操作員結束對某台機器的責任時隨時按「結算」；系統固定本次個人加工、應達、達成率、停機與起訖累積／時間，立即清空負責人；再選「繼續生產／停止生產」。繼續生產自動待接手；停止生產從結算時間記停機，已停機則延續原事件。待接手產量只算機台／製令。</td></tr>
     <tr><td>個人達成率起訖</td><td>「接手機台」是個人達成率起點，「結算」是終點。待接手期間產量只列機台，不列入前後兩人的個人績效；下一位從實際接手時間與實體累積開始計算。</td></tr>
     <tr><td>人工分段扣除</td><td>早班：10:00–10:10休息、12:00–13:00午休、15:00–15:10休息、16:50–17:00交接/倒鐵屑、18:30–19:00晚餐、20:20–20:30交接/倒鐵屑。晚班：22:30–22:40休息、00:30–01:00吃飯、03:00–03:10休息、04:50–05:00倒鐵屑、05:00–05:30吃飯、07:50–08:00交接/倒鐵屑。</td></tr>
-    <tr><td>機械手分段</td><td>目前不扣休息、吃飯、倒鐵屑與交接時間，因機台可持續自動加工；直接使用實際經過時間 ÷ 單件加工秒數。</td></tr>
-    <tr><td>同班換製令</td><td>每次換製令會保存上一段的製令、圖號、加工模式、加工秒數、起訖累積、有效分鐘、實際產量、異常、良品、停機與分段應達；主管的班別加工紀錄會逐段展開，不再只顯示第一張→最後一張。</td></tr>
-    <tr><td>本班 vs 製令</td><td>本班數量只看班別績效；製令累積則跨班、跨日持續累加，直到換製令才歸零。</td></tr>
-    <tr><td>本班產量</td><td>同一製令：目前累積 − 本班開始累積。同班換製令時分段加總。</td></tr>
+    <tr><td>機械手分段</td><td>機械手不扣人工休息，只扣真正停機；人工扣該責任人班別休息表與真正停機，重疊只扣一次。</td></tr>
+    <tr><td>同班換製令</td><td>換製令時保存上一製令的產量、加工設定、起訖與停機；新製令累積歸零，機台紀錄持續。不等待08:00／20:30封存。</td></tr>
+    <tr><td>本班 vs 製令</td><td>班別統計依個人責任保存的班別歸類；製令累積跨日持續，直到換製令才歸零。待接手產量只計機台／製令。</td></tr>
+    <tr><td>機台記錄產量</td><td>依機台連續紀錄的起始累積與各製令分段合計，不依時鐘早晚班切割。</td></tr>
     <tr><td>機台編號</td><td>公司目前納入看板的機台為 D1～D15、A1～A6、B1～B5、MC1～MC2。</td></tr><tr><td>加工模式</td><td>加工模式跟著製令／品項走，不跟機台寫死。每張製令可選「機械手」或「人工上下料」。</td></tr><tr><td>加工秒數</td><td>沿用公司現行定義：1 PCS 完整總節拍。機械手模式含機械手換料時間；人工模式含人工上、下料合計時間。</td></tr>
-    <tr><td>異常品</td><td>同時保留「當班異常」與「製令累積異常」。目前操作員版只登錄到目前製令＋目前班別；製令結單後不允許操作員補登舊製令異常。</td></tr>
+    <tr><td>異常品</td><td>責任人登錄異常品時保存該責任班別與實際日期；若無責任人則不猜班別。製令結單後不允許操作員補登舊製令異常。</td></tr>
     <tr><td>良品</td><td>製令已加工 − 製令累積異常。</td></tr>
     <tr><td>尚欠加工</td><td>製令數量 − 已加工。若來料不足，可用例外結單，不修改原始製令數量。</td></tr>
     <tr><td>停機事件</td><td>按「開始停機」時立即建立獨立停機事件，保存機台、製令、生產日、班別、操作員、原因與開始時間；恢復生產時補上結束時間與分鐘。月報正式停機分鐘由停機事件加總。</td></tr>
-    <tr><td>跨班停機</td><td>結算不切斷停機事件；只有真正班別切換20:30／08:00時才依班別切成不同分段，並保留相同停機群組編號。機台狀態仍維持停機中。</td></tr>
+    <tr><td>跨班停機</td><td>同一責任人跨20:30／08:00仍維持同一停機事件。實際結算或接手時才按責任邊界分段，保留同一停機群組；待接手停機不指定人員班別。</td></tr>
     <tr><td>製令完成狀態</td><td>製令進度達100%時仍維持「生產中」，只顯示「已達製令數量，請確認完成」。只有操作員按下「製令完成」確認後才正式結單。</td></tr>
     <tr><td>待換線／待校車</td><td>上一製令完成、下一品項尚未開始校車時使用；此段時間獨立統計為等待時間，不算設備故障停機。</td></tr>
     <tr><td>校車中</td><td>開始架機、校車、調整時使用；校車完成後再進入新製令「生產中」。</td></tr>
@@ -1337,13 +1339,13 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
     <tr><td>操作員追溯</td><td>每筆動作自動綁定操作員、身份、時間、機台與製令。</td></tr>
     <tr><td>修改紀錄</td><td>若數量被修正，除保留原值、新值、修改人與修改時間外，修正原因必填。</td></tr>
     <tr><td>例外結單</td><td>製令數量未達但因來料不足等原因需結束時，保留原製令數量並記錄實際完成數與原因。</td></tr>
-    <tr><td>跨月晚班</td><td>9/30 晚班即使做到 10/1 早上，仍以生產歸屬日 9/30 計入 9 月。</td></tr>
+    <tr><td>跨月晚班</td><td>9/30 接手至10/1結算的個人責任仍歸9/30；10/1新接手則歸10/1。事件依發生日期保存，不依08:00切日。</td></tr>
     <tr><td>跨月製令</td><td>製令不因換月歸零；月報只統計該月實際加工量，製令累積仍持續到換製令。</td></tr>
     <tr><td>歷史加工秒數</td><td>月報保存當時使用的加工秒數快照。之後標準秒數修改，不回頭改變歷史達成數據。</td></tr>
     <tr><td>月報製令生產紀錄</td><td>同一班若換多張製令，月報的「製令明細／生產製令數／機台生產製令數／機台月下鑽」一律從該班生產紀錄統計，不直接使用整班 wo 欄位。例：MO-A 150 PCS → MO-B 280 PCS，月報分別記 MO-A=150、MO-B=280，機台班別總量仍為430 PCS。</td></tr>
     <tr><td>月報結單製令數</td><td>「本月生產製令數」與「本月結單製令」分開。生產製令數依生產紀錄中的製令號去重；結單製令數只計真正執行「製令完成」或「例外結單」所建立的獨立結單事件，不再用本月出現過幾個製令號推算。</td></tr>
     <tr><td>結單類型分開</td><td>月報同時顯示「正常完成」與「例外結單」件數。正常完成＋例外結單＝本月結單製令數。</td></tr>
-    <tr><td>結單事件保存</td><td>每次結單保存生產歸屬日、班別、機台、製令、實際完成數、製令數量、操作員、結單類型與例外原因。跨月晚班仍依既有生產歸屬日規則歸月。</td></tr>
+    <tr><td>結單事件保存</td><td>每次結單保存生產歸屬日、班別、機台、製令、實際完成數、製令數量、操作員、結單類型與例外原因。新結單事件以實際結單日期歸月。</td></tr>
     <tr><td>月結日期</td><td>月結稽核紀錄使用該月份真正的最後一天，不再固定寫成「月份-31」。系統會自動判斷大小月與閏年：例如 2026-09 → 2026-09-30、2026-02 → 2026-02-28、2028-02 → 2028-02-29。舊測試資料若曾寫成不存在的月底日期，開啟本版時會自動修正月結 audit 日期。</td></tr>
     <tr><td>文字輸入安全</td><td>製令、圖號、程式號碼、刀號等代碼欄位會限制長度並禁止 HTML 尖括號；備註／補充說明限制長度、拒絕控制字元與 HTML 標籤。所有重要歷史、月報、製令履歷與操作紀錄顯示時使用 HTML escaping，避免使用者文字被當成網頁程式碼。</td></tr>
     <tr><td>顯示層防護</td><td>除了欄位驗證，所有 innerHTML 寫入再經過安全清理，會移除 script、iframe、危險事件屬性與 javascript URL。這是測試版的第二層防護；正式多人版仍需在伺服器端再次驗證與轉義。</td></tr>
@@ -1359,7 +1361,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
     <tr><td>同品續做判斷</td><td>直接換製令只允許圖號、加工模式、加工秒數都與上一製令相同；製令單號與製令數量可以不同。任一加工條件不同時，系統會阻止直接換製令並要求走校車流程。</td></tr>
     <tr><td>製令資料切割</td><td>即使同品續做不需校車，上一製令仍會保持已結單封存，新製令的累積數、異常數與進度從0重新開始，避免兩張製令數量混在一起。</td></tr>
     <tr><td>結單後鎖定</td><td>製令完成或例外結單後，操作員不能再更新數量、登錄異常品或開始停機；如需修正，正式版由主管修正並保留原值、新值、原因、時間與人員。</td></tr>
-    <tr><td>停機互斥</td><td>停機只允許從生產中開始；停機中不能直接結單、待換線、校車或換製令。換製令不會清除本班已累積停機；結算不會中斷停機，20:30／08:00真正切班時才切停機分段。</td></tr>
+    <tr><td>停機互斥</td><td>停機只允許從生產中開始；停機中不能直接結單、待換線、校車或換製令。結算後機台仍停機，停機群組連續；已結束的個人責任不再累計停機。</td></tr>
     <tr><td>校車產量</td><td>校車中禁止一般「更新數量／異常品」；校車試車品不直接算正式生產量。校車中若有換刀，在「校車完成」選 T01～T08 刀號，記在校車事件；不另算停機時間。</td></tr>
     <tr><td>異常數量防呆</td><td>製令累積異常品不得超過目前製令已加工數；製令結單後操作員不能再補登舊製令異常。</td></tr>
     <tr><td>製令完成數量規則</td><td>製令完成以「機台累積加工數」達到製令數量為準，不以良品數判定。例：製令1000 PCS、異常10 PCS，累積加工達1000 PCS即可正常結單，良品990 PCS不需要補做10 PCS。</td></tr>
@@ -1384,22 +1386,22 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
     <tr><td>個人達成率</td><td>結算時，個人達成率 = 本次責任區段實際加工 ÷ 本次責任區段應達 × 100%。結算後到下一位接手前的產量與時間只列機台待接手區段；下一位從實際接手時間與實體累積開始計算。</td></tr>
     <tr><td>待接手防呆門檻</td><td>待接手差額 = 實體接手累積 − 上一位結算切點；推估量 = 待接手有效分鐘 × 60 ÷ 加工秒數。正常上限 = 推估量 + MAX(5, 推估量 × 25%)；警告上限 = 推估量 + MAX(10, 推估量 × 50%)。高於正常上限須二次確認；高於警告上限須目前登入主管解鎖。</td></tr>
     <tr><td>待接手產量</td><td>例：王先生16:35結算620 PCS，李先生17:15才實際接手650 PCS，620→650的30 PCS列為「待接手產量」，只計入機台總產量，不計入王先生或李先生的個人產量與達成率。李先生從17:15、650 PCS才開始個人績效。</td></tr>
-    <tr><td>真正換班時間</td><td>班別只在20:30與08:00由系統自動切換。結算與負責人切換都不改變班別。</td></tr>
+    <tr><td>責任歸屬</td><td>班別跟人走，績效跟責任走，產量跟機台與製令走。待接手產量與無責任人停機不指定班別。</td></tr>
     <tr><td>結算防重複</td><td>同一位負責人在同一責任區段只能結算一次。結算後必須等下一位「接手機台」後，新的負責人才會重新開啟自己的產量區段。</td></tr>
     <tr><td>接手機台</td><td>人員換手時使用「接手機台」。接手人必須確認實體機台累積數；系統保存原負責人、新負責人、接手時間、累積數、製令與當時班別狀態。接手機台不會切換班別。</td></tr>
-    <tr><td>負責人與班別分離</td><td>例：A1早班16:35結算後，17:00由另一人接手；班別仍依原定時間切換，個人責任從實際接手時起算。</td></tr>
+    <tr><td>負責人與班別分離</td><td>每位人員的班別來自當日登入選擇；實際接手開始自己的責任，結算即結束。更換人員時採新責任人的班別。</td></tr>
     <tr><td>負責人操作鎖</td><td>更新數量、結算、異常、停機／恢復（含換刀）、結單、校車與換製令等操作，只允許目前負責人執行；其他人必須先使用「接手機台」切換責任。</td></tr>
     <tr><td>結算切點鎖</td><td>同一製令完成結算後，普通操作員不能把累積數修到結算切點以下；「接手機台」也不能繞過。換新製令後累積正常歸零不受此限制。</td></tr>
     <tr><td>管理看板負責人</td><td>老闆總覽與主管機台卡直接顯示目前負責人與接手時間，避免只看到產量卻不知道目前由誰顧機台。</td></tr>
-    <tr><td>測試資料模式</td><td>測試工具分成「示意資料模式」與「乾淨測試模式」。示意模式用於展示；乾淨模式只保留機台清單與系統設定，清除所有生產／歷史測試資料。機台在「待建立製令」時不建立班別紀錄；建立第一張製令後才開始該機台的 shiftSession，避免空白機台污染班別紀錄與月結檢核。</td></tr>
+    <tr><td>測試資料模式</td><td>示意資料模式保留歷史展示；乾淨測試模式只保留機台與系統設定。模擬資料獨立隔離，跨08:00／20:30只前進時間。</td></tr>
     <tr><td>手機操作員介面</td><td>V18.21只移植同事新增的德曜品牌、6S、淺色操作員卡片、大型觸控按鈕與手機RWD；老闆、主管、月報、製令履歷與規則頁仍完整保留。手機寬度下確認送出按鈕會固定在畫面底部附近，方便現場操作。</td></tr>
-    <tr><td>乾淨模式班別啟動</td><td>V18.22修正：待建立製令的空白機台不建立 shiftSession；只有建立第一張製令後才開始班別紀錄。這樣未使用的機台不會出現0 PCS空白班別，也不會讓月結誤判大量機台仍在進行中。</td></tr>
+    <tr><td>乾淨模式班別啟動</td><td>待建立製令的空白機台不建立生產紀錄；建立製令後開始連續記錄，依實際操作保存分段。</td></tr>
     <tr><td>結算文字一致性</td><td>結算後到下一位真正接手前，只累積機台產量，不計入任何人的個人產量、個人應達或達成率；下一位從實際接手時間與實體累積開始計算。</td></tr>
     <tr><td>JSON備份／還原</td><td>V18.24新增：可把目前瀏覽器的測試生產資料整包下載為 JSON，並在同一網站選擇該備份還原。還原前會檢查備份格式、機台清單與資料結構，顯示摘要後再要求人工確認；不接受任意 JSON 直接寫入。</td></tr>
     <tr><td>ERP匯入畫面預覽</td><td>V18.25僅新增主管用的ERP匯入UI示意頁；可操作補機台／程式／加工秒數與查看狀態，但「確認匯入」不會寫入製令、機台、WorkOrder或localStorage。是否正式加入，待流程確認後再決定。</td></tr>
     <tr><td>ERP產品編號</td><td>V18.25.2確認：ERP的「產品編號」不匯入CNC網站，也不自動當作圖號使用；ERP預覽頁只保留品名規格供辨識。</td></tr>
     <tr><td>重新整理保留狀態</td><td>本測試版會把機台目前狀態、製令、累積數、停機／校車計時等保存於瀏覽器 localStorage，重新整理後可恢復；正式版仍應改由中央資料庫保存。</td></tr>
-    <tr><td>異常登錄</td><td>目前先簡化為「異常數量＋異常原因」，直接記在目前製令與目前班別；上一製令／上一班追溯功能暫不使用。</td></tr>
+    <tr><td>異常登錄</td><td>目前先簡化為「異常數量＋異常原因」，直接記在目前製令與責任紀錄保存的班別；無責任人不猜班別，上一製令追溯仍走主管流程。</td></tr>
     <tr><td>「其他」原因必填</td><td>異常品、停機、例外結單若原因選「其他」，補充說明立即變成必填。不得只輸入空白、標點符號或純數字，至少要有2個有效字元；例如「卡料」「等品管」可接受，「.」「0」不可接受。若已選明確原因，補充說明維持選填。</td></tr>
     <tr><td>停機提醒</td><td>停機中的機台在操作員頁持續顯示紅色提醒與停機分鐘，並提供快速恢復生產入口。</td></tr>
     <tr><td>換製令防錯</td><td>換製令前需確認新製令開始時機台累積數歸零；加工秒數或製令數量與目前差異過大時會再提醒。</td></tr>
@@ -1598,7 +1600,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 <div class="modal auth-modal" id="authReauthModal"><div class="modal-card" style="max-width:520px"><h2>目前登入者再次驗證</h2><p id="authReauthWho"></p><form id="authReauthForm"><label>目前登入者自己的密碼<input id="authReauthPassword" type="password" autocomplete="current-password" required></label><p id="authReauthError" role="alert"></p><button class="btn primary">驗證</button><button class="btn secondary" id="authReauthCancel" type="button">取消</button></form></div></div>
 <div class="modal auth-modal" id="authProductionCorrectionModal"><div class="modal-card" style="max-width:600px"><h2>主管累積數修正</h2><p>不切換機台責任人；新增修正事件，保留歷史切點與原值。</p><select id="authCorrectionMachine" aria-label="修正機台"></select><label>修正製令<select id="authCorrectionWorkOrder" aria-label="修正製令"></select></label><p id="authCorrectionOld"></p><label>修正後累積數<input id="authCorrectionQty" type="number" min="0" step="1"></label><label>修改原因<input id="authCorrectionReason" maxlength="200"></label><button class="btn primary" id="authCorrectionSubmit" type="button">確認修正</button><button class="btn secondary" id="authCorrectionCancel" type="button">取消</button></div></div>
 <script>
-// V18.27.19: clock and storage boundaries are selected before any data is loaded.
+// V18.27.21: clock and storage boundaries are selected before any data is loaded.
 const SIM_SESSION_KEY='deyao_v18_27_18_simulation_session';
 const SIM_PREFIX='deyao_simulation_v18_27_18:';
 const realNow=()=>Date.now();
@@ -1690,15 +1692,7 @@ function simulationAdvance(target){
  const previous=simulationState.now,snapshot=captureActionState();
  const oldSession=window.sessionStorage.getItem(SIM_SESSION_KEY),oldMeta=appStorage.getItem('__dataset');
  try{
-  // Visit every official boundary so the existing four-iteration guard is never exhausted.
-  while(simulationState.now<target){
-   const t=simulationState.now,boundary=maxShiftEndTs(productionDate(t),shiftAt(t));
-   if(boundary<=t)throw Error('班別邊界未前進，已停止跳轉。');
-   simulationState.now=Math.min(target,boundary);
-   machines.forEach(m=>ensureAutoShiftSession(m,appNow()));
-   availabilityTick();
-   if(avStorageFault)throw Error('跨班資料保存失敗。');
-  }
+  simulationState.now=target;
   if(!saveMachineState())throw Error('模擬資料保存失敗。');
   simulationPersist();
  }catch(e){
@@ -1718,11 +1712,7 @@ function simulationSelectMonth(){
  if(![...monthSelect.options].some(o=>o.value===month))monthSelect.add(new Option(month,month));
  monthSelect.value=month;
 }
-function handoverPhase(ts=appNow()){
- const d=new Date(ts),mins=d.getHours()*60+d.getMinutes();
- const next=mins>=470&&mins<480?'早班':mins>=1220&&mins<1230?'晚班':'';
- return next?{shift:shiftAt(ts),phase:'交接時段',nextShift:next,label:`${shiftAt(ts)}｜交接時段・${next}可接手`}:null;
-}
+function handoverPhase(){return null;}
 function renderSimulation(resetInput=false){
  const text=simulationEnabled?`🧪 正式流程模擬中｜${pendingStopInputValue(appNow()).slice(0,16).replace('T',' ').replaceAll('-','/')}`:'';
  for(const id of ['simulationBanner','simulationLoginBanner']){const el=document.getElementById(id);el.hidden=!simulationEnabled;el.textContent=text;}
@@ -1819,52 +1809,18 @@ function isExtendedWindowForSession(s,ts=appNow()){
  return ts>normalEnd && ts<=maxEnd;
 }
 function isOvertimeShift(m){
- // 已取消人工勾選「加班」；只依本班是否真的偵測到正常下班後仍有生產活動。
+ // 僅保留舊資料相容旗標；新責任／機台應達不依賴此值。
  return !!m?.shiftSession?.extendedDetected;
 }
 function markProductionActivity(m,ts=appNow(),source='生產活動'){
- const s=m?.shiftSession;
- if(!s) return false;
- s.lastProductionActivity=ts;
- s.productionActivityLog=s.productionActivityLog||[];
- s.productionActivityLog.push({time:ts,source});
- if(s.productionActivityLog.length>50) s.productionActivityLog=s.productionActivityLog.slice(-50);
-
- if(isExtendedWindowForSession(s,ts) && !s.extendedDetected){
-   s.extendedDetected=true;
-   s.extendedDetectedAt=ts;
-   s.extendedDetectedSource=source;
-   addLog(`${m.id}｜系統自動判斷延長生產｜${source}`);
-   audit('自動判斷延長生產',m,`${s.productionDate} ${s.shift}｜${source}`);
-   return true;
- }
- return false;
+ const s=m?.shiftSession;if(!s)return false;s.lastProductionActivity=ts;
+ s.productionActivityLog=[...(s.productionActivityLog||[]),{time:ts,source}].slice(-50);return false;
 }
-function shiftPhaseInfo(m,ts=appNow()){
- const handover=handoverPhase(ts);if(handover)return handover;
- const s=m?.shiftSession;
- if(!s) return {shift:shiftAt(ts),phase:'正常生產',label:`${shiftAt(ts)}｜正常生產`};
- const normalEnd=normalShiftEndTs(s.productionDate,s.shift);
- const maxEnd=maxShiftEndTs(s.productionDate,s.shift);
- if(ts<normalEnd) return {shift:s.shift,phase:'正常生產',label:`${s.shift}｜正常生產`};
- if(ts<=maxEnd){
-  if(s.extendedDetected) return {shift:s.shift,phase:'加班生產',label:`${s.shift}｜加班生產`};
-  return {shift:s.shift,phase:'等待加班判定',label:`${s.shift}｜依實際生產紀錄計算`};
- }
- return {shift:s.shift,phase:'等待換班',label:`${s.shift}｜等待換班`};
+function shiftPhaseInfo(m){
+ const shift=responsibilityShift(m),phase=m?.responsible?'責任進行中':'待接手／無責任人';
+ return {shift,phase,label:shift?shift+'｜'+phase:phase};
 }
-function shiftPhaseTextBi(m,ts=appNow()){
- const p=shiftPhaseInfo(m,ts);
- if(p.phase==='交接時段')return p.label+(operatorLang==='vi'?' / Bàn giao · Có thể nhận máy ca tiếp theo':'');
- if(operatorLang!=='vi') return p.label;
- const phaseMap={
-  '正常生產':'Sản xuất bình thường',
-  '加班生產':'Sản xuất tăng ca',
-  '等待加班判定':'Tính theo sản xuất thực tế',
-  '等待換班':'Chờ đổi ca'
- };
- return `${p.shift==='早班'?'Ca ngày':'Ca đêm'}｜${phaseMap[p.phase]||p.phase}`;
-}
+function shiftPhaseTextBi(m){const p=shiftPhaseInfo(m);return operatorLang==='vi'?(p.shift?shiftNameVi(p.shift)+'｜':'')+(m?.responsible?'Đang phụ trách':'Chờ nhận máy'):p.label;}
 function reportSegmentInfo(m,ts=appNow()){
  if(m?.pendingTakeover){
   const p=pendingTakeoverStats(m,ts);
@@ -1885,22 +1841,8 @@ function reportSegmentTextBi(m,ts=appNow()){
 function postSettlementOutputFor(m){
  return pendingTakeoverStats(m).output;
 }
-function autoShiftStateText(m,ts=appNow()){
- if(handoverPhase(ts))return handoverPhase(ts).label;
- const s=m?.shiftSession;
- if(!s) return m?.status||'系統建立班別中';
- if(m.status==='停機' && m.downStart) return `${s.shift}｜停機中`;
- return shiftPhaseInfo(m,ts).label;
-}
-function autoShiftStateTextBi(m,ts=appNow()){
- if(handoverPhase(ts))return shiftPhaseTextBi(m,ts);
- const s=m?.shiftSession;
- if(m?.status==='停機' && m?.downStart){
-  const sh=s?.shift||shiftAt(ts);
-  return operatorLang==='vi'?`${sh==='早班'?'Ca ngày':'Ca đêm'}｜Đang dừng máy`:`${sh}｜停機中`;
- }
- return shiftPhaseTextBi(m,ts);
-}
+function autoShiftStateText(m){return shiftPhaseInfo(m).label+(m?.status==='停機'?'｜停機中':'');}
+function autoShiftStateTextBi(m){return shiftPhaseTextBi(m)+(m?.status==='停機'?(operatorLang==='vi'?'｜Đang dừng máy':'｜停機中'):'');}
 /* ===== 實際時間產能 =====
    所有達成率與應達產量都用實際時間計算：
    - 機械手：依實際經過時間，不扣休息。
@@ -2005,16 +1947,8 @@ function segmentCapacityDetail({startTs,endTs,prodDate,shift,overtime,mode,cycle
  return {grossMinutes,breakMinutes,downMinutes,effectiveMinutes,target,breakdown};
 }
 function currentSegmentDetail(m,endTs=appNow()){
- const s=m.shiftSession;
- if(s?.segmentClosed) return {grossMinutes:0,breakMinutes:0,effectiveMinutes:0,target:0,breakdown:[]};
- const prodDate=s?.productionDate||productionDate(endTs);
- const shift=s?.shift||shiftAt(endTs);
- const overtime=isOvertimeShift(m);
- const startTs=s?.segmentStartTime || s?.startTime || shiftWindow(prodDate,shift,overtime).start;
- const mode=s?.segmentMode || m.processMode;
- const cycle=s?.segmentCycle || m.cycle;
- return segmentCapacityDetail({startTs,endTs,prodDate,shift,overtime,mode,cycle,
-  downtimeIntervals:downtimeIntervalsFor(m,startTs,endTs,s?.segmentStartWO||m.wo)});
+ const s=m.shiftSession;if(!s||s.segmentClosed)return {grossMinutes:0,breakMinutes:0,downMinutes:0,effectiveMinutes:0,target:0,breakdown:[]};
+ return actualTimeDetail(m,s.segmentStartTime||s.startTime,endTs,s.segmentStartWO||m.wo,s.segmentMode||m.processMode,s.segmentCycle||m.cycle,responsibilityShift(m));
 }
 function isAwaitingWorkOrder(m){return m.status==='待建立製令'&&!m.wo;}
 function shiftSegmentExpected(m,endTs=appNow()){
@@ -2034,6 +1968,7 @@ function formatMinutesHM(mins){
 function closeCurrentOrderSegment(m,endTs=appNow()){
  const s=m.shiftSession;
  if(!s || s.segmentClosed) return null;
+ archiveProductionSlice(m,endTs);
  const detail=currentSegmentDetail(m,endTs);
  const segOutput=Math.max(0,m.cum-(s.segmentStartCum??m.cum));
  const segDefect=Math.max(0,+s.segmentDefect||0);
@@ -2080,21 +2015,9 @@ function startNewOrderSegment(m,startTs=appNow()){
  s.segmentCycle=m.cycle;
  s.segmentDefect=0;
  s.segmentDownMinutes=0;
+ s.reportCursor={time:startTs,cum:m.cum,defect:0};
 }
-function scheduledProgressFor(m, ts=appNow()){
- const d=new Date(ts), raw=d.getHours()*60+d.getMinutes();
- const overtime=isOvertimeShift(m);
- const sh=shiftAt(ts);
- if(sh==='早班'){
-   const start=480;                    // 08:00
-   const end=overtime ? 1230 : 1020;  // 20:30 / 17:00
-   return Math.max(0,Math.min(1,(raw-start)/(end-start)));
- }
- const current=raw<480 ? raw+1440 : raw;
- const start=1230;                    // 20:30
- const end=overtime ? 1920 : 1740;    // 08:00 / 05:00
- return Math.max(0,Math.min(1,(current-start)/(end-start)));
-}
+function scheduledProgressFor(m){return m?.orderQty>0?Math.max(0,Math.min(1,m.cum/m.orderQty)):0;}
 function shiftPlanText(m){return autoShiftStateText(m);}
 function shiftPlanTextBi(m){return autoShiftStateTextBi(m);}
 
@@ -2294,30 +2217,30 @@ function authSelectPersonShift(value){
  }catch(e){return {ok:false,message:'今日班別保存失敗：'+e.message};}
 }
 function authChangePersonShift(){
- if(!authActive()||!avGuardWrite())return;
- const p=authPerson(authSession.employeeId),pd=productionDate(),old=personShiftRecord(p.employeeId,pd);
- if(!old){alert('今日尚未選擇班別，請登出後重新登入。');return;}
- const next=old.shift==='早班'?'晚班':'早班';
- const reason=(prompt('請填寫變更今日班別原因 / Lý do đổi ca hôm nay')||'').trim();
- const check=textInputCheck(reason,'變更班別原因',{max:200});
- if(!reason||!check.ok){if(reason)alert(check.zh);return;}
- if(!confirm(`變更今日班別？\\n${p.name}｜${pd}\\n${old.shift} → ${next}`))return;
- if(!confirm(`再次確認：將 ${p.name} 今日工作班別改為「${next}」？\\n此操作會留下稽核紀錄，不影響系統正式班別。`))return;
- const now=appNow(),row={...old,shift:next,updatedAt:now,
-  changes:[...(Array.isArray(old.changes)?old.changes:[]),{oldShift:old.shift,newShift:next,employeeId:p.employeeId,name:p.name,time:now,reason,action:'變更今日班別'}]};
+ if(!authCan('canCorrectProduction')||!avGuardWrite()){alert('今日班別需由主管修正。');return;}
+ const id=(prompt('請輸入需修正今日班別的人員編號',authSession.employeeId)||'').trim().toUpperCase();
+ const p=authPerson(id),pd=productionDate(),old=p?personShiftRecord(id,pd):null;
+ if(!old){alert('找不到該人員今日班別。');return;}
+ const next=old.shift==='早班'?'晚班':'早班',reason=(prompt(p.name+'：'+old.shift+' → '+next+'，請填修正原因')||'').trim();
+ const check=textInputCheck(reason,'修正班別原因',{max:200});if(!reason||!check.ok){if(reason)alert(check.zh);return;}
+ if(!confirm('確認修正 '+p.name+' 今日班別為 '+next+'？已結算歷史不回改。'))return;
+ const now=appNow(),actor=currentOperator(),snapshot=captureActionState(),prior=JSON.stringify(personShiftRecords);
  try{
-  savePersonShiftRecord(p.employeeId,pd,row);
-  authSession.workShift=next;authSession.workShiftDate=pd;
-  audit('變更今日班別',null,`${p.name}｜${pd}｜${old.shift} → ${next}`,old.shift,next,{eventTime:now,reason});
-  authApplyAccess();
- }catch(e){alert('班別變更失敗：'+e.message);}
+  savePersonShiftRecord(id,pd,{...old,shift:next,updatedAt:now,changes:[...(old.changes||[]),{oldShift:old.shift,newShift:next,employeeId:actor.employeeId,name:actor.name,time:now,reason,action:'主管修正今日班別'}]});
+  for(const m of machines){const a=m.responsibilityAttribution,e=responsibilityEvents.find(e=>e.id===a?.segmentId&&e.type==='segment'&&e.status==='open');
+   if(e&&e.operatorEmployeeId===id&&e.productionDate===pd){a.personShift=next;e.personShift=next;e.shift=next;}
+  }
+  persistResponsibilityEvents();if(!saveMachineState())throw Error('機台保存失敗');
+  if(authSession.employeeId===id){authSession.workShift=next;authSession.workShiftDate=pd;}
+  audit('主管修正今日班別',null,p.name+'｜'+pd,old.shift,next,{eventTime:now,reason,targetEmployeeId:id});authApplyAccess();renderAll();
+ }catch(e){restoreActionState(snapshot);personShiftRecords=JSON.parse(prior);appStorage.setItem(PERSON_SHIFT_KEY,prior);alert('班別修正失敗：'+e.message);}
 }
 function renderPersonShiftIdentity(){
  const label=document.getElementById('authPersonShiftLabel'),button=document.getElementById('authChangePersonShift');
  const p=authActive()?authPerson(authSession.employeeId):null;
  const row=p?personShiftRecord(p.employeeId,productionDate()):null;
  if(label)label.textContent=row?`今日工作班別：${row.shift}`:'';
- if(button)button.hidden=!row;
+ if(button){button.hidden=!authCan('canCorrectProduction');button.textContent='主管修正今日班別';}
 }
 function authPasswordValid(value){return typeof value==='string'&&value.length>=8&&value.length<=128;}
 async function authPasswordRecord(password){
@@ -2531,7 +2454,7 @@ function renderAuthGate(){
   const p=authPerson(authPendingUser.employeeId);
   gate.innerHTML=`<div class="auth-card"><h1>${authT('選擇今日工作班別','Chọn ca làm việc hôm nay')}</h1>
    <p>${escapeHTML(p?.name||'')}｜${authPendingUser.productionDate}</p>
-   <p>${authT('此班別只記錄本人今天的工作班別，不會切換系統正式班別。','Ca này chỉ ghi ca làm việc của bạn, không đổi ca chính thức của hệ thống.')}</p>
+   <p>${authT('此班別用於今日新接手的責任紀錄；接手開始、結算結束，跨時段不切班。','Ca đã chọn được lưu cho lần nhận máy; phụ trách từ lúc nhận đến lúc chốt, không tự đổi ca.')}</p>
    <form id="authPersonShiftForm"><label class="person-shift-choice">${authT('今日工作班別','Ca làm việc hôm nay')}
    <select id="authPersonShiftSelect" required><option value="">${authT('請選擇','Chọn ca')}</option><option value="早班">${authT('早班','Ca ngày')}</option><option value="晚班">${authT('晚班','Ca đêm')}</option></select></label>
    <button class="btn primary" type="submit">${authT('確認班別並登入','Xác nhận ca và đăng nhập')}</button></form>
@@ -2822,9 +2745,9 @@ function effectiveShiftRecord(r){
  const copy={...r,segments:(r.segments||[]).map(s=>({...s})),_effective:true};
  const targets=copy.segments.length?copy.segments:[copy];let delta=0,normalDelta=0;
  for(const c of productionCorrections()){
-  if(c.machine!==r.machine||c.productionDate!==r.productionDate||c.shift!==r.shift||(!c.affectsArchivedSegments&&c.time<=(r.correctionsIncludedThrough||0)))continue;
+  if(c.machine!==r.machine||(r.schemaVersion!==21&&(c.productionDate!==r.productionDate||c.shift!==r.shift))||(!c.affectsArchivedSegments&&c.time<=(r.correctionsIncludedThrough||0)))continue;
   const target=targets.find(s=>s.wo===c.wo&&(!c.targetTime||(+s.startTime||+r.startTime||0)<=c.targetTime&&(+s.endTime||+r.endTime||Infinity)>=c.targetTime));
-  if(!target)continue;
+  if(!target||r.schemaVersion===21&&c.targetTime<=r.startTime)continue;
   const d=c.delta??((c.newValue||0)-(c.oldValue||0));delta+=d;
   if(r.normalSettlementTime&&c.targetTime<=r.normalSettlementTime)normalDelta+=d;
   if(target!==copy){target.output=(+target.output||0)+d;target.endCum=(+target.endCum||0)+d;target.good=Math.max(0,target.output-(+target.defect||0));}
@@ -2836,7 +2759,7 @@ function effectiveShiftRecord(r){
 function effectiveShiftOutput(r){return effectiveShiftRecord(r).output;}
 function currentShiftOutputFor(m){
  const raw=rawCurrentShiftOutputFor(m),s=m.shiftSession;if(!s)return raw;
- const delta=productionCorrections().filter(c=>c.machine===m.id&&c.productionDate===s.productionDate&&c.shift===s.shift&&c.affectsArchivedSegments&&
+ const delta=productionCorrections().filter(c=>c.machine===m.id&&(s.continuous||c.productionDate===s.productionDate&&c.shift===s.shift)&&c.affectsArchivedSegments&&
   (s.segments||[]).some(seg=>seg.wo===c.wo&&(+seg.startTime||0)<=c.targetTime&&(+seg.endTime||Infinity)>=c.targetTime)).reduce((a,c)=>a+(c.delta??(c.newValue-c.oldValue)),0);
  return Math.max(0,raw+delta);
 }
@@ -2874,7 +2797,7 @@ function avValidateWaitInputs(action){
  const check=validateOtherReason(reason,detail,'等待原因');if(!check.ok){alert(check.zh+'\n'+check.vi);return false;}
  const text=textInputCheck(detail,'等待補充',{max:200});if(!text.ok){alert(text.zh);return false;}return true;
 }
-function avShiftIdentity(ts){return {productionDate:productionDate(ts),shift:shiftAt(ts)};}
+function avShiftIdentity(ts){return {productionDate:productionDate(ts),shift:'',schemaVersion:21};}
 function avEventEnd(e,now){return e.status==='open'?Math.max(e.startTime,now):e.endTime;}
 function avOpenEvent(kind,machine){return avData[kind].find(e=>e.machine===machine&&e.status==='open');}
 function avLink(m,type,event,detail,time=appNow()){
@@ -2882,22 +2805,7 @@ function avLink(m,type,event,detail,time=appNow()){
  audit(type,m,detail,'','',extra);
  recordWorkOrderEventById(event.workOrderId||m.workOrderRecordId,type,detail,{time,availabilityEventId:event.id,availabilityGroupId:event.groupId});
 }
-function avSplitOpen(kind,machine,until){
- avAssertWritable(); // V18.26.2 write guard
-
- let e=avOpenEvent(kind,machine);if(!e||until<e.startTime)return e;
- while(e&&until>=maxShiftEndTs(e.productionDate,e.shift)){
-  const boundary=maxShiftEndTs(e.productionDate,e.shift);if(boundary<=e.startTime)throw Error('等待／校車班界資料不合法。');
-  const id=makeEventId(kind==='waits'?'WAIT':'SETUP'),identity=avShiftIdentity(boundary),next={...(kind==='waits'?avEffectiveWait(e):e),id,...identity,startTime:boundary,endTime:null,minutes:0,status:'open',continuedFrom:e.id,continued:true};
-  e.endTime=boundary;e.minutes=(boundary-e.startTime)/60000;e.status='closed';e.continued=true;e.endedBySystem=true;
-  if(kind==='waits')Object.assign(e,{endedByEmployeeId:'',endedByName:'系統切班',endedByRole:'系統',endedBySessionId:''});
-  else Object.assign(e,{completedByEmployeeId:'',completedByName:'系統切班',completedByRole:'系統',completedBySessionId:''});
-  if(kind==='waits')Object.assign(next,{endedByEmployeeId:'',endedByName:'',endedByRole:'',endedBySessionId:''});
-  else Object.assign(next,{completedByEmployeeId:'',completedByName:'',completedByRole:'',completedBySessionId:''});
-  delete next.endedBySystem;avData[kind].push(next);e=next;const m=machines.find(m=>m.id===machine);if(m)m[kind==='waits'?'waitEventId':'setupEventId']=next.id;
- }
- return e;
-}
+function avSplitOpen(kind,machine,until){avAssertWritable();return avOpenEvent(kind,machine);}
 function avCloseEvent(kind,m,ts){
  avAssertWritable(); // V18.26.2 write guard
 
@@ -2944,12 +2852,7 @@ function avObserveCommittedAction(m,action,snapshot,ts){
   }
   avSave();
 }
-function availabilityTick(){
-  if(avStorageFault)return;
-  const now=appNow();
-  const pending=machines.some(m=>['waits','setups'].some(kind=>{const e=avOpenEvent(kind,m.id);return e&&now>=maxShiftEndTs(e.productionDate,e.shift);}));
-  if(pending)try{avTransaction(()=>{for(const m of machines)for(const kind of ['waits','setups']){const e=avOpenEvent(kind,m.id);if(e&&now>=maxShiftEndTs(e.productionDate,e.shift))avSplitOpen(kind,m.id,now);}});}catch(e){console.error('稼動事件切班保存失敗',e);}
-}
+function availabilityTick(){/* V18.27.21: elapsed time never closes or splits an event. */}
 function initializeAvailability(){
   avInitializeFaultUI();
   availabilityTick();
@@ -3031,7 +2934,7 @@ async function avReleaseFault(){
   authAssertSession(session);const last=avFaultConsistency();if(!last.ok||last.stamp!==first.stamp)throw Error('驗證期間資料變更或仍不一致，不能解除');
   const beforeAudit=JSON.stringify(auditLogs),rawAudit=appStorage.getItem('deyao_v8_audit');
   try{
-   const actor=authActorFields(),entry={id:makeEventId('AVLOCKRELEASE'),action:'AVAILABILITY_WRITE_LOCK_RELEASE',time:appDate().toLocaleString('zh-TW',{hour12:false}),eventTime:appNow(),reason,content:reason,operator:actor.actorName,role:authPerson(authSession.employeeId).role,machine:'',wo:'',oldValue:'LOCKED',newValue:'WRITABLE',productionDate:productionDate(),shift:shiftAt(),...actor};
+   const actor=authActorFields(),entry={id:makeEventId('AVLOCKRELEASE'),action:'AVAILABILITY_WRITE_LOCK_RELEASE',time:appDate().toLocaleString('zh-TW',{hour12:false}),eventTime:appNow(),reason,content:reason,operator:actor.actorName,role:authPerson(authSession.employeeId).role,machine:'',wo:'',oldValue:'LOCKED',newValue:'WRITABLE',productionDate:productionDate(),shift:'',...actor};
    auditLogs.unshift(entry);appStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));if(appStorage.getItem('deyao_v8_audit')!==JSON.stringify(auditLogs))throw Error('解除稽核保存失敗');
    appStorage.removeItem(AV_FAULT_KEY);appSessionStorage.removeItem(AV_FAULT_KEY);if(avReadFault())throw Error('故障鎖移除失敗');
   }catch(e){auditLogs=JSON.parse(beforeAudit);try{if(rawAudit===null)appStorage.removeItem('deyao_v8_audit');else appStorage.setItem('deyao_v8_audit',rawAudit);}catch(x){}avPersistFault('解除失敗：'+e.message);throw e;}
@@ -3066,8 +2969,8 @@ function avTransaction(change){
 }
 function avValidateBackupRows(data,context={}){
  const all=Object.fromEntries(Object.entries(AV_KEYS).map(([kind,key])=>[kind,data[key]===undefined?[]:JSON.parse(data[key])]));const ids=new Set(),validMachines=new Set(machines.map(m=>m.id));
- const base=(r,kind)=>{if(!r||typeof r!=='object'||Array.isArray(r))throw Error(kind+' 包含非事件物件');if(typeof r.id!=='string'||!r.id.trim()||ids.has(r.id))throw Error(kind+' 事件ID空白或重複');ids.add(r.id);if(!validMachines.has(r.machine)||!['早班','晚班'].includes(r.shift)||!/^\d{4}-\d{2}-\d{2}$/.test(r.productionDate)||productionDate(officialShiftStartTs(r.productionDate,r.shift))!==r.productionDate)throw Error(kind+' 機台／生產日／班別錯誤');};
- for(const kind of ['waits','setups','gaps']){const open=new Set();for(const r of all[kind]){base(r,kind);if(typeof r.groupId!=='string'||!r.groupId||!Number.isFinite(r.startTime)||r.startTime<=0||!['open','closed'].includes(r.status))throw Error(kind+' 群組／時間／狀態錯誤');if(r.status==='open'){if(r.endTime!==null||open.has(r.machine))throw Error(kind+' 重複開啟事件或endTime錯誤');open.add(r.machine);}else if(!Number.isFinite(r.endTime)||r.endTime<=r.startTime)throw Error(kind+' 結束必須晚於開始');if(r.minutes!==undefined&&(!Number.isFinite(r.minutes)||r.minutes<0||r.status==='closed'&&Math.abs(r.minutes-(r.endTime-r.startTime)/60000)>1e-7))throw Error(kind+' 分鐘資料錯誤');if(productionDate(r.startTime)!==r.productionDate||shiftAt(r.startTime)!==r.shift||kind!=='gaps'&&r.endTime!==null&&r.endTime>maxShiftEndTs(r.productionDate,r.shift))throw Error(kind+' 班別切片錯誤');if(kind==='waits'&&(!['LOSS','EXCLUDED'].includes(r.classification)||typeof r.scheduledProduction!=='boolean'||r.scheduledProduction!==(r.classification==='LOSS')))throw Error('Wait分類錯誤');if(kind==='gaps'&&r.classification!=='EXCLUDED')throw Error('行政空檔分類錯誤');}}
+ const base=(r,kind)=>{if(!r||typeof r!=='object'||Array.isArray(r))throw Error(kind+' 包含非事件物件');if(typeof r.id!=='string'||!r.id.trim()||ids.has(r.id))throw Error(kind+' 事件ID空白或重複');ids.add(r.id);if(!validMachines.has(r.machine)||!(r.schemaVersion===21?['','早班','晚班']:['早班','晚班']).includes(r.shift)||!/^\d{4}-\d{2}-\d{2}$/.test(r.productionDate)||productionDate(new Date(r.productionDate+'T12:00:00').getTime())!==r.productionDate)throw Error(kind+' 機台／生產日／班別錯誤');};
+ for(const kind of ['waits','setups','gaps']){const open=new Set();for(const r of all[kind]){base(r,kind);if(typeof r.groupId!=='string'||!r.groupId||!Number.isFinite(r.startTime)||r.startTime<=0||!['open','closed'].includes(r.status))throw Error(kind+' 群組／時間／狀態錯誤');if(r.status==='open'){if(r.endTime!==null||open.has(r.machine))throw Error(kind+' 重複開啟事件或endTime錯誤');open.add(r.machine);}else if(!Number.isFinite(r.endTime)||r.endTime<=r.startTime)throw Error(kind+' 結束必須晚於開始');if(r.minutes!==undefined&&(!Number.isFinite(r.minutes)||r.minutes<0||r.status==='closed'&&Math.abs(r.minutes-(r.endTime-r.startTime)/60000)>1e-7))throw Error(kind+' 分鐘資料錯誤');if(r.schemaVersion===21?productionDate(r.startTime)!==r.productionDate:(legacyProductionDate(r.startTime)!==r.productionDate||shiftAt(r.startTime)!==r.shift||kind!=='gaps'&&r.endTime!==null&&r.endTime>maxShiftEndTs(r.productionDate,r.shift)))throw Error(kind+' 班別切片錯誤');if(kind==='waits'&&(!['LOSS','EXCLUDED'].includes(r.classification)||typeof r.scheduledProduction!=='boolean'||r.scheduledProduction!==(r.classification==='LOSS')))throw Error('Wait分類錯誤');if(kind==='gaps'&&r.classification!=='EXCLUDED')throw Error('行政空檔分類錯誤');}}
  for(const kind of ['waits','setups'])for(const r of all[kind])for(const field of ['continuedFrom','previousWaitEventId'])if(r[field]){const prev=all[kind].find(x=>x.id===r[field]),ancestor=field==='previousWaitEventId'&&!!r.continuedFrom;if(!prev||prev.machine!==r.machine||prev.groupId!==r.groupId||prev.status!=='closed'||(ancestor?prev.endTime>r.startTime:prev.endTime!==r.startTime))throw Error(kind+' 延續／切點引用錯誤');}
  for(const c of all.corrections){if(!c||typeof c!=='object'||typeof c.id!=='string'||!c.id||ids.has(c.id))throw Error('分類修正ID錯誤');ids.add(c.id);const e=all.waits.find(e=>e.id===c.waitEventId);if(!e||e.machine!==c.machine||!Number.isFinite(c.time)||c.time<=0||typeof c.reason!=='string'||!c.reason.trim()||!['LOSS','EXCLUDED'].includes(c.classification)||typeof c.scheduledProduction!=='boolean'||c.scheduledProduction!==(c.classification==='LOSS'))throw Error('分類修正內容／引用錯誤');if(c.groupId&&c.groupId!==e.groupId||c.productionDate&&c.productionDate!==e.productionDate||c.shift&&c.shift!==e.shift)throw Error('分類修正切片引用錯誤');if(!c.actorEmployeeId||!c.actorName||!c.actorRole||!c.actorSessionId)throw Error('分類修正缺少操作者');if(c.before&&(!['LOSS','EXCLUDED'].includes(c.before.classification)||c.before.scheduledProduction!==(c.before.classification==='LOSS'))||c.after&&(c.after.classification!==c.classification||c.after.scheduledProduction!==c.scheduledProduction))throw Error('修正before／after矛盾');}
  const machineRows=JSON.parse(data['deyao_v10_machine_state']||'[]'),legacy=Object.values(AV_KEYS).every(k=>data[k]===undefined)&&!/^18\.(?:26\.[23]|27(?:\.\d+)?)(?:-|$)/.test(String(context.appVersion||''));const issues=avCrossCheck(all,machineRows,{legacy});if(issues.length)throw Error(issues.join('；'));
@@ -3140,7 +3043,7 @@ function clearTestProductionStorage(){if(!avGuardWrite())return false; /* V18.26
 
 const JSON_BACKUP_SCHEMA='deyao-cnc-test-backup';
 const JSON_BACKUP_SCHEMA_VERSION=1;
-const JSON_BACKUP_APP_VERSION='18.27.19';
+const JSON_BACKUP_APP_VERSION='18.27.22';
 const JSON_BACKUP_KEYS=[
  ...TEST_DATA_KEYS,
  TEST_MODE_KEY,
@@ -3185,7 +3088,7 @@ function currentBackupPayload(){
   appVersion:JSON_BACKUP_APP_VERSION,
   exportedAt:appDate().toISOString(),
   productionDate:productionDate(),
-  shift:shiftAt(),
+  shift:'',
   data
  };
 }
@@ -3506,15 +3409,49 @@ function currentOperator(){
 
 function pad2(n){return String(n).padStart(2,'0')}
 function productionDate(ts=appNow()){
- const d=new Date(ts), mins=d.getHours()*60+d.getMinutes();
- if(mins<480) d.setDate(d.getDate()-1);
- return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+ const d=new Date(ts);return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());
 }
+function legacyProductionDate(ts){const d=new Date(ts);if(d.getHours()<8)d.setDate(d.getDate()-1);return productionDate(d.getTime());}
 function shiftAt(ts=appNow()){
  const d=new Date(ts), min=d.getHours()*60+d.getMinutes();
  return (min>=480 && min<1230)?'早班':'晚班';
 }
-function currentShiftKey(){return `${productionDate()}|${shiftAt()}`;}
+function currentShiftKey(){return authActive()?productionDate()+'|'+(personShiftRecord(authSession.employeeId)?.shift||''):productionDate()+'|';}
+function savedPersonShift(e){return e?.personShift??e?.shift??'';}
+function responsibilityShift(m){
+ if(!m?.responsible||m.responsibleSettled)return '';
+ const a=m.responsibilityAttribution;
+ if(a&&Object.hasOwn(a,'personShift'))return a.personShift;
+ const e=responsibilityEvents.find(e=>e.type==='segment'&&e.id===a?.segmentId);
+ return savedPersonShift(e)||personShiftRecord(m.responsibleEmployeeId,productionDate(a?.startTime||m.responsibleSince||appNow()))?.shift||'';
+}
+function responsibilityBreaks(start,end,shift){
+ const rows=[];let date=addDaysISO(productionDate(start),-1),last=productionDate(end);
+ while(date<=last){for(const [from,to,label] of MANUAL_BREAKS[shift]||[])rows.push({start:dateAtProductionTime(date,from,shift),end:dateAtProductionTime(date,to,shift),label});date=addDaysISO(date,1);}
+ return rows;
+}
+function actualTimeDetail(m,start,end,wo,mode,cycle,personShift){
+ if(!Number.isFinite(+start)||start<=0||end<=start)return {grossMinutes:0,breakMinutes:0,downMinutes:0,effectiveMinutes:0,target:0,breakdown:[],processMode:mode,cycle};
+ const stops=downtimeIntervalsFor(m,start,end,wo),breaks=mode==='機械手'?[]:responsibilityBreaks(start,end,personShift);
+ const grossMinutes=(end-start)/60000,breakMinutes=mergedIntervalMinutes(breaks,start,end),downMinutes=mergedIntervalMinutes(stops,start,end);
+ const effectiveMinutes=Math.max(0,grossMinutes-mergedIntervalMinutes([...breaks,...stops],start,end));
+ return {grossMinutes,breakMinutes,downMinutes,effectiveMinutes,target:Math.round(effectiveMinutes*60/Math.max(1,+cycle||1)),breakdown:[],processMode:mode,cycle};
+}
+// shiftSession remains a continuous machine ledger. These snapshots only follow explicit operations.
+function productionSlice(m,ts=appNow()){
+ const s=m.shiftSession,c=s?.reportCursor;if(!c||!m.wo||s.segmentClosed||ts<c.time)return null;
+ const output=Math.max(0,m.cum-c.cum),defect=Math.max(0,(s.segmentDefect||0)-c.defect);
+ if(ts===c.time&&!output&&!defect)return null;
+ const sh=responsibilityShift(m),detail=actualTimeDetail(m,c.time,ts,m.wo,s.segmentMode||m.processMode,s.segmentCycle||m.cycle,sh);
+ const w=findWorkOrderById(m.workOrderRecordId);
+ const segment={responsibilitySegmentId:m.responsibilityAttribution?.segmentId||'',workOrderId:w?.id||'',drawingNameSnapshot:w?.drawingNameSnapshot??'',orderQtySnapshot:w?.orderQty??m.orderQty,wo:m.wo,drawing:m.drawing,program:m.program||'',startCum:c.cum,endCum:m.cum,startTime:c.time,endTime:ts,processMode:detail.processMode,cycle:detail.cycle,...detail,output,defect,good:Math.max(0,output-defect)};
+ return {schemaVersion:21,productionDate:productionDate(c.time),shift:sh,personShift:sh,operator:m.responsible||'',machine:m.id,wo:m.wo,startCum:c.cum,endCum:m.cum,startTime:c.time,endTime:ts,output,defect,good:segment.good,downMinutes:detail.downMinutes,segmentTargetSnapshot:detail.target,segments:[segment],cycleSnapshot:detail.cycle,processModeSnapshot:detail.processMode,drawingSnapshot:m.drawing,programSnapshot:m.program||'',note:m.responsible?'責任期間機台紀錄':'待接手／無責任人',correctionsIncludedThrough:appNow(),reportSplitStatus:'unified'};
+}
+function archiveProductionSlice(m,ts=appNow()){
+ const r=productionSlice(m,ts);if(r){shiftRecordsData.unshift(r);appStorage.setItem('deyao_v8_shift_records',JSON.stringify(shiftRecordsData));}
+ if(m.shiftSession)m.shiftSession.reportCursor={time:ts,cum:m.cum,defect:m.shiftSession.segmentDefect||0};
+ return r;
+}
 function rawCurrentShiftOutputFor(m){
  const s=m.shiftSession;
  if(!s) return Math.max(0,m.cum-(m.shiftStartCum||0));
@@ -3549,11 +3486,12 @@ function startAutoShiftSession(m,shift,prodDate,startTs,startCum=m.cum,source='�
   carryOutput:0,carryExpected:0,segments:[],defect:0,startWO:m.wo,note:'',
   extendedDetected:false,extendedDetectedAt:null,lastProductionActivity:null,productionActivityLog:[],
   normalSettlement:null,extendedSettlement:null,operatorSettlements:[],settlementMissed:false,settlementMissedAt:null,
-  autoManaged:true,source,preStartCarry:false,officialStartTs:officialShiftStartTs(prodDate,shift)
+  autoManaged:false,continuous:true,source,preStartCarry:false,officialStartTs:null,
+  reportCursor:{time:startTs,cum:startCum,defect:0}
  };
  if(m.status==='停機' && m.downStart){
-   m.downMeta={productionDate:prodDate,shift,operator:m.responsible||'',machine:m.id,wo:m.wo};
-  m.downEventId=null;beginDowntimeEvent(m,m.downStart,true);
+   m.downMeta=downtimeMetaFor(m);
+  beginDowntimeEvent(m,m.downStart,true);
  }
  return m.shiftSession;
 }
@@ -3570,17 +3508,7 @@ function settlementWindowInfo(m,ts=appNow()){
  return m.shiftSession && m.responsible && !m.responsibleSettled
   ? {kind:'unified',label:'結算',endTs:ts} : null;
 }
-function settlementWindowLabels(m){
- const s=m.shiftSession;if(!s)return {shift:'-',normal:'-',extended:'-',finalSwitch:'-'};
- const f=t=>new Date(t).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false});
- const n=normalShiftEndTs(s.productionDate,s.shift), e=maxShiftEndTs(s.productionDate,s.shift);
- return {
-  shift:s.shift,
-  normal:`${f(n-30*60000)}–${f(n)}`,
-  extended:`${f(e-30*60000)}–${f(e)}`,
-  finalSwitch:f(e)
- };
-}
+function settlementWindowLabels(m){return {shift:responsibilityShift(m)||'待接手',normal:'依實際結算',extended:'依實際結算',finalSwitch:'不自動切班'};}
 function settlementWindowText(m){
  return '目前責任人可依實際離開機台時間結算';
 }
@@ -3595,121 +3523,22 @@ function ensureNormalSettlementBoundary(m,ts=appNow()){
  if(!avGuardWrite())return false; // V18.26.2 write guard
  // 統一結算依責任人實際離開機台時間執行，不設下班窗口或逾時事件。
 }
-function finalizeShiftSession(m,endTs=appNow(),reason='系統班別封存',settledBy=null){
- if(!avGuardWrite())return false; // V18.26.2 write guard
-
- const session=m.shiftSession;if(!session)return null;
- const wasDown=(m.status==='停機'&&!!m.downStart);
- if(wasDown)closeDowntimePiece(m,endTs,true);
- const endCum=m.cum;
- const output=Math.max(0,(session.carryOutput||0)+(session.segmentClosed?0:(endCum-(session.segmentStartCum??endCum))));
- const defects=session.defect||m.defectShift||0;
- const shiftDownMinutes=Math.max(0,m.down||0);
- let finalDetail={grossMinutes:0,breakMinutes:0,effectiveMinutes:0,target:0,breakdown:[]};
- let allSegments=[...(session.segments||[])];
- if(!session.segmentClosed){
-  finalDetail=currentSegmentDetail(m,endTs);
-  const segOutput=Math.max(0,endCum-(session.segmentStartCum??endCum));
-  const segDefect=Math.max(0,+session.segmentDefect||0);
-  allSegments.push({
-   wo:m.wo,drawing:m.drawing,program:session.segmentProgram??m.program??'',startCum:session.segmentStartCum??endCum,endCum,
-   startTime:session.segmentStartTime||session.startTime,endTime:endTs,
-   processMode:session.segmentMode||m.processMode,cycle:session.segmentCycle||m.cycle,
-   grossMinutes:finalDetail.grossMinutes,breakMinutes:finalDetail.breakMinutes,effectiveMinutes:finalDetail.effectiveMinutes,
-   target:finalDetail.target,output:segOutput,defect:segDefect,good:Math.max(0,segOutput-segDefect),
-   downMinutes:Math.max(0,+session.segmentDownMinutes||0)
-  });
- }
- const segmentExpected=Math.max(0,Math.round((session.carryExpected||0)+finalDetail.target));
- const attribution=m.responsibilityAttribution;
- if(attribution && !attribution.legacyNeedsRetakeover && m.responsible && !m.responsibleSettled && attribution.shiftKey===session.key){
-  attribution.carryTarget=(attribution.carryTarget||0)+Math.max(0,segmentExpected-(attribution.targetBase||0));
-  attribution.targetBase=0;
-  attribution.shiftKey=null;
- }
-
- // 若上一位已結算但下一位還沒接手，待接手產量可能跨20:30／08:00；
- // 在真正換班前先把舊班累積的待接手產量與應達保存為 carry。
- if(m.pendingTakeover && (!m.pendingTakeover.shiftKey || m.pendingTakeover.shiftKey===session.key)){
-  m.pendingTakeover.carryOutput=(m.pendingTakeover.carryOutput||0)+Math.max(0,output-(m.pendingTakeover.shiftOutputAtCut||0));
-  m.pendingTakeover.carryTarget=(m.pendingTakeover.carryTarget||0)+Math.max(0,segmentExpected-(m.pendingTakeover.targetAtCut||0));
-  m.pendingTakeover.shiftOutputAtCut=0;
-  m.pendingTakeover.targetAtCut=0;
-  m.pendingTakeover.shiftKey=null;
- }
-
- const splitKnown=!!session.normalSettlement;
- const hasUnifiedSettlement=(session.operatorSettlements||[]).some(e=>e.kind==='unified');
- const normalOutput=splitKnown?Math.max(0,Math.min(output,session.normalSettlement.output||0)):null;
- const postSettlementOutput=splitKnown?Math.max(0,output-normalOutput):null;
- const overtimeOutput=postSettlementOutput; // 舊欄位保留相容，但語意改為結算後區段
- const extended=!!session.extendedDetected;
- const operatorsList=(Array.isArray(session.operators)&&session.operators.length)?session.operators:[session.operator].filter(Boolean);
- const who=settledBy||'系統';
- const rec={
-  correctionsIncludedThrough:appNow(),productionDate:session.productionDate,shift:session.shift,operator:operatorsList.join('、')||'-',
-  machine:m.id,wo:session.startWO===m.wo?m.wo:`${session.startWO} → ${m.wo}`,
-  startCum:session.startCum,endCum,output,defect:defects,good:Math.max(0,output-defects),
-  startTime:session.startTime,endTime:endTs,note:reason,settledBy:who,settlementReason:reason,
-  normalSettlementTime:session.normalSettlement?.time||null,
-  normalSettlementCum:session.normalSettlement?.cum??null,
-  normalSettlementBy:session.normalSettlement?.by||null,
-  reportSplitStatus:hasUnifiedSettlement?'unified':splitKnown?'settled':(session.extendedSettlement?'overtimeOnly':'missing'),
-  reportSegmentStartTime:session.normalSettlement?.time||session.extendedSettlement?.time||null,
-  normalOutput,postSettlementOutput,overtimeOutput,
-  overtime:extended,autoExtendedDetected:extended,extendedDetectedAt:session.extendedDetectedAt||null,
-  segmentTargetSnapshot:segmentExpected,
-  downMinutes:shiftDownMinutes,segments:allSegments,
-  cycleSnapshot:m.cycle,processModeSnapshot:m.processMode,drawingSnapshot:m.drawing,programSnapshot:m.program||''
- };
- shiftRecordsData.unshift(rec);if(shiftRecordsData.length>1000)shiftRecordsData=shiftRecordsData.slice(0,1000);
- appStorage.setItem('deyao_v8_shift_records',JSON.stringify(shiftRecordsData));
- addLog(`${m.id}｜${reason}｜${session.productionDate} ${session.shift}｜累積 ${endCum} PCS｜本班 ${output} PCS｜停機 ${shiftDownMinutes} 分`);
- auditLogs.unshift({
-  time:appDate().toLocaleString('zh-TW',{hour12:false}),productionDate:session.productionDate,shift:session.shift,
-  operator:who,role:who==='系統'?'系統':currentOperator().role,machine:m.id,wo:m.wo,action:'系統班別封存',
-   content:`${reason}｜累積 ${endCum} PCS｜本班 ${output} PCS｜異常 ${defects}｜良品 ${Math.max(0,output-defects)}｜停機 ${shiftDownMinutes} 分｜結算 ${hasUnifiedSettlement||splitKnown?'已完成':'未執行'}`,
-  oldValue:session.startCum,newValue:endCum
- });
- auditLogs=auditLogs.slice(0,500);appStorage.setItem('deyao_v8_audit',JSON.stringify(auditLogs));
- m.shiftSession=null;m.shiftStartCum=endCum;m.defectShift=0;m.down=0;
- if(wasDown){m.downStart=endTs;m.downMeta=null;m.downEventId=null;}
- return rec;
+function finalizeShiftSession(m,endTs=appNow(),reason='機台生產紀錄'){
+ if(!avGuardWrite())return false;
+ return archiveProductionSlice(m,endTs);
 }
 function ensureAutoShiftSession(m,ts=appNow()){
- if(avStorageFault)return m.shiftSession; // V18.26.2 write guard
-
- // V18.22：乾淨測試模式下，「待建立製令」代表尚未真正開始生產。
- // 沒有製令時不建立 shiftSession，避免 28 台空機台產生空白班別／月結警告。
- if(m.status==='待建立製令' && !m.wo){
-  if(m.shiftSession){
-   m.shiftSession=null;
-   m.shiftStartCum=0;
-  }
-  return null;
+ if(avStorageFault)return m.shiftSession;
+ if(isAwaitingWorkOrder(m))return null;
+ if(!m.shiftSession)startAutoShiftSession(m,'',productionDate(ts),ts,m.cum,'製令連續紀錄');
+ const s=m.shiftSession;
+ if(!s.continuous){
+  // Preserve completed legacy order segments without changing any archived historical record.
+  for(const g of s.segments||[]){shiftRecordsData.unshift({productionDate:s.productionDate,shift:s.shift,operator:s.operator||'',machine:m.id,wo:g.wo,startTime:g.startTime,endTime:g.endTime,startCum:g.startCum,endCum:g.endCum,output:g.output,defect:g.defect,good:g.good,downMinutes:g.downMinutes,segments:[{...g}],cycleSnapshot:g.cycle,processModeSnapshot:g.processMode,segmentTargetSnapshot:g.target,note:'V18.27.20 進行中製令已完成分段'});}
+  if(s.segments?.length)appStorage.setItem('deyao_v8_shift_records',JSON.stringify(shiftRecordsData));
+  s.continuous=true;s.autoManaged=false;s.reportCursor={time:s.segmentStartTime||s.startTime,cum:s.segmentStartCum??m.cum,defect:0};
  }
- if(!m.shiftSession){
-  const pd=productionDate(ts),sh=shiftAt(ts),officialStart=officialShiftStartTs(pd,sh);
-  const startCum=Number.isFinite(+m.shiftStartCum)?Math.min(m.cum,+m.shiftStartCum):m.cum;
-  startAutoShiftSession(m,sh,pd,officialStart,startCum,'系統自動建立',false);
- }
- ensureNormalSettlementBoundary(m,ts);
- applySettledDeparture(m,ts);
- let guard=0;
- while(m.shiftSession && ts>=maxShiftEndTs(m.shiftSession.productionDate,m.shiftSession.shift) && guard<4){
-  const old={...m.shiftSession};
-  const boundary=maxShiftEndTs(old.productionDate,old.shift);
-  finalizeShiftSession(m,boundary,'系統到時自動切班','系統');
-  const next=nextShiftIdentity(old);
-  startAutoShiftSession(m,next.shift,next.productionDate,boundary,m.cum,'系統到時自動切班',false);
-  if(m.pendingTakeover && !m.pendingTakeover.shiftKey){
-   m.pendingTakeover.shiftKey=m.shiftSession.key;
-   m.pendingTakeover.shiftOutputAtCut=0;
-   m.pendingTakeover.targetAtCut=0;
-  }
-  guard++;
- }
- return m.shiftSession;
+ return s;
 }
 
 
@@ -3735,11 +3564,7 @@ function legacyResponsibilityBaseline(m,s,now){
   return {ok:false,reason:'舊加工模式或加工秒數不完整'};
  if((m.down||0)>0 && !downtimeEvents.some(e=>e.machine===m.id&&e.wo===m.wo))
   return {ok:false,reason:'舊停機分鐘缺少可核對的停機事件'};
- const detail=segmentCapacityDetail({startTs:segmentStart,endTs:start,
-  prodDate:s.productionDate,shift:s.shift,overtime:isOvertimeShift(m),
-  mode:s.segmentMode||m.processMode,cycle,
-  downtimeIntervals:downtimeIntervalsFor(m,segmentStart,start,m.wo)});
- return {ok:true,start,startCum,targetBase:Math.max(0,Math.round((s.carryExpected||0)+detail.target))};
+ return {ok:true,start,startCum,processMode:s.segmentMode||m.processMode,cycle};
 }
 function ensureResponsibilityAttribution(m){
  if(avStorageFault)return m.responsibilityAttribution||null; // V18.26.2 write guard
@@ -3749,19 +3574,29 @@ function ensureResponsibilityAttribution(m){
  const a=m.responsibilityAttribution;
  // V18.25.3 曾在缺少 attribution 時用「目前應達」補基準；此種自動補值沒有 source / segmentId。
  if(a && a.operator===m.responsible &&
-   (a.segmentId||a.source||a.legacyReconstructed||a.legacyNeedsRetakeover))return a;
+   (a.segmentId||a.source||a.legacyReconstructed||a.legacyNeedsRetakeover)){
+  if(!Object.hasOwn(a,'personShift')){
+   const id=m.responsibleEmployeeId||operators.find(p=>p.name===m.responsible)?.employeeId,day=productionDate(a.startTime);
+   const chosen=personShiftRecord(id,day)||personShiftRecord(id,legacyProductionDate(a.startTime));
+   a.personShift=chosen?.shift||'';
+   if(!chosen){a.legacyNeedsRetakeover=true;a.legacyReason='舊責任缺少人員選擇班別，請重新接手建立基準';}
+   const e=responsibilityEvents.find(e=>e.id===a.segmentId&&e.type==='segment'&&e.status==='open');
+   if(e&&chosen){e.personShift=a.personShift;e.shift=a.personShift;e.productionDate=day;}
+  }
+  return a;
+ }
  const now=appNow();
  const legacy=legacyResponsibilityBaseline(m,s,now);
  m.responsibilityAttribution={
-  operator:m.responsible,
+  operator:m.responsible,personShift:personShiftRecord(m.responsibleEmployeeId,productionDate(m.responsibleSince))?.shift||'',
    startTime:legacy.ok?legacy.start:(Number(m.responsibleSince)||now),
    startCum:legacy.ok?legacy.startCum:(m.legacyStartCumMissing?null:(Number.isInteger(+m.responsibleStartCum)?+m.responsibleStartCum:null)),
    wo:m.responsibleStartWO||m.wo,
   shiftKey:s.key,
   shiftOutputBase:currentShiftOutputFor(m),
-   targetBase:legacy.ok?legacy.targetBase:null,
+   processMode:legacy.ok?legacy.processMode:null,
+   cycle:legacy.ok?legacy.cycle:null,
   carryOutput:0,
-  carryTarget:0,
    actualTakeoverTime:legacy.ok?legacy.start:(Number(m.responsibleSince)||now),
    actualTakeoverCum:legacy.ok?legacy.startCum:m.cum,
    legacyReconstructed:legacy.ok,
@@ -3787,12 +3622,13 @@ function currentPersonStats(m,ts=appNow()){
   target:null,rate:null,startTime:a.startTime,startCum:a.startCum,
   settled:false,needsRetakeover:true,legacyReason:a.legacyReason
  };
- if(!avStorageFault && a && a.shiftKey!==s.key){a.shiftKey=s.key;a.targetBase=0;}
  const output=Math.max(0,m.cum-(a?.startCum??m.cum));
- const target=Math.max(0,(a?.carryTarget||0)+(shiftExpectedNow(m,ts)-(a?.targetBase||0)));
+ const detail=responsibilityTimeDetail(m,a?.startTime||m.responsibleSince,ts,a?.wo||m.wo);
+ const target=detail.target;
  return {
   operator:m.responsible,output,target,rate:target>0?output/target*100:0,
-  startTime:a?.startTime||m.responsibleSince,startCum:a?.startCum??m.cum,settled:false
+  startTime:a?.startTime||m.responsibleSince,startCum:a?.startCum??m.cum,settled:false,
+  effectiveMinutes:detail.effectiveMinutes,downMinutes:detail.downMinutes
  };
 }
 function pendingTakeoverStats(m,ts=appNow()){
@@ -3828,11 +3664,7 @@ function pendingTakeoverRiskInfo(m,actualCum,ts=appNow()){
   expectedPending,normalUpper,warningUpper,checkedAt:ts};
 }
 function settlementPreview(m,actualCum,ts=appNow()){
- const s=m.shiftSession,extended=s?.extendedDetected;
- if(s&&actualCum>m.cum&&isExtendedWindowForSession(s,ts))s.extendedDetected=true;
- let person;
- try{person=currentPersonStats(m,ts);}
- finally{if(s)s.extendedDetected=extended;}
+ const person=currentPersonStats(m,ts);
  const output=Number.isInteger(person.startCum)?actualCum-person.startCum:null;
  return {...person,output,rate:person.target>0&&output!==null?output/person.target*100:0};
 }
@@ -3862,7 +3694,7 @@ function createOperatorSettlement(m,info,ts=appNow(),by=currentOperator().name,n
   ...authActorFields(),id:`SET-${m.id}-${ts}`,
   time:ts,machine:m.id,operator:by,wo:m.wo,drawing:m.drawing,program:m.program||'',
 
-  productionDate:s.productionDate,shift:s.shift,kind:'unified',
+  productionDate:ended.productionDate,shift:savedPersonShift(ended),personShift:savedPersonShift(ended),kind:'unified',
   cum:m.cum,shiftOutputAtCut:shiftOutput,targetAtCut:shiftTarget,
   personOutput:person.output,personTarget:person.target,personRate:person.rate,
   output:ended.output,target:ended.target,rate:ended.rate,
@@ -3885,7 +3717,7 @@ function createOperatorSettlement(m,info,ts=appNow(),by=currentOperator().name,n
   shiftOutputAtCut:shiftOutput,targetAtCut:shiftTarget,
   carryOutput:0,carryTarget:0,
   settledBy:by,departureBoundary:ts,departureApplied:true,
-  productionDate:s.productionDate,shift:s.shift,kind:'unified',wo:m.wo
+  productionDate:productionDate(ts),shift:'',kind:'unified',wo:m.wo
  }:null;
  m.settlementDecision={settlementId:event.id,cutTime:ts,cutCum:m.cum,wo:m.wo,
   settledBy:by,employeeId:currentOperator().employeeId,wasStopped:m.status==='停機'};
@@ -3922,22 +3754,26 @@ function startResponsibilityAttribution(m,newResponsible,now,actualCum,pending=n
  if(!avGuardWrite())return false; // V18.26.2 write guard
 
  const s=m.shiftSession;
+ const p=newResponsible===currentOperator().name?currentOperator():operators.find(p=>p.name===newResponsible);
+ const pd=productionDate(now),personShift=personShiftRecord(p?.employeeId,pd)?.shift;
+ if(!personShift)throw Error('請由該人員登入選擇今日早班／晚班後再接手。');
+ archiveProductionSlice(m,now);
  const currentOut=currentShiftOutputFor(m);
- const currentTarget=shiftExpectedNow(m,now);
+
 
  // V18.13：個人績效一律從「真正按接手機台」當下開始。
  // 上一位結算後、下一位實際接手前的產量只算機台產量，不灌入任何人的個人達成率。
  m.responsibilityAttribution={
-  operator:newResponsible,
+  operator:newResponsible,personShift,productionDate:pd,
   startTime:now,
   startCum:actualCum,
    segmentId:makeEventId('RESP'),
    wo:m.wo,
   shiftKey:s?.key||'',
   shiftOutputBase:currentOut,
-  targetBase:currentTarget,
+  processMode:m.processMode,
+  cycle:m.cycle,
   carryOutput:0,
-  carryTarget:0,
   actualTakeoverTime:now,
   actualTakeoverCum:actualCum,
   source:pending?'實際接手｜前段待接手量不計個人':'實際接手'
@@ -3945,8 +3781,9 @@ function startResponsibilityAttribution(m,newResponsible,now,actualCum,pending=n
  responsibilityEvents.unshift({
   ...authActorFields(),...authResponsibilityActor('startedBy'),type:'segment',id:m.responsibilityAttribution.segmentId,status:'open',
   operator:newResponsible,operatorEmployeeId:newResponsible===currentOperator().name?currentOperator().employeeId:(operators.find(p=>p.name===newResponsible)?.employeeId||''),machine:m.id,wo:m.wo,
-  startTime:now,startCum:actualCum,createdAt:now,
-  productionDate:s?.productionDate||productionDate(now),shift:s?.shift||shiftAt(now)
+  startTime:now,startCum:actualCum,createdAt:now,processMode:m.processMode,cycle:m.cycle,
+  workOrderId:m.workOrderRecordId||'',drawingSnapshot:m.drawing||'',drawingNameSnapshot:findWorkOrderById(m.workOrderRecordId)?.drawingNameSnapshot??'',programSnapshot:m.program||'',orderQtySnapshot:m.orderQty,
+  productionDate:pd,shift:personShift,personShift,schemaVersion:21
  });
  persistResponsibilityEvents();
  return m.responsibilityAttribution;
@@ -3959,20 +3796,10 @@ function persistResponsibilityEvents(){
  appStorage.setItem('deyao_v17_responsibility_events',JSON.stringify(responsibilityEvents));
 }
 function responsibilityTimeDetail(m,startTs,endTs,wo){
- let effectiveMinutes=0,downMinutes=0,cursor=startTs,guard=0;
- while(cursor<endTs && guard++<40){
-  const pd=productionDate(cursor),shift=shiftAt(cursor);
-  const boundary=maxShiftEndTs(pd,shift);
-  const stop=Math.min(endTs,boundary>cursor?boundary:endTs);
-  const detail=segmentCapacityDetail({startTs:cursor,endTs:stop,prodDate:pd,shift,
-   overtime:true,mode:m.processMode,cycle:m.cycle,
-   downtimeIntervals:downtimeIntervalsFor(m,cursor,stop,wo)});
-  effectiveMinutes+=detail.effectiveMinutes;
-  downMinutes+=detail.downMinutes;
-  cursor=stop;
- }
- return {effectiveMinutes,downMinutes};
+ const a=m.responsibilityAttribution,snapshot=a&&+a.startTime===+startTs&&(a.wo||m.wo)===wo?a:null;
+ return actualTimeDetail(m,+startTs,+endTs,wo,snapshot?.processMode||m.processMode,snapshot?.cycle||m.cycle,snapshot?.personShift??responsibilityShift(m));
 }
+
 function endResponsibilitySegment(m,ts,cutCum,reason,reasonDetail=''){
  if(!avGuardWrite())return false; // V18.26.2 write guard
 
@@ -3992,17 +3819,21 @@ function endResponsibilitySegment(m,ts,cutCum,reason,reasonDetail=''){
  if(!segment){
   segment={type:'segment',id,status:'open',operator:m.responsible,machine:m.id,
    wo:a.wo||m.wo,startTime:startTs,startCum,createdAt:ts,
-   productionDate:productionDate(startTs),shift:shiftAt(startTs)};
+   productionDate:productionDate(startTs),shift:responsibilityShift(m),personShift:responsibilityShift(m)};
   responsibilityEvents.unshift(segment);
  }
  if(segment.status==='closed')throw new Error('此責任區段已經封存。');
  Object.assign(segment,{...authResponsibilityActor('closedBy'),status:'closed',endTime:ts,endCum:cutCum,
   output,effectiveMinutes:detail.effectiveMinutes,
+  processMode:detail.processMode||null,cycle:detail.cycle||null,
+  targetBasis:person.needsRetakeover?null:'actualResponsibilityTime',
   downMinutes:detail.downMinutes,target:person.needsRetakeover?null:person.target,
   rate:person.needsRetakeover?null:(person.target>0?output/person.target*100:0),
   legacyUnverified:!!person.needsRetakeover,legacyReason:person.legacyReason||'',
   endReason:reason,endReasonDetail:reasonDetail,archivedAt:appNow(),
-  endShift:m.shiftSession?.shift||shiftAt(ts)});
+  endShift:savedPersonShift(segment)});
+ archiveProductionSlice(m,ts);
+ if(m.status==='停機'&&m.downStart){closeDowntimePiece(m,ts,true);m.downStart=ts;m.downEventId=null;m.downMeta={productionDate:productionDate(ts),shift:'',personShift:'',operator:'',machine:m.id,wo:m.wo};beginDowntimeEvent(m,ts,true);}
  persistResponsibilityEvents();
  m.responsibilityAttribution=null;
  return segment;
@@ -4020,8 +3851,8 @@ function releaseResponsibility(m,ts,reason,reasonDetail=''){
  m.pendingTakeover={cutTime:ts,cutCum:m.cum,shiftKey:s?.key||'',
   shiftOutputAtCut:currentShiftOutputFor(m),targetAtCut:shiftExpectedNow(m,ts),
   carryOutput:0,carryTarget:0,settledBy:old,departureBoundary:ts,
-  departureApplied:true,productionDate:s?.productionDate||productionDate(ts),
-  shift:s?.shift||shiftAt(ts),kind:'responsibilityEnd',wo:m.wo};
+  departureApplied:true,productionDate:productionDate(ts),
+  shift:'',kind:'responsibilityEnd',wo:m.wo};
  m.responsible='';m.responsibleEmployeeId='';m.responsibleSince=null;m.responsibleStartCum=m.cum;
  m.responsibleStartWO=m.wo;m.responsibleSettled=false;
  return segment;
@@ -4047,6 +3878,7 @@ function registerMachineTakeover(m,newResponsible,actualCum,reason='',takeoverRi
  if(!authCan('canOperate'))throw Error('此登入角色不能接手機台。');
  if(m.settlementDecision)throw Error('請先完成結算後的繼續／停止生產選擇。');
  const responsiblePerson=newResponsible===currentOperator().name?currentOperator():operators.find(p=>p.name===newResponsible);if(!responsiblePerson||responsiblePerson.status==='DISABLED')throw Error('停用帳號或非生產人員不能成為新責任人。');
+ if(!personShiftRecord(responsiblePerson.employeeId,productionDate(now)))throw Error('請由該人員登入選擇今日班別後再接手。');
  const rebaseline=authIsResponsible(m,responsiblePerson) && !!ensureResponsibilityAttribution(m)?.legacyNeedsRetakeover;
  if(!m.wo || !['生產中','停機'].includes(m.status) || (authIsResponsible(m,responsiblePerson)&&!rebaseline))
   throw new Error('機台已無有效製令，或目前人員已經接手。');
@@ -4075,12 +3907,12 @@ function registerMachineTakeover(m,newResponsible,actualCum,reason='',takeoverRi
  const attr=startResponsibilityAttribution(m,newResponsible,now,m.cum,pending);
 
  responsibilityEvents.unshift({
-   ...authActorFields(),id:makeEventId('TAKE'),type:'takeover',time:now,productionDate:m.shiftSession?.productionDate||productionDate(now),
-  shift:m.shiftSession?.shift||shiftAt(now),phase:phase.phase,
+   ...authActorFields(),id:makeEventId('TAKE'),type:'takeover',time:now,productionDate:productionDate(now),
+  shift:attr.personShift,personShift:attr.personShift,phase:phase.phase,
   reportSegment:pending?'前段待接手產量':'一般接手',machine:m.id,
   oldResponsible,newResponsible,cum:m.cum,wo:m.wo,note:reason||'',
   attributedStartCum:attr.startCum,attributedStartTime:attr.startTime,
-  waitingOutput:pendingStats.output,
+  waitingOutput:pendingStats.output,waitingShift:'',
   waitingTarget:pendingStats.target,
   waitingStartCum:pending?.cutCum??null,
   waitingEndCum:m.cum,
@@ -4096,6 +3928,7 @@ function registerMachineTakeover(m,newResponsible,actualCum,reason='',takeoverRi
  });
  persistResponsibilityEvents();
 
+ if(m.status==='停機'&&m.downStart){closeDowntimePiece(m,now,true);m.downStart=now;m.downEventId=null;m.downMeta=null;}
  m.responsible=newResponsible;m.responsibleEmployeeId=responsiblePerson.employeeId;
  m.responsibleSince=now;
  m.responsibleStartCum=m.cum;
@@ -4105,6 +3938,7 @@ function registerMachineTakeover(m,newResponsible,actualCum,reason='',takeoverRi
  m.responsibleStartWO=m.wo;
  m.responsibleSettled=false;
  m.pendingTakeover=null;
+ if(m.status==='停機'&&m.downStart)beginDowntimeEvent(m,now,true);
 
  addLog(`${m.id}｜接手機台｜${oldResponsible} → ${newResponsible}｜實際接手 ${m.cum} PCS${pending?`｜前段待接手 ${pendingStats.output} PCS（僅機台產量，不計個人）`:''}`);
   audit('接手機台',m,`${oldResponsible} → ${newResponsible}｜實際接手 ${m.cum} PCS${pending?`｜前段待接手 ${pending.cutCum} → ${m.cum}，共 ${pendingStats.output} PCS，只列機台產量、不列個人達成率｜推估 ${takeoverRisk?.expectedPending??'-'}｜正常上限 ${takeoverRisk?.normalUpper??'-'}｜警告上限 ${takeoverRisk?.warningUpper??'-'}｜判斷 ${takeoverRisk?.riskLevel||'normal'}`:''}${reason?'｜'+reason:''}`,oldResponsible,newResponsible,
@@ -4127,7 +3961,7 @@ function audit(action,m,content='',oldValue='',newValue='',extra={}){
  const op=currentOperator();
  const row={
   time:appDate().toLocaleString('zh-TW',{hour12:false}),
-  productionDate:m?.shiftSession?.productionDate||productionDate(), shift:m?.shiftSession?.shift||shiftAt(),
+  productionDate:productionDate(), shift:responsibilityShift(m),
   operator:op.name, role:op.role,
   machine:m?.id||'', wo:m?.wo||'',
    action, content, oldValue, newValue,...extra,...authActorFields()
@@ -4142,7 +3976,7 @@ function auditAs(operatorName,role,action,m,content='',oldValue='',newValue=''){
 
  const row={
   time:appDate().toLocaleString('zh-TW',{hour12:false}),
-  productionDate:m?.shiftSession?.productionDate||productionDate(),shift:m?.shiftSession?.shift||shiftAt(),
+  productionDate:productionDate(),shift:responsibilityShift(m),
   operator:operatorName,role,
   machine:m?.id||'',wo:m?.wo||'',
   action,content,oldValue,newValue,...authActorFields()
@@ -4161,7 +3995,7 @@ function auditResponsibilityEnd(m,segment,ts,reason){
 }
 
 function currentShiftProgress(m){return scheduledProgressFor(m);}
-function shiftName(){ return shiftAt(); }
+function shiftName(){return authActive()?'人員班別：'+(personShiftRecord(authSession.employeeId)?.shift||authSession.workShift||'待選擇'):'人員登入選班別';}
 function shiftOutput(m){return isAwaitingWorkOrder(m)?0:currentShiftOutputFor(m)}
 function expectedNow(m){return isAwaitingWorkOrder(m)?0:Math.max(1,shiftSegmentExpected(m));}
 function rateNow(m){return shiftOutput(m)/Math.max(1,expectedNow(m))*100}
@@ -4180,10 +4014,7 @@ function validPCSInteger(value,{allowZero=true}={}){
  const n=Number(raw);
  return Number.isFinite(n) && Number.isInteger(n) && (allowZero?n>=0:n>0);
 }
-function machineProductionMonth(m){
- const d=m?.shiftSession?.productionDate||productionDate();
- return String(d||'').slice(0,7);
-}
+function machineProductionMonth(m){return productionDate(m?.responsibilityAttribution?.startTime||m?.shiftSession?.reportCursor?.time||appNow()).slice(0,7);}
 function isMachineMonthClosed(m){
  const mk=machineProductionMonth(m);
  return (monthCloseState?.[mk]||'open')==='closed';
@@ -4286,16 +4117,7 @@ function persistDowntimeEvents(){
  if(downtimeEvents.length>5000) downtimeEvents=downtimeEvents.slice(0,5000);
  appStorage.setItem('deyao_v15_downtime_events',JSON.stringify(downtimeEvents));
 }
-function downtimeMetaFor(m){
- const s=m.shiftSession;
- return {
-  productionDate:s?.productionDate||productionDate(),
-  shift:s?.shift||shiftAt(),
-   operator:m.responsible||s?.operator||currentOperator().name,
-  machine:m.id,
-  wo:m.wo
- };
-}
+function downtimeMetaFor(m){return {productionDate:productionDate(m.downStart||appNow()),shift:responsibilityShift(m),personShift:responsibilityShift(m),operator:m.responsible||'',machine:m.id,wo:m.wo};}
 function beginDowntimeEvent(m,startTs=appNow(),continued=false){
  if(!avGuardWrite())return false; // V18.26.2 write guard
 
@@ -4313,7 +4135,7 @@ function beginDowntimeEvent(m,startTs=appNow(),continued=false){
   reasonDetail:m.downReasonDetail||'',
   toolNumber:m.downToolNumber||'',
   reasonText:downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''),
-  startTime:startTs,startCum:m.cum,responsible:m.responsible||'',
+  startTime:startTs,startCum:m.cum,responsible:meta.operator||'',
   endTime:null,minutes:null,status:'open',continued:!!continued
  });
  persistDowntimeEvents();
@@ -4337,7 +4159,7 @@ function closeDowntimePiece(m,endTs=appNow(),continued=false){
    reasonDetail:m.downReasonDetail||'',
    toolNumber:m.downToolNumber||'',
    reasonText:downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''),
-   startTime:startTs,startCum:m.cum,responsible:m.responsible||'',
+   startTime:startTs,startCum:m.cum,responsible:meta.operator||'',
    endTime:null,minutes:null,status:'open',continued:!!continued
   };
   downtimeEvents.unshift(evt);
@@ -4522,7 +4344,7 @@ function recordSettlementChoice(m,choice,now){
  const d=m.settlementDecision;
  const row={...authActorFields(),type:'settlementChoice',id:makeEventId('SCHOICE'),time:now,
   machine:m.id,wo:m.wo,settlementId:d.settlementId,settlementTime:d.cutTime,settlementCum:d.cutCum,choice,
-  productionDate:productionDate(now),shift:shiftAt(now),reportSegment:'結算後機台選擇',cum:d.cutCum,
+  productionDate:productionDate(now),shift:'',personShift:'',reportSegment:'結算後機台選擇',cum:d.cutCum,
   oldResponsible:d.settledBy,note:`${currentOperator().name}｜${choice}｜個人績效維持結算快照`};
  responsibilityEvents.unshift(row);persistResponsibilityEvents();
  audit('結算後機台選擇',m,choice,'',choice,{eventTime:now,settlementId:d.settlementId});
@@ -4544,7 +4366,7 @@ function chooseSettlementContinue(machineId){
    recordWorkOrderEvent(m,'恢復生產','結算後選擇繼續生產',{time:now,cum:m.cum});
   }
   if(!m.pendingTakeover)m.pendingTakeover={cutTime:d.cutTime,cutCum:d.cutCum,wo:m.wo,
-   settledBy:d.settledBy,shiftKey:m.shiftSession.key,productionDate:productionDate(d.cutTime),shift:shiftAt(d.cutTime),
+   settledBy:d.settledBy,shiftKey:m.shiftSession.key,productionDate:productionDate(d.cutTime),shift:'',
    shiftOutputAtCut:currentShiftOutputFor(m),targetAtCut:shiftExpectedNow(m,now),carryOutput:0,carryTarget:0};
   recordSettlementChoice(m,'繼續生產',now);
   if(!saveMachineState())throw Error('機台狀態保存失敗');
@@ -4583,11 +4405,11 @@ function renderPostSettlementControls(m){
 }
 
 function addBackdatedDowntimePiece(m,startTs,endTs,confirmedAt,supervisor){
- const pd=productionDate(startTs),shift=shiftAt(startTs),minutes=Math.max(0,Math.floor((endTs-startTs)/60000));
+ const pd=productionDate(startTs),shift='',minutes=Math.max(0,Math.floor((endTs-startTs)/60000));
  const eventId=makeEventId('DSEG');
  downtimeEvents.unshift({
   ...authActorFields(),eventId,groupId:m.downGroupId,productionDate:pd,shift,
-  operator:supervisor.name,machine:m.id,wo:m.wo,reason:m.downReason,
+  operator:'',machine:m.id,wo:m.wo,reason:m.downReason,
   reasonDetail:m.downReasonDetail||'',toolNumber:m.downToolNumber||'',
   reasonText:downtimeReasonText(m.downReason,m.downReasonDetail||'',m.downToolNumber||''),
   startTime:startTs,endTime:endTs,startCum:m.cum,endCum:m.cum,responsible:'',
@@ -4654,24 +4476,17 @@ function applyStoppedCumulative(m,actual,stopTs,now){
  audit('更新累積數',m,'回報停止時實體累積',before,actual,{eventTime:now,actualStopTime:stopTs});
 }
 function pendingStopMonthsAllowed(stopTs,now){
- let cursor=stopTs,guard=0;
- while(cursor<=now&&guard++<80){
-  if(monthCloseState[productionDate(cursor).slice(0,7)]==='closed')return false;
-  const next=maxShiftEndTs(productionDate(cursor),shiftAt(cursor));
-  if(next<=cursor)return false;cursor=next;
- }
- return cursor>now;
+ let date=productionDate(stopTs),end=productionDate(now);while(date<=end){if(monthCloseState[date.slice(0,7)]==='closed')return false;date=addDaysISO(date,1);}return true;
 }
 function commitReportedStop(m,p,stopTs,actual,reason,detail,toolNumber,now,direct,risk,grant){
  const reporter=currentOperator();
  if(!pendingStopMonthsAllowed(stopTs,now))throw Error('停機涉及已月結月份或超過可補記範圍，請交由主管依既有月結流程處理。');
  ensureAutoShiftSession(m,now);
- if(now>=maxShiftEndTs(m.shiftSession.productionDate,m.shiftSession.shift))throw Error('班別尚未追上目前時間，請重新整理後再回報。');
  if(downtimeEvents.some(e=>e.machine===m.id&&e.status==='open')&&!(direct&&m.status==='停機'))throw Error('已有停機事件，不能重複建立。');
  if(grant)recordSupervisorUnlock(grant,m,m.cum,actual,'回報已停止待接手產量',risk);
  applyStoppedCumulative(m,actual,stopTs,now);
  const closure={...authActorFields(),id:makeEventId(direct?'SSTOP':'PSTOP'),type:direct?'settlementStop':'pendingStop',time:now,machine:m.id,wo:m.wo,
-  productionDate:productionDate(stopTs),shift:shiftAt(stopTs),settledBy:p.settledBy,
+  productionDate:productionDate(stopTs),shift:'',personShift:'',settledBy:p.settledBy,
   waitingStartTime:direct?null:p.cutTime,waitingEndTime:direct?null:stopTs,
   waitingStartCum:p.cutCum,waitingEndCum:actual,waitingOutput:direct?0:actual-p.cutCum,
   actualStopTime:stopTs,stopCum:actual,reportedBy:reporter.name,reportedByEmployeeId:reporter.employeeId,
@@ -4684,16 +4499,9 @@ function commitReportedStop(m,p,stopTs,actual,reason,detail,toolNumber,now,direc
  if(!(direct&&m.status==='停機')){
   m.status='停機';m.downReason=reason;m.downReasonDetail=detail;m.downToolNumber=toolNumber;
   m.downGroupId=makeEventId('DOWN');m.downEventId=null;
-  let cursor=stopTs,guard=0;const currentStart=Math.max(stopTs,m.shiftSession.startTime);
-  while(cursor<currentStart&&guard++<80){
-   const end=Math.min(currentStart,maxShiftEndTs(productionDate(cursor),shiftAt(cursor)));
-   if(end<=cursor)throw Error('停機跨班時間無法分段');
-   addBackdatedDowntimePiece(m,cursor,end,now,reporter);cursor=end;
-  }
-  if(cursor<currentStart)throw Error('停機跨班超過可處理範圍');
-  m.downStart=currentStart;
-  m.downMeta={productionDate:m.shiftSession.productionDate,shift:m.shiftSession.shift,operator:reporter.name,machine:m.id,wo:m.wo};
-  const eventId=beginDowntimeEvent(m,currentStart,currentStart>stopTs);
+  m.downStart=stopTs;
+  m.downMeta={productionDate:productionDate(stopTs),shift:'',personShift:'',operator:'',machine:m.id,wo:m.wo};
+  const eventId=beginDowntimeEvent(m,stopTs,false);
   for(const e of downtimeEvents.filter(e=>e.groupId===m.downGroupId))Object.assign(e,{
    actualStopTime:stopTs,reportedAt:now,reportedBy:reporter.name,reportedByEmployeeId:reporter.employeeId,stopCum:actual});
   closure.downtimeEventId=eventId;
@@ -4915,8 +4723,8 @@ function showDetail(id){
    </div>
    <div class="table-wrap"><table><tbody>
     <tr><th>狀態</th><td>${badge(m.status)}</td><th>資料狀態</th><td><span class="${f.cls}">${f.txt}</span></td></tr>
-    <tr><th>目前負責人</th><td>${m.responsible||'未指定'}${m.responsibleSince?`（${formatClock(m.responsibleSince)}起）`:''}</td><th>生產日 / 計數班別</th><td>${m.shiftSession?m.shiftSession.productionDate+' '+m.shiftSession.shift:productionDate()+' '+shiftAt()}</td></tr>
-    <tr><th>本班操作員</th><td colspan="3">${m.shiftSession?.operators?.join('、')||'-'}</td></tr>
+    <tr><th>目前負責人</th><td>${m.responsible||'未指定'}${m.responsibleSince?`（${formatClock(m.responsibleSince)}起）`:''}</td><th>責任開始日 / 人員班別</th><td>${productionDate(m.responsibilityAttribution?.startTime||appNow())+' '+(responsibilityShift(m)||'待接手')}</td></tr>
+    <tr><th>本次紀錄操作員</th><td colspan="3">${m.shiftSession?.operators?.join('、')||'-'}</td></tr>
     <tr><th>本班差異</th><td colspan="3">${shiftOutput(m)-expectedNow(m)} PCS</td></tr>
     <tr><th>圖號</th><td>${m.drawing}</td><th>程式號碼</th><td>${escapeHTML(m.program||'-')}</td></tr>
     <tr><th>加工模式</th><td>${m.processMode}</td><th>加工秒數</th><td>${m.cycle} 秒/PCS</td></tr>
@@ -4976,9 +4784,9 @@ function operatorDisplayText(raw){
  if(operatorLang!=='vi' || raw===null || raw===undefined)return String(raw??'');
  let s=String(raw);
  const replacements=[
-  ['系統自動判斷延長生產','Hệ thống tự nhận diện tăng ca'],
+  ['正常下班後延長生產','Sản xuất kéo dài sau giờ kết thúc ca tiêu chuẩn'],
   ['系統到時自動切班','Hệ thống tự động đổi ca đúng giờ'],
-  ['系統班別封存','Hệ thống chốt dữ liệu ca'],
+  ['機台紀錄封存','Hệ thống chốt dữ liệu ca'],
   ['接手前累積確認','Xác nhận số tích lũy trước khi nhận máy'],
   ['結算前累積確認','Xác nhận số tích lũy trước khi chốt'],
   ['結算切點','Mốc chốt'],
@@ -5219,7 +5027,7 @@ function applyOperatorLanguage(){
  if(typeof sumOutputLabel!=='undefined') sumOutputLabel.textContent=opT('目前人員產量','Sản lượng người hiện tại');
  if(typeof sumDefectLabel!=='undefined') sumDefectLabel.textContent=opT('異常','Hàng lỗi');
  if(typeof sumGoodLabel!=='undefined') sumGoodLabel.textContent=opT('良品','Hàng tốt');
- if(typeof sumDownLabel!=='undefined') sumDownLabel.textContent=opT('停機','Dừng máy');
+ if(typeof sumDownLabel!=='undefined') sumDownLabel.textContent=opT('個人停機','Dừng máy cá nhân');
  if(typeof sumModeLabel!=='undefined') sumModeLabel.textContent=opT('加工模式','Chế độ');
  if(typeof sumShiftStateLabel!=='undefined') sumShiftStateLabel.textContent=opT('實際班別狀態','Trạng thái ca thực tế');
  if(typeof sumReportSegmentLabel!=='undefined') sumReportSegmentLabel.textContent=opT('報表區段','Phân đoạn báo cáo');
@@ -5245,7 +5053,7 @@ function renderOperatorSummary(m){
  if(typeof sumOutput!=='undefined') sumOutput.textContent=m.responsible?(person.output===null?opT('待確認','Chờ xác nhận'):`${person.output} PCS`):'-';
  if(typeof sumDefect!=='undefined') sumDefect.textContent=s?`${defect} PCS`:'-';
  if(typeof sumGood!=='undefined') sumGood.textContent=m.responsible?(person.output===null?opT('待確認','Chờ xác nhận'):`${Math.max(0,person.output)} PCS`):'-';
- if(typeof sumDown!=='undefined') sumDown.textContent=operatorLang==='vi'?`${liveDown(m)} phút`:`${liveDown(m)} 分`;
+ if(typeof sumDown!=='undefined') sumDown.textContent=operatorLang==='vi'?`${person.downMinutes??0} phút`:`${person.downMinutes??0} 分`;
  if(typeof sumMode!=='undefined') sumMode.textContent=opT(m.processMode,m.processMode==='機械手'?'Robot':'Thủ công');
  if(typeof sumShiftState!=='undefined') sumShiftState.textContent=autoShiftStateTextBi(m);
  if(typeof sumReportSegment!=='undefined') sumReportSegment.textContent=reportSegmentTextBi(m);
@@ -5280,11 +5088,7 @@ function renderOperatorSummary(m){
    }
  }
 }
-function nearShiftBoundary(){
- const d=appDate(), min=d.getHours()*60+d.getMinutes();
- const points=[300,480,1020,1230]; // 05:00 / 08:00 / 17:00 / 20:30
- return points.some(p=>Math.abs(min-p)<=20);
-}
+function nearShiftBoundary(){return false;}
 function renderOperatorSafety(m){
  if(typeof opSafetyBanner==='undefined') return;
  ensureAutoShiftSession(m);
@@ -5409,11 +5213,7 @@ function effectiveDefectInfo(e){
  };
 }
 function findShiftRecordForDefect(e){
- return shiftRecordsData.find(r=>
-  r.machine===e.machine &&
-  r.productionDate===e.attributedProductionDate &&
-  r.shift===e.attributedShift
- )||null;
+ return shiftRecordsData.find(r=>r.machine===e.machine&&(e.schemaVersion===21?r.wo===e.wo&&r.startTime===e.recordStartTime:r.productionDate===e.attributedProductionDate&&r.shift===e.attributedShift))||null;
 }
 function findShiftSegmentForDefect(record,e){
  if(!record || !Array.isArray(record.segments))return null;
@@ -5423,12 +5223,7 @@ function findShiftSegmentForDefect(record,e){
  );
  return exact || record.segments.find(s=>s.wo===e.wo) || null;
 }
-function defectEventBelongsCurrentShift(m,e){
- const s=m?.shiftSession;
- return !!s &&
-  s.productionDate===e.attributedProductionDate &&
-  s.shift===e.attributedShift;
-}
+function defectEventBelongsCurrentShift(m,e){const s=m?.shiftSession;return !!s&&(s.continuous?e.shiftKey===s.key:s.productionDate===e.attributedProductionDate&&s.shift===e.attributedShift);}
 function defectEventBelongsCurrentSegment(m,e){
  const s=m?.shiftSession;
  if(!s || !defectEventBelongsCurrentShift(m,e) || m.wo!==e.wo)return false;
@@ -5455,7 +5250,7 @@ function validateDefectCorrectionCandidate(e,newQty){
   const newShiftDefect=(+s.defect||0)+delta;
   const shiftOutput=currentShiftOutputFor(m);
   if(newShiftDefect<0)return {ok:false,msg:'修正後本班異常數不能小於 0。'};
-  if(newShiftDefect>shiftOutput)return {ok:false,msg:`修正後本班異常 ${newShiftDefect} PCS 會超過本班加工 ${shiftOutput} PCS。`};
+  if(newShiftDefect>shiftOutput)return {ok:false,msg:`修正後本班異常 ${newShiftDefect} PCS 會超過機台記錄加工 ${shiftOutput} PCS。`};
 
   if(defectEventBelongsCurrentSegment(m,e)){
    const seg=currentProductionSegmentStats(m);
@@ -5502,6 +5297,7 @@ function applyDefectCorrectionAggregates(e,delta){
  if(m && defectEventBelongsCurrentShift(m,e)){
   m.defectShift=Math.max(0,(+m.defectShift||0)+delta);
   m.shiftSession.defect=Math.max(0,(+m.shiftSession.defect||0)+delta);
+  if(defectEventBelongsCurrentSegment(m,e)&&findShiftRecordForDefect(e)&&m.shiftSession.reportCursor)m.shiftSession.reportCursor.defect=Math.max(0,m.shiftSession.reportCursor.defect+delta);
   if(defectEventBelongsCurrentSegment(m,e)){
    m.shiftSession.segmentDefect=Math.max(0,(+m.shiftSession.segmentDefect||0)+delta);
   }
@@ -5982,7 +5778,7 @@ function syncOpMachine(){
  ensureAutoShiftSession(m);
  const s=m.shiftSession;
  opWO.value=m.wo;
- opProdDate.textContent=s?.productionDate||productionDate();
+ opProdDate.textContent=productionDate(m.responsibilityAttribution?.startTime||appNow());
  opShift.textContent=shiftPhaseTextBi(m);
  if(typeof opReportSegment!=='undefined') opReportSegment.textContent=reportSegmentTextBi(m);
  opResponsible.textContent=responsibilityLabel(m);
@@ -6141,7 +5937,7 @@ function renderDynamic(){
     </label>
    </div>
    <p class="note"><b>${opT('異常數量不會自動帶入任何數值，請操作員主動輸入大於0的整數PCS；空白不可送出。','Số lỗi không tự động điền; người vận hành phải nhập số nguyên lớn hơn 0. Không được để trống.')}</b></p>
-   <p class="note">${opT(`這筆異常會直接記在目前製令 ${escapeHTML(m.wo)}、目前 ${shiftAt()}。本分段異常總量不可超過本分段實際加工量。`,`Lỗi này sẽ được ghi vào lệnh ${escapeHTML(m.wo)} và ca hiện tại. Tổng lỗi của phân đoạn không được vượt sản lượng thực tế của phân đoạn.`)}</p>`;
+   <p class="note">${opT(`這筆異常會直接記在目前製令 ${escapeHTML(m.wo)}、人員班別 ${responsibilityShift(m)||'待接手'}。本分段異常總量不可超過本分段實際加工量。`,`Lỗi này sẽ được ghi vào lệnh ${escapeHTML(m.wo)} và ca hiện tại. Tổng lỗi của phân đoạn không được vượt sản lượng thực tế của phân đoạn.`)}</p>`;
  }
  if(currentAction==='down') h=`
    <label><span class="op-field-label">${opT('停機原因','Lý do dừng máy')}<small>${opT('選擇最接近的原因','Chọn lý do phù hợp nhất')}</small></span>
@@ -6184,6 +5980,7 @@ function renderDynamic(){
   <div class="form-grid">
    <label><span class="op-field-label">${opT('新製令單號','Lệnh sản xuất mới')}</span><input id="fWO" maxlength="80"></label>
    <label><span class="op-field-label">${opT('圖號','Mã bản vẽ')}</span><input id="fDrawing" maxlength="80" value="${escapeAttr(directMode?(m.drawing||''):'')}"></label>
+   <label><span class="op-field-label">${opT('圖名','Tên bản vẽ')}</span><input id="fDrawingName" maxlength="120" value="${escapeAttr(directMode?(findWorkOrderById(m.workOrderRecordId)?.drawingNameSnapshot||m.drawingName||''):'')}"></label>
    <label><span class="op-field-label">${opT('加工模式','Chế độ gia công')}<small>${isDualModeMachine(m.id)?opT('可依製令切換','Có thể đổi theo lệnh'):opT('此機台固定人工上下料','Máy này chỉ nạp/tháo thủ công')}</small></span>
     <select id="fProcessMode" ${isManualOnlyMachine(m.id)?'disabled':''}>
      ${isDualModeMachine(m.id)?`<option value="機械手" ${m.processMode==='機械手'?'selected':''}>機械手 / Robot</option>`:''}
@@ -6673,14 +6470,16 @@ async function submitActionNow(){
    reason,
    reasonDetail,
    reasonText:reasonDisplay(reason,reasonDetail),
-   discoveredShift:m.shiftSession?.shift||shiftAt(),
-   discoveredProductionDate:m.shiftSession?.productionDate||productionDate(),
-   attributedShift:m.shiftSession?.shift||shiftAt(),
-   attributedProductionDate:m.shiftSession?.productionDate||productionDate(),
+   schemaVersion:21,recordStartTime:m.shiftSession?.reportCursor?.time,
+   responsibilitySegmentId:m.responsibilityAttribution?.segmentId||'',
+   discoveredShift:responsibilityShift(m),personShift:responsibilityShift(m),
+   discoveredProductionDate:productionDate(),
+   attributedShift:responsibilityShift(m),
+   attributedProductionDate:productionDate(),
    shiftKey:m.shiftSession?.key||'',
    segmentStartCum:m.shiftSession?.segmentStartCum??null,
    segmentStartTime:m.shiftSession?.segmentStartTime??null,
-   operator:currentOperator().name
+   operator:m.responsible||''
   });
 
   appStorage.setItem('deyao_v8_defects',JSON.stringify(defectEvents));
@@ -6778,6 +6577,7 @@ async function submitActionNow(){
   const directContinuation=isOrderClosedStatus(m.status);
   const closedSegment=m.shiftSession?.segments?.length ? m.shiftSession.segments[m.shiftSession.segments.length-1] : null;
   m.wo=(document.getElementById('fWO').value||m.nextWO||'新製令').trim();m.drawing=(document.getElementById('fDrawing').value||m.nextDrawing||'-').trim();
+  m.drawingName=(document.getElementById('fDrawingName')?.value||'').trim();
   m.program=(document.getElementById('fProgram')?.value||'').trim();
   m.processMode=isManualOnlyMachine(m.id)?'人工上下料':(document.getElementById('fProcessMode')?.value||m.processMode);
   m.cycle=+document.getElementById('fCycle').value||m.nextCycle||m.cycle;m.orderQty=+document.getElementById('fOrderQty').value||m.orderQty;
@@ -6788,10 +6588,10 @@ async function submitActionNow(){
   m.cum=0;m.shiftStartCum=0;m.defectOrder=0;m.status='生產中';
 
   // V18.22：乾淨模式的第一張製令建立完成後，才正式建立班別。
-  // 班別歸屬仍依目前 08:00／20:30 真實班別，但責任／應達起點從實際建立製令時間開始，
+  // 機台紀錄從實際建立製令時間開始；個人班別由接手責任另行保存，
   // 不把建立製令以前的空白時間算進這台機器的生產紀錄。
   if(initialCreation && !m.shiftSession){
-    const pd=productionDate(orderChangeTs), sh=shiftAt(orderChangeTs);
+    const pd=productionDate(orderChangeTs), sh='';
     startAutoShiftSession(m,sh,pd,orderChangeTs,0,'建立第一張製令',false);
   }else if(m.shiftSession){
     startNewOrderSegment(m,orderChangeTs);
@@ -7214,50 +7014,67 @@ function renderResponsibilityHistory(){
    <td>${escapeHTML(r.note||'-')}${r.type==='takeover'&&r.waitingStartTime?`｜待接手 ${r.waitingOutput??'-'} PCS｜推估 ${r.expectedPending===null||r.expectedPending===undefined?'-':Number(r.expectedPending).toFixed(2)}｜正常上限 ${r.normalUpper===null||r.normalUpper===undefined?'-':Number(r.normalUpper).toFixed(2)}｜警告上限 ${r.warningUpper===null||r.warningUpper===undefined?'-':Number(r.warningUpper).toFixed(2)}｜判斷 ${escapeHTML(r.riskLevel||'舊資料未記錄')}`:''}</td>
  </tr>`).join(''):'<tr><td colspan="10" class="muted">目前沒有負責人切換紀錄。</td></tr>';
 }
-function renderShiftRecords(){
- const q=(shiftSearch?.value||'').trim().toLowerCase(), sf=shiftFilter?.value||'';
- const rows=shiftRecordsData.map(effectiveShiftRecord).filter(r=>{
-   const segText=(r.segments||[]).map(s=>[s.wo,s.drawing,s.processMode,s.cycle].join(' ')).join(' ');
-   return (!sf||r.shift===sf)&&(!q||[r.productionDate,r.shift,r.operator,r.machine,r.wo,r.note,segText].join(' ').toLowerCase().includes(q));
- });
- const fmtTime=ts=>ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'-';
- const fmtMin=v=>Number.isFinite(+v)?`${Math.round(+v)} 分`:'-';
-
- shiftRows.innerHTML=rows.length?rows.map(r=>{
-   const segs=Array.isArray(r.segments)?r.segments:[];
-   const segEffective=segs.length?segs.reduce((a,s)=>a+(+s.effectiveMinutes||0),0):null;
-   const summary=`<tr class="shift-summary-row">
-    <td>${r.productionDate}</td><td>${r.shift}</td><td>${r.operator}</td><td>${r.machine}</td>
-    <td><span class="shift-segment-tag">班別總計</span>${escapeHTML(r.wo)}</td>
-    <td>${escapeHTML(r.drawingSnapshot||'-')}</td>
-    <td>${r.processModeSnapshot?`${r.processModeSnapshot} / ${r.cycleSnapshot||'-'}s`:'-'}</td>
-    <td>${r.startCum} → ${r.endCum}</td>
-    <td>${fmtTime(r.startTime)}</td><td>${fmtTime(r.endTime)}</td>
-     <td>${r.output}</td><td>${r.defect}</td><td>${r.good}</td>
-    <td>${fmtMin(+r.downMinutes||0)}</td>
-    <td>${r.segmentTargetSnapshot??'-'}</td>
-    <td>${segEffective===null?'-':fmtMin(segEffective)}</td>
-    <td>${escapeHTML(r.note||'-')}${segs.length?`｜生產紀錄 ${segs.length} 段`:''}</td>
-   </tr>`;
-
-   if(!segs.length) return summary;
-
-   const details=segs.map((s,i)=>`<tr class="shift-segment-row">
-    <td>${r.productionDate}</td><td>${r.shift}</td><td>${r.operator}</td><td>${r.machine}</td>
-    <td><span class="shift-segment-tag">第 ${i+1} 段</span>${s.wo||'-'}</td>
-    <td>${escapeHTML(s.drawing||'-')}</td>
-    <td>${s.processMode||'-'} / ${s.cycle??'-'}s</td>
-    <td>${s.startCum??'-'} → ${s.endCum??'-'}</td>
-    <td>${fmtTime(s.startTime)}</td><td>${fmtTime(s.endTime)}</td>
-    <td>${s.output??'-'}</td><td>${s.defect??'-'}</td><td>${s.good??'-'}</td>
-    <td>${fmtMin(+s.downMinutes||0)}</td>
-    <td>${s.target??'-'}</td>
-    <td>${fmtMin(+s.effectiveMinutes||0)}</td>
-    <td>製令生產紀錄</td>
-   </tr>`).join('');
-   return summary+details;
- }).join(''):'<tr><td colspan="17" class="muted">目前沒有已完成的班別加工紀錄。</td></tr>';
+function machineOrderReportRows(now=appNow()){
+ const raw=[...shiftRecordsData.map(effectiveShiftRecord),...machines.map(m=>productionSlice(m,now)).filter(Boolean).map(r=>({...r,live:true}))];
+ const groups=new Map();
+ for(const r of raw)for(const [i,p] of (r.segments?.length?r.segments:[null]).entries()){
+  const s=p||shiftRecordOrderSegments(r)[0],start=+s.startTime||+r.startTime,end=+s.endTime||+r.endTime;
+  const candidates=responsibilityEvents.filter(e=>e.type==='segment'&&e.machine===r.machine&&e.operator===r.operator&&e.wo===s.wo&&+e.startTime<=start&&(+e.endTime||now)>=end);
+  const resp=responsibilityEvents.find(e=>e.type==='segment'&&e.id===s.responsibilitySegmentId&&e.machine===r.machine&&e.operator===r.operator&&e.wo===s.wo)||(candidates.length===1?candidates[0]:null);
+  const w=findWorkOrderById(s.workOrderId||resp?.workOrderId)||workOrders.find(w=>w.machine===r.machine&&w.wo===s.wo&&+w.startedAt<=start&&(!w.closedAt||+w.closedAt>=end));
+  // Missing historical identity stays separate; never join two different takeovers by name/date alone.
+  const key=JSON.stringify([r.machine,r.operator,s.wo,s.workOrderId||w?.id||'',resp?.id||s.responsibilitySegmentId||'legacy:'+start+':'+i]);
+  if(!groups.has(key))groups.set(key,{key,resp,w,machine:r.machine,operator:r.operator||'',shift:resp?savedPersonShift(resp):(r.personShift??r.shift??''),wo:s.wo,productionDate:resp?.productionDate||r.productionDate,startTime:start,endTime:end,startCum:s.startCum,endCum:s.endCum,drawing:s.drawing||r.drawingSnapshot||w?.drawing||'',drawingName:s.drawingNameSnapshot??resp?.drawingNameSnapshot??w?.drawingNameSnapshot??'',program:s.program||r.programSnapshot||w?.program||'',orderQty:s.orderQtySnapshot??resp?.orderQtySnapshot??w?.orderQty,parts:[],output:0,defect:0,live:false});
+  const g=groups.get(key);g.parts.push({...s,machine:r.machine,startTime:start,endTime:end});g.output+=+s.output||0;g.defect+=+s.defect||0;g.live ||= !!r.live;
+  if(start<g.startTime){g.startTime=start;g.startCum=s.startCum;}if(end>=g.endTime){g.endTime=end;g.endCum=s.endCum;}
+ }
+ return [...groups.values()].map(g=>{
+  const h=g.parts.map(s=>xlsxReportSegmentHours(s,downtimeEvents));g.processingHours=h.reduce((n,h)=>n+(h.processingHours||0),0);g.downHours=h.reduce((n,h)=>n+h.downHours,0);
+  const full=g.resp&&+g.resp.startTime===g.startTime&&+g.resp.endTime===g.endTime;
+  const capacities=new Map();for(const p of g.parts){const k=JSON.stringify([p.processMode,p.cycle]);capacities.set(k,(capacities.get(k)||0)+(+p.effectiveMinutes||0)*60/Math.max(1,+p.cycle||1));}
+  g.target=!g.operator||g.resp?.legacyUnverified?null:full&&Number.isFinite(g.resp.target)?g.resp.target:g.parts.every(p=>Number.isFinite(p.effectiveMinutes))?Math.round([...capacities.values()].reduce((a,b)=>a+b,0)):g.parts.reduce((a,p)=>a+(+p.target||0),0);
+  g.rate=g.target>0?g.output/g.target*100:null;
+  const overlaps=e=>g.parts.some(p=>+e.startTime<p.endTime&&(+e.endTime||now)>p.startTime);
+  g.stops=downtimeEvents.filter(e=>e.machine===g.machine&&e.wo===g.wo&&overlaps(e));
+  const tools=new Map();for(const e of g.stops.filter(e=>e.toolNumber)){const k=e.groupId||e.eventId;if(!tools.has(k))tools.set(k,e.toolNumber);}g.toolCounts={};for(const tool of tools.values())g.toolCounts[tool]=(g.toolCounts[tool]||0)+1;
+  g.toolText=Object.entries(g.toolCounts).map(([k,v])=>`${k} ×${v}`).join('、')||'無';
+  g.defects=defectEvents.filter(e=>e.machine===g.machine&&e.wo===g.wo&&(!e.operator||e.operator===g.operator)&&(e.responsibilitySegmentId&&g.resp?e.responsibilitySegmentId===g.resp.id:g.parts.some(p=>e.recordStartTime?+e.recordStartTime===p.startTime:+e.time>p.startTime&&+e.time<=p.endTime)));
+  g.setups=(avData.setups||[]).filter(e=>e.machine===g.machine&&e.status==='closed'&&(e.nextWO===g.wo||(g.w&&(+e.endTime===+g.w.startedAt||e.workOrderId===g.w.id))));
+  g.waiting=responsibilityEvents.filter(e=>e.type==='takeover'&&e.machine===g.machine&&e.wo===g.wo&&e.waitingStartTime&&(+e.time===g.startTime||+e.takeoverTime===g.startTime));
+  g.status=!g.operator?'待接手／不計個人':g.w?.closedAt?'已結單':g.live?'進行中':'已結算';
+  return g;
+ }).sort((a,b)=>b.startTime-a.startTime||a.machine.localeCompare(b.machine));
 }
+function reportRateClass(rate){return rate===null?'unknown':rate>=100?'green':rate>=80?'normal':rate>=60?'yellow':'red';}
+function reportTime(ts){return ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'—';}
+function reportClock(ts){return ts?new Date(ts).toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'}):'—';}
+function reportDetails(g){
+ const esc=v=>escapeHTML(String(v??'—')),list=rows=>rows.length?'<ul>'+rows.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'無';
+ const fields=[['接手時間',g.resp?reportTime(g.resp.startTime):'原始紀錄未留存／待接手'],['結算時間',g.resp?.endTime?reportTime(g.resp.endTime):g.live?'尚未結算':'未留存'],['起始累積',g.startCum],['結束累積',g.endCum],['製令',g.wo],['圖號',g.drawing],['圖名',g.drawingName||'未留存'],['程式號碼',g.program||'—'],['加工模式', [...new Set(g.parts.map(p=>p.processMode))].join('、')],['加工秒數',[...new Set(g.parts.map(p=>p.cycle))].join('、')],['製令數量',g.orderQty],['實際產量',g.output+' PCS'],['目標產量',g.target===null?'不計個人／待確認':g.target+' PCS'],['達成率',g.rate===null?'—':g.rate.toFixed(1)+'%']];
+ const stop=e=>`${esc(reportTime(e.startTime))} ～ ${esc(e.endTime?reportTime(e.endTime):'停機中')}｜${esc(e.reasonText||e.reason)}｜${esc(e.reasonDetail||'')}｜${esc(e.toolNumber||'')}｜本列扣除休息後 ${g.parts.reduce((n,p)=>n+xlsxReportSegmentHours(p,[e]).downHours*60,0).toFixed(2)} 分`;
+ return `<div class="report-details-grid">${fields.map(([k,v])=>`<div><b>${k}：</b>${esc(v)}</div>`).join('')}</div>
+ <h4>停機明細</h4><p>主表為已結束真停機扣除固定休息重疊後的聯集；未結束停機列出但不計入主表。</p>${list(g.stops.map(stop))}
+ <h4>異常明細（主表合計 ${g.defect} PCS）</h4>${list(g.defects.map(e=>{const d=effectiveDefectInfo(e);return `${esc(reportTime(e.time))}｜${esc(d.reason)} ${esc(d.reasonDetail)}｜${d.qty} PCS｜登錄人 ${esc(e.operator)}${defectCorrectionsFor(e.id).map(c=>`<br>修正：${esc(c.oldQty)} → ${esc(c.newQty)} PCS；${esc(c.oldReason)} → ${esc(c.newReason)}；${esc(c.operator||c.correctedBy||'')} ${esc(c.note||c.reason||'')}`).join('')}`;}))}${g.defect&&!g.defects.length?'<p>舊紀錄只有異常合計，未留存逐筆明細。</p>':''}
+ <h4>換刀明細</h4>${list(g.stops.filter(e=>e.toolNumber).map(stop))}
+ <h4>校車明細</h4>${list(g.setups.map(e=>`${esc(reportTime(e.startTime))} ～ ${esc(reportTime(e.endTime))}｜${((e.endTime-e.startTime)/60000).toFixed(1)} 分｜${esc(e.reason)} ${esc(e.toolNumber||'')}；不計入製令加工時間`))}
+ <h4>待接手資訊</h4>${g.operator?list(g.waiting.map(e=>`${esc(reportTime(e.waitingStartTime))} ～ ${esc(reportTime(e.time||e.takeoverTime))}｜${esc(e.waitingOutput)} PCS（不計入前後操作員）`)):`本列 ${g.output} PCS 僅計機台／製令，不計個人。`}
+ <p>修正／稽核：${g.w&&authCan('canCorrectProduction')?`<button data-report-correction="${escapeAttr(g.w.id)}" data-machine="${escapeAttr(g.machine)}">產量修正</button>`:''}<button data-report-view="defectRecords">異常紀錄</button> <button data-report-view="history">操作歷程</button> <button data-report-view="workOrderHistory">製令歷史</button></p>`;
+}
+function renderShiftRecords(){
+ const val=id=>document.getElementById(id)?.value||'',text=(id,v)=>!val(id)||String(v).toLowerCase().includes(val(id).trim().toLowerCase());
+ const opened=new Set([...document.querySelectorAll('#shiftRows .report-summary[aria-expanded=true]')].map(e=>e.dataset.key));
+ const rows=machineOrderReportRows().filter(g=>(!val('reportMonth')||g.productionDate.startsWith(val('reportMonth')))&&(!val('reportDate')||g.productionDate===val('reportDate'))&&text('reportMachine',g.machine)&&text('reportOperator',g.operator)&&text('shiftSearch',g.wo)&&(!val('shiftFilter')||g.shift===val('shiftFilter'))&&(!val('reportRate')||reportRateClass(g.rate)===val('reportRate'))&&(!val('reportDefect')||(g.defect>0)===(val('reportDefect')==='yes'))&&(!val('reportTool')||(g.toolText!=='無')===(val('reportTool')==='yes')));
+ const esc=v=>escapeHTML(String(v??'—'));
+ shiftRows.innerHTML=rows.map((g,i)=>{const open=opened.has(g.key),time=reportClock(g.startTime)+'–'+(new Date(g.startTime).toDateString()!==new Date(g.endTime).toDateString()?new Date(g.endTime).toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'})+' ':'')+reportClock(g.endTime);return `<tr class="report-summary" tabindex="0" data-key="${escapeAttr(g.key)}" aria-expanded="${open}" aria-controls="reportDetail${i}">
+ ${[g.productionDate,g.shift||'—',g.machine,g.wo,g.drawing||'—',g.drawingName||'未留存',g.operator||'待接手',time,g.processingHours.toFixed(2)+' h',g.downHours.toFixed(2)+' h',g.output+' PCS',g.target===null?'—':g.target+' PCS'].map(x=>'<td>'+esc(x)+'</td>').join('')}<td><span class="report-rate ${reportRateClass(g.rate)}">${g.rate===null?'—':g.rate.toFixed(1)+'%'}</span></td><td>${g.defect?g.defect+' PCS ⚠️':'0'}</td><td>${esc(g.toolText)}</td><td>${esc(g.status)}${g.setups.map(e=>'<br>'+reportClock(e.startTime)+'–'+reportClock(e.endTime)+' 校車').join('')} ▾</td></tr><tr class="report-detail" id="reportDetail${i}" ${open?'':'hidden'}><td colspan="16">${reportDetails(g)}</td></tr>`}).join('')||'<tr><td colspan="16">目前沒有符合條件的紀錄。</td></tr>';
+ shiftRows.querySelectorAll('.report-summary').forEach(tr=>{
+  tr.onclick=()=>{tr.setAttribute('aria-expanded',tr.nextElementSibling.hidden?'true':'false');tr.nextElementSibling.hidden=!tr.nextElementSibling.hidden;};
+  tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tr.click();}};
+ });
+ shiftRows.querySelectorAll('[data-report-view]').forEach(b=>b.onclick=()=>authShowView(b.dataset.reportView));
+ shiftRows.querySelectorAll('[data-report-correction]').forEach(b=>b.onclick=()=>{openAuthProductionCorrection();const m=document.getElementById('authCorrectionMachine'),w=document.getElementById('authCorrectionWorkOrder');m.value=b.dataset.machine;m.onchange();w.value=b.dataset.reportCorrection;w.onchange();});
+}
+
 
 function monthKeyFromDate(s){return (s||'').slice(0,7)}
 function selectedMonth(){return monthSelect?.value||productionDate().slice(0,7)}
@@ -7332,13 +7149,13 @@ function createWorkOrderRecord(m,{startedAt=appNow(),source='換製令',operator
  const rec={
   ...authActorFields(),id:makeEventId('WO'),
   wo:m.wo,machine:m.id,
-  drawing:m.drawing||'',program:m.program||'',
+  drawing:m.drawing||'',drawingNameSnapshot:m.drawingName||'',program:m.program||'',
   processMode:m.processMode||'',cycle:+m.cycle||0,orderQty:+m.orderQty||0,
   status:m.status||'生產中',
   createdAt:startedAt,startedAt,
   createdBy:operator||currentOperator().name,
-  startProductionDate:m.shiftSession?.productionDate||productionDate(startedAt),
-  startShift:m.shiftSession?.shift||shiftAt(startedAt),
+  startProductionDate:productionDate(startedAt),
+  startShift:responsibilityShift(m),
   actualQty:+m.cum||0,defectQty:+m.defectOrder||0,
   goodQty:Math.max(0,(+m.cum||0)-(+m.defectOrder||0)),
   closeType:null,closedAt:null,closedBy:'',closeReason:'',closeReasonDetail:'',
@@ -7377,7 +7194,7 @@ function recordWorkOrderEventById(workOrderId,eventType,detail='',extra={}){
   workOrderId:w.id,wo:w.wo,machine:w.machine,
   time:ts,
   productionDate:extra.productionDate||productionDate(ts),
-  shift:extra.shift||shiftAt(ts),
+  shift:extra.shift??'',
   operator:extra.operator||currentOperator().name,
   eventType,
   detail:detail||'',
@@ -7402,8 +7219,8 @@ function recordWorkOrderEvent(m,eventType,detail='',extra={}){
  syncWorkOrderFromMachine(m,w);
  return recordWorkOrderEventById(w.id,eventType,detail,{
   ...extra,
-  productionDate:extra.productionDate||m.shiftSession?.productionDate||productionDate(extra.time||appNow()),
-  shift:extra.shift||m.shiftSession?.shift||shiftAt(extra.time||appNow()),
+  productionDate:extra.productionDate||productionDate(extra.time||appNow()),
+  shift:extra.shift??responsibilityShift(m),
   cum:Number.isFinite(+extra.cum)?+extra.cum:+m.cum||0,
   defectQty:Number.isFinite(+extra.defectQty)?+extra.defectQty:+m.defectOrder||0,
   status:extra.status||m.status
@@ -7516,8 +7333,8 @@ function recordOrderCloseEvent(m,closeType,{time=appNow(),reason='',reasonDetail
   ...authActorFields(),id:makeEventId('CLOSE'),
   workOrderId:w?.id||'',
   time,timeText:new Date(time).toLocaleString('zh-TW',{hour12:false}),
-  productionDate:s?.productionDate||productionDate(time),
-  shift:s?.shift||shiftAt(time),
+  productionDate:productionDate(time),
+  shift:responsibilityShift(m),
   machine:m?.id||'',wo:m?.wo||'',
   drawing:m?.drawing||'',program:m?.program||'',
   closeType,
@@ -7553,7 +7370,10 @@ function closeReasonLabel(e){
  return reasonDisplay(e.reason||'其他',e.reasonDetail||'');
 }
 
-function monthRecords(month=selectedMonth()){return shiftRecordsData.filter(r=>monthKeyFromDate(r.productionDate)===month).map(effectiveShiftRecord)}
+function monthRecords(month=selectedMonth()){
+ const live=machines.map(m=>productionSlice(m)).filter(Boolean).map(r=>({...r,note:r.note+'（進行中）',live:true}));
+ return [...shiftRecordsData.map(effectiveShiftRecord),...live].filter(r=>monthKeyFromDate(r.productionDate)===month);
+}
 function shiftRecordOrderSegments(r){
  const hasSegments=Array.isArray(r?.segments) && r.segments.length>0;
  const raw=hasSegments ? r.segments : [{
@@ -7637,8 +7457,9 @@ function dailyPersonMachinePerformance(month, events=responsibilityEvents){
  events.forEach((e,index)=>{
   if(e?.type!=='segment'||!e.productionDate||monthKeyFromDate(e.productionDate)!==month)return;
   const operator=String(e.operator||'').trim(),machine=String(e.machine||'').trim();
-  const key=JSON.stringify([e.productionDate,operator||`未確認人員:${e.id||index}`,machine||`未確認機台:${e.id||index}`]);
-  if(!groups.has(key))groups.set(key,{productionDate:e.productionDate,operator:operator||'待確認',machine:machine||'待確認',
+  const shift=savedPersonShift(e);
+   const key=JSON.stringify([e.productionDate,shift,operator||`未確認人員:${e.id||index}`,machine||`未確認機台:${e.id||index}`]);
+  if(!groups.has(key))groups.set(key,{productionDate:e.productionDate,personShift:shift,operator:operator||'待確認',machine:machine||'待確認',
    segmentCount:0,output:0,target:0,effectiveMinutes:0,downMinutes:0,performanceIssues:new Set(),otherIssues:new Set(),employeeIds:new Set()});
   const g=groups.get(key);g.segmentCount++;
   if(e.operatorEmployeeId)g.employeeIds.add(String(e.operatorEmployeeId).trim().toUpperCase());
@@ -7663,7 +7484,7 @@ function dailyPersonMachinePerformance(month, events=responsibilityEvents){
   if(g.employeeIds.size>1)g.performanceIssues.add('同名人員編號不一致');
   const confirmed=g.performanceIssues.size===0&&g.target>0;
   const issues=[...g.performanceIssues,...g.otherIssues];
-  return {productionDate:g.productionDate,operator:g.operator,machine:g.machine,segmentCount:g.segmentCount,
+  return {productionDate:g.productionDate,personShift:g.personShift,operator:g.operator,machine:g.machine,segmentCount:g.segmentCount,
    effectiveMinutes:confirmed&&!g.otherIssues.has('責任時間未確認')?g.effectiveMinutes:null,
    output:confirmed?g.output:null,target:confirmed?g.target:null,rate:confirmed?g.output/g.target*100:null,
    downMinutes:confirmed&&!g.otherIssues.has('停機分鐘未確認')?g.downMinutes:null,
@@ -7674,10 +7495,10 @@ function renderDailyPersonMachinePerformance(month){
  const el=document.getElementById('monthPersonMachineRows');if(!el)return;
  const rows=dailyPersonMachinePerformance(month),number=v=>v===null?'待確認':v.toLocaleString('zh-TW',{maximumFractionDigits:2});
  el.innerHTML=rows.length?rows.map(g=>`<tr>
-  <td>${escapeHTML(g.productionDate)}</td><td>${escapeHTML(g.operator)}</td><td>${escapeHTML(g.machine)}</td>
+  <td>${escapeHTML(g.productionDate)}</td><td>${escapeHTML(g.operator)}</td><td>${escapeHTML(g.personShift)}</td><td>${escapeHTML(g.machine)}</td>
   <td>${g.segmentCount}</td><td>${number(g.effectiveMinutes)}</td><td>${number(g.output)}</td><td>${number(g.target)}</td>
   <td>${g.rate===null?'待確認':g.rate.toFixed(1)+'%'}</td><td>${number(g.downMinutes)}</td><td>${escapeHTML(g.status)}</td>
- </tr>`).join(''):'<tr><td colspan="10" class="muted">所選月份尚無責任區段紀錄。</td></tr>';
+ </tr>`).join(''):'<tr><td colspan="11" class="muted">所選月份尚無責任區段紀錄。</td></tr>';
 }
 function renderMonthly(){
  if(!document.getElementById('monthSelect')) return;
@@ -7725,7 +7546,7 @@ function renderMonthly(){
  monthMachineRows.querySelectorAll('[data-month-machine]').forEach(tr=>tr.onclick=()=>renderMonthlyMachineDetail(tr.dataset.monthMachine));
 
  const shifts=['早班','晚班'].map(sh=>{
-   const rr=rows.filter(r=>r.shift===sh), out=rr.reduce((a,r)=>a+(+r.output||0),0), df=rr.reduce((a,r)=>a+(+r.defect||0),0);
+   const rr=responsibilityEvents.filter(e=>e.type==='segment'&&e.status==='closed'&&monthKeyFromDate(e.productionDate)===month&&savedPersonShift(e)===sh),out=rr.reduce((a,r)=>a+(+r.output||0),0),df=defectEvents.filter(e=>monthKeyFromDate(e.attributedProductionDate)===month&&e.attributedShift===sh).reduce((a,e)=>a+effectiveDefectInfo(e).qty,0);
    return {sh,out,df,good:Math.max(0,out-df)};
  });
  monthShiftRows.innerHTML=shifts.map(s=>`<tr><td>${s.sh}</td><td>${s.out.toLocaleString()}</td><td>${s.df}</td><td>${s.good.toLocaleString()}</td><td>${total?(s.out/total*100).toFixed(1):0}%</td></tr>`).join('');
@@ -7815,10 +7636,10 @@ function runMonthCheck(){
 
  if(!authCan('canCorrectProduction'))return;
  const month=selectedMonth(), st=monthCloseState[month]||'open', issues=[];
- const activeSessions=machines.filter(m=>m.shiftSession).length;
+ const activeSessions=responsibilityEvents.filter(e=>e.type==='segment'&&e.status==='open'&&monthKeyFromDate(e.productionDate)===month).length;
  const runningDown=downtimeEvents.filter(e=>e.status==='open').length || machines.filter(m=>m.status==='停機'&&m.downStart).length;
  const pendingException=machines.filter(m=>m.status==='例外結單待確認').length;
- if(month===productionDate().slice(0,7) && activeSessions) issues.push(`有 ${activeSessions} 台機台目前班別仍在進行中，月結前需完成最後班別自動封存`);
+ if(activeSessions) issues.push(`有 ${activeSessions} 筆個人責任仍在進行中，月結前需完成結算`);
  if(month===productionDate().slice(0,7) && runningDown) issues.push(`有 ${runningDown} 筆停機尚未恢復`);
  if(pendingException) issues.push(`有 ${pendingException} 張例外結單待確認`);
  const recs=monthRecords(month);
@@ -7906,8 +7727,8 @@ function buildMonthWorkbookData(month=selectedMonth()){
  const orderCount=new Set(segments.filter(hasProductionWorkOrder).map(s=>s.wo)).size;
  const summary=[
   ['月份',month],['月結狀態',monthStateLabel(monthCloseState[month]||'open')],
-  ['統計依據','生產歸屬日；跨日及跨月晚班歸開始生產日'],
-  ['資料範圍','已封存班別；停機僅計已結束事件，另加歷史月報示意停機分鐘'],
+  ['統計依據','新紀錄依實際責任／事件開始日；跨日不切責任；舊紀錄沿用封存日'],
+  ['資料範圍','操作切點紀錄及進行中機台資料；停機僅計已結束事件，另加歷史示意停機'],
   ['總加工數 PCS',total],['良品數 PCS',Math.max(0,total-defect)],['異常數 PCS',defect],
   ['不良率',total?defect/total:0],['本月生產製令數',orderCount],
   ['本月結單製令',closes.length],['正常完成',closes.filter(e=>e.closeType==='normal').length],
@@ -7933,7 +7754,7 @@ function buildMonthWorkbookData(month=selectedMonth()){
  const downtimeRows=[...downEvents].sort((a,b)=>(+a.startTime||0)-(+b.startTime||0)).map(e=>
   [e.productionDate,e.shift,e.machine,e.wo||'',e.operator||'',e.reasonText||reasonDisplay(e.reason||'-',e.reasonDetail||''),fmt(e.startTime),fmt(e.endTime),+e.minutes||0,'已結束',e.groupId||'']);
  const personMachineRows=dailyPersonMachinePerformance(month).map(g=>
-  [g.productionDate,g.operator,g.machine,g.segmentCount,g.effectiveMinutes??'待確認',g.output??'待確認',g.target??'待確認',g.rate===null?'待確認':g.rate/100,g.downMinutes??'待確認',g.status]);
+  [g.productionDate,g.operator,g.personShift,g.machine,g.segmentCount,g.effectiveMinutes??'待確認',g.output??'待確認',g.target??'待確認',g.rate===null?'待確認':g.rate/100,g.downMinutes??'待確認',g.status]);
  const closeRows=[...closes].sort((a,b)=>(+a.time||0)-(+b.time||0)).map(e=>
   [fmt(e.time)||e.timeText||'',e.productionDate||'',e.shift||'',e.machine||'',e.wo||'',closeTypeLabel(e),e.actualQty??null,e.orderQty??null,e.operator||'',closeReasonLabel(e),e.source||'']);
  return [
@@ -7944,7 +7765,7 @@ function buildMonthWorkbookData(month=selectedMonth()){
   {name:'製令彙總',columns:[['製令','text',22],['機台','text',25],['本月加工 PCS','int',18],['異常 PCS','int',15],['良品 PCS','int',15],['停機 分鐘','decimal',17],['生產紀錄 段','int',16],['資料來源','text',27],['本月結單','text',22]],rows:orderSummaryRows},
   {name:'異常品明細',columns:[['登錄時間','text',23],['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['操作員','text',18],['原始數 PCS','int',16],['目前數 PCS','int',16],['原因','text',38],['修正次數','int',14],['發現生產日','text',17],['發現班別','text',12]],rows:defectRows},
   {name:'停機明細',columns:[['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['操作員','text',18],['原因','text',38],['開始時間','text',23],['結束時間','text',23],['分鐘','decimal',14],['狀態','text',12],['群組','text',24]],rows:downtimeRows},
-  {name:'每日個人 × 機台績效',columns:[['生產歸屬日','text',17],['人員','text',18],['機台','text',13],['責任段數','int',14],['責任時間（分）','decimal',19],['實際產量（PCS）','int',20],['應達產量（PCS）','int',20],['個人機台達成率','percent',21],['停機分鐘','decimal',16],['確認狀態','text',44]],rows:personMachineRows},
+  {name:'每日個人 × 機台績效',columns:[['生產歸屬日','text',17],['人員','text',18],['班別','text',12],['機台','text',13],['責任段數','int',14],['責任時間（分）','decimal',19],['實際產量（PCS）','int',20],['應達產量（PCS）','int',20],['個人機台達成率','percent',21],['停機分鐘','decimal',16],['確認狀態','text',44]],rows:personMachineRows},
   {name:'結單事件',columns:[['結單時間','text',23],['生產歸屬日','text',17],['班別','text',12],['機台','text',13],['製令','text',22],['類型','text',16],['實際完成 PCS','int',18],['製令數量 PCS','int',18],['操作員','text',18],['原因','text',38],['來源','text',22]],rows:closeRows}
  ];
 }
@@ -8091,11 +7912,19 @@ function xlsxReportSegmentHours(s,events){
  const start=+s.startTime,end=+s.endTime;
  if(!Number.isFinite(start)||!Number.isFinite(end)||start<=0||end<=start)
   return {processingHours:null,downHours:0};
- const shift=MANUAL_BREAKS[s.shift]?s.shift:shiftAt(start);
- const breaks=(MANUAL_BREAKS[shift]||[]).map(([from,to])=>({
-  start:dateAtProductionTime(s.productionDate,from,shift),
-  end:dateAtProductionTime(s.productionDate,to,shift)
- }));
+ // Excel uses every fixed break overlapping the actual interval, regardless of person shift.
+ const breaks=[];
+ let date=addDaysISO(productionDate(start),-1);
+ const last=productionDate(end);
+ while(date<=last){
+  for(const [shift,rows] of Object.entries(MANUAL_BREAKS)){
+   for(const [from,to] of rows)breaks.push({
+    start:dateAtProductionTime(date,from,shift),
+    end:dateAtProductionTime(date,to,shift)
+   });
+  }
+  date=addDaysISO(date,1);
+ }
  const breakMinutes=mergedIntervalMinutes(breaks,start,end);
  const stops=events.filter(e=>e.status==='closed'&&e.machine===s.machine&&(!e.wo||e.wo===s.wo))
   .map(e=>({start:+e.startTime,end:+e.endTime}))
@@ -8323,6 +8152,7 @@ submitAction.onclick=async()=>{
  try{ await submitActionNow(); }
  finally{ setTimeout(()=>{submitAction.dataset.busy='0';submitAction.disabled=false;},700); }
 };histSearch.oninput=renderHistory;histAction.onchange=renderHistory;defectSearch.oninput=renderDefectRecords;defectStatusFilter.onchange=renderDefectRecords;workOrderSearch.oninput=renderWorkOrderHistory;workOrderStatusFilter.onchange=renderWorkOrderHistory;shiftSearch.oninput=renderShiftRecords;shiftFilter.onchange=renderShiftRecords;
+document.querySelectorAll('#reportFilters input,#reportFilters select').forEach(el=>el.addEventListener('input',renderShiftRecords));
 kpiAbnormal.onclick=()=>showIssueList('abnormal');
 kpiStale.onclick=()=>showIssueList('stale');
 closeIssueModal.onclick=()=>issueModal.classList.remove('open');
