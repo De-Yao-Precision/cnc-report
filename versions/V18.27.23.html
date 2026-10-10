@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.24 即時看板整併・UI測試版</title>
+<title>德曜精密｜CNC V18.27.23｜機台製令班報表・主管摘要版・測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -589,16 +589,9 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 #simulationTime{width:150px;font-variant-numeric:tabular-nums}
 #shiftRows .report-summary{cursor:pointer} #shiftRows .report-summary:hover{background:#edf5ff;color:#162b45}
 #shiftRows .report-detail[hidden]{display:none} .report-rate{font-weight:800;padding:5px;border-radius:4px;white-space:nowrap}.report-rate.green{background:#d7f7e0;color:#14532d}.report-rate.normal{background:#e5efff;color:#173b70}.report-rate.yellow{background:#fff0ad;color:#604900}.report-rate.red{background:#ffe0e0;color:#9d1616}.report-detail td{white-space:normal;min-width:0}.report-details-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.report-detail li{margin:6px 0}
-/* V18.27.24: presentation only; all dashboard rules are scoped. */
-.rt-board{font-variant-numeric:tabular-nums}.rt-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 16px}.rt-heading h2{margin:0;font-size:24px}.rt-heading p,.rt-note{color:#a8b9d1;font-size:12px;line-height:1.7}.rt-tag{font-size:12px;border:1px solid #47749c;padding:5px 10px;border-radius:20px;white-space:nowrap}.rt-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}.rt-kpi{background:linear-gradient(145deg,#162942,#111a2b);border:1px solid #304764;border-radius:14px;padding:16px}.rt-kpi span{display:block;font-size:13px;color:#c4d2e6}.rt-kpi strong{display:block;font-size:30px;margin:8px 0}.rt-kpi small{font-size:11px;color:#a8b9d1}.rt-board .panel{margin-top:18px}.rt-alerts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.rt-issue{background:#17243a;border:1px solid #405570;border-left:3px solid #f59e0b;border-radius:8px;padding:12px;text-align:left;color:#edf4ff;cursor:pointer;font:inherit;overflow-wrap:anywhere}.rt-issue strong,.rt-issue small{display:block}.rt-issue small{color:#b8c9e2;font-size:12px;margin-top:5px}.rt-issue b{display:block;color:#ffd491;margin-top:6px}.rt-filters{display:grid;grid-template-columns:160px minmax(180px,1fr) 190px;gap:12px}.rt-filters label{font-size:12px;color:#a8b9d1}.rt-filters input,.rt-filters select{display:block;width:100%;margin-top:5px;min-width:0}.rt-table{width:100%;table-layout:fixed;border-collapse:collapse}.rt-table th{font-size:12px;color:#9eb2d0;background:#101e32}.rt-table th,.rt-table td{white-space:normal!important;padding:12px 8px;vertical-align:top;overflow-wrap:anywhere;text-align:left}.rt-table th:nth-child(1){width:12%}.rt-table th:nth-child(2){width:11%}.rt-table th:nth-child(3){width:18%}.rt-table th:nth-child(4){width:16%}.rt-table th:nth-child(5){width:16%}.rt-table th:nth-child(6){width:16%}.rt-table th:nth-child(7){width:11%}.rt-table td{font-size:13px;line-height:1.7;border-bottom:1px solid #283b55}.rt-table small{display:block;color:#a8b9d1;font-size:12px}.rt-machine-link{background:none;border:0;padding:0;color:#c4e2ff;font-size:20px;font-weight:800;cursor:pointer}.rt-table .badge{font-size:11px;white-space:normal}.rt-good{color:#78e6ad!important}.rt-red{color:#ff9595!important}.rt-yellow{color:#ffda87!important}.rt-blue{color:#c4e2ff!important}.rt-rate{font-size:19px;font-weight:800}.rt-mobile{display:none}.rt-legacy{margin-top:16px;padding:12px;border:1px solid #304764;border-radius:8px}.rt-legacy summary{cursor:pointer;color:#b6cce6}.rt-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.rt-detail-grid div{padding:10px;border:1px solid #304764;border-radius:8px;overflow-wrap:anywhere;line-height:1.7}.rt-detail-grid b{display:block;color:#a8b9d1;font-size:12px}.rt-detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.rt-focus{outline:2px solid #7dbfff;outline-offset:-2px}.rt-board .progress{height:5px;margin-top:6px}.rt-board button:focus-visible{outline:2px solid #9fd6ff;outline-offset:3px}
-@media(max-width:900px){.rt-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.rt-alerts{grid-template-columns:repeat(2,minmax(0,1fr))}.rt-filters{grid-template-columns:1fr 1fr}.rt-filters label:nth-child(2){grid-column:1/-1;grid-row:2}.rt-table{display:none}.rt-mobile{display:grid;gap:12px}.rt-mobile-card{background:#101f34;border:1px solid #36506f;border-radius:12px;padding:14px;line-height:1.85;overflow-wrap:anywhere;min-width:0}.rt-mobile-card summary{cursor:pointer;list-style:none}.rt-mobile-card summary::-webkit-details-marker{display:none}.rt-mobile-card h3{font-size:18px;margin:0}.rt-mobile-card .rt-note{margin:0}.rt-mobile-card .rt-detail-grid{margin-top:12px;grid-template-columns:1fr}.rt-mobile-card .rt-rate{font-size:18px}}
-@media(max-width:480px){.rt-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.rt-kpi{padding:12px}.rt-kpi strong{font-size:27px}.rt-alerts{grid-template-columns:1fr}.rt-board .panel{padding:12px}.rt-detail-grid{grid-template-columns:1fr}.rt-heading h2{font-size:21px}.rt-board .rt-heading{flex-wrap:wrap}.rt-filters{gap:8px}.rt-board .badge{max-width:100%;white-space:normal}.rt-board .rt-mobile-card{font-size:13px}}
-
-.rt-issue.rt-critical{border-left-color:#ef7373}.rt-issue.rt-critical b{color:#ffaaaa}
-
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.24 即時看板整併・UI測試版">
+<meta name="version" content="V18.27.23 機台製令班報表・主管摘要版・測試版">
 </head>
 <body data-auth-blocked="1">
 <div id="authIdentity" class="auth-identity" hidden><div id="simulationBanner" class="simulation-banner" hidden></div><b id="authIdentityName"></b><span id="authIdentityRole"></span><span id="authPersonShiftLabel"></span><button class="btn secondary" id="authChangePersonShift" type="button">變更今日班別 / Đổi ca hôm nay</button><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
@@ -607,7 +600,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 <div id="simulationLoginBanner" class="simulation-login-banner" hidden></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.24 即時看板整併・UI測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
+  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.23 機台製令班報表・主管摘要版・測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -617,7 +610,8 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 </div>
 
 <div class="tabs">
- <button class="tab" data-view="owner">即時看板</button>
+ <button class="tab" data-view="owner">老闆總覽</button>
+ <button class="tab" data-view="supervisor">主管看板</button>
  <button class="tab operator-tab active" data-view="operator">
       <span class="operator-tab-zh">👷 操作員輸入</span>
       <span class="operator-tab-vi">Nhập liệu vận hành</span>
@@ -632,19 +626,44 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
  <button class="tab" data-view="rules">規則說明</button>
 </div>
 
-<section id="owner" class="view rt-board">
- <div class="rt-heading"><div><h2>即時看板</h2><p>全廠概況 → 優先處理 → 全部機台</p></div><span class="rt-tag">UI 測試版</span></div>
- <div class="rt-kpis" id="rtKpis"></div>
- <p class="rt-note" id="rtBasis"></p>
- <div class="panel rt-attention"><h2>需要優先注意 <span id="rtIssueCount"></span></h2><p class="rt-note">停機 → 異常 → 待接手超過30分鐘 → 超過2小時未更新 → 個人達成率低於80%。點選可定位並展開機台。</p><div id="alerts" class="rt-alerts"></div></div>
- <div class="panel"><div class="rt-heading"><h2>全部機台 <span id="rtCount"></span></h2><span class="rt-note">點機台查看完整資料</span></div>
-  <div class="filters rt-filters">
-   <label>狀態<select id="filterStatus"><option value="">全部狀態</option><option>生產中</option><option>停機</option><option>有異常</option><option>待接手</option><option>待料</option><option>換刀</option><option>品質異常</option><option>製令完成</option><option>待換線／待校車</option><option>校車中</option><option>例外結單待確認</option><option>待建立製令</option></select></label>
-   <label>搜尋<input id="searchBox" placeholder="機台 / 製令 / 圖號 / 圖名 / 人員" type="search"></label>
-   <label>排序<select id="sortBy"><option value="abnormal">有問題優先</option><option value="machine">機台編號</option><option value="rate">達成率最低</option><option value="down">停機最久</option><option value="finish">製令快完成</option><option value="stale">最久未更新</option></select></label>
+<section id="owner" class="view">
+ <div class="kpis">
+  <div class="kpi"><div class="lab">運轉機台</div><div class="val" id="kRun">-</div><div class="hint">目前為生產中</div></div>
+  <div class="kpi"><div class="lab">本班總產量</div><div class="val" id="kOutput">-</div><div class="hint">PCS</div></div>
+  <div class="kpi"><div class="lab">目前分段應達</div><div class="val" id="kExpected">-</div><div class="hint">依實際加工區間計算</div></div>
+  <div class="kpi"><div class="lab">即時分段達成率</div><div class="val" id="kRate">-</div><div class="hint">本班實際 ÷ 分段應達</div></div>
+  <div class="kpi clickable-kpi" id="kpiAbnormal" title="點擊查看異常 / 停機機台"><div class="lab">異常 / 停機</div><div class="val" id="kAbnormal">-</div><div class="hint">需要優先注意 · 可點擊</div></div>
+  <div class="kpi clickable-kpi" id="kpiStale" title="點擊查看資料過期機台"><div class="lab">資料過期機台</div><div class="val" id="kStale">-</div><div class="hint">超過 2 小時未更新 · 可點擊</div></div>
+ </div>
+ <div class="grid2">
+  <div class="panel">
+   <h2>老闆一眼看重點</h2>
+   <div class="legend"><span>「本班」= 班別績效</span><span>「製令」= 這張單的累積進度</span></div>
+   <div class="table-wrap"><table>
+    <thead><tr><th>機台</th><th>狀態</th><th>目前負責人</th><th>製令進度</th><th>本班實際 / 分段應達</th><th>差異</th><th>尚欠加工</th><th>資料新鮮度</th></tr></thead>
+    <tbody id="ownerRows"></tbody>
+   </table></div>
   </div>
-  <div id="machineCards"></div>
-  <details class="rt-legacy"><summary>既有管理摘要與待接手處理</summary><div id="rtLegacySummary" class="rt-note"></div><div id="pendingOverduePanel"></div><button class="btn secondary" type="button" onclick="showIssueList('abnormal')">原異常／停機清單</button> <button class="btn secondary" type="button" onclick="showIssueList('stale')">資料過期清單</button></details>
+  <div class="panel"><h2>需要優先注意</h2><div id="alerts"></div></div>
+ </div>
+</section>
+
+<section id="supervisor" class="view">
+ <div class="panel">
+  <div class="filters">
+   <select id="filterStatus"><option value="">全部狀態</option><option>生產中</option><option>停機</option><option>待料</option><option>品質異常</option><option>製令完成</option><option>待換線／待校車</option><option>校車中</option><option>例外結單待確認</option></select>
+   <select id="sortBy">
+    <option value="machine">機台編號</option>
+    <option value="abnormal">異常機台優先</option>
+    <option value="rate">達成率最低優先</option>
+    <option value="down">停機最久優先</option>
+    <option value="finish">製令快完成優先</option>
+    <option value="stale">最久未更新優先</option>
+   </select>
+   <input id="searchBox" placeholder="搜尋機台 / 製令 / 圖號">
+  </div>
+  <div id="pendingOverduePanel"></div>
+  <div class="cards" id="machineCards"></div>
  </div>
 </section>
 
@@ -2333,7 +2352,6 @@ function authAllowedView(view){
 }
 function authShowView(view){
  if(!authAllowedView(view))return false;
- if(view==='supervisor')view='owner'; // Retain the old route as an alias.
  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===view));
  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));return true;
 }
@@ -2356,7 +2374,6 @@ function authApplyAccess(){
  document.getElementById('authAccountsPanel').hidden=!authCan('canManageAccounts');
  document.getElementById('authProductionCorrectionBtn').hidden=!authCan('canCorrectProduction');
  if(active)renderAuthAccounts();
- rtApplyAccess();
  avRenderFaultUI();
 }
 function authConfirmAction(action,m){
@@ -4549,107 +4566,105 @@ function handlePendingOverdueClick(e){
  }
 }
 
-// Read-only UI projections: no storage writes, no changes to calculation helpers.
-function rtEsc(v){return escapeHTML(String(v??'—'));}
-function rtApplyAccess(){
- if(authAllowedView('owner'))return;
- document.getElementById('detailModal').classList.remove('open');document.getElementById('issueModal').classList.remove('open');
- for(const id of ['modalBody','machineCards','alerts','rtKpis','rtBasis','rtLegacySummary','pendingOverduePanel'])document.getElementById(id).innerHTML='';
-}
-function rtNum(v){return typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('zh-TW',{maximumFractionDigits:2}):'—';}
-function rtPerson(m){
- const unknown={operator:m.responsible||'',output:null,target:null,rate:null,startTime:m.responsibilityAttribution?.startTime||m.responsibleSince};
- if(!m.responsible||m.responsibleSettled||!m.shiftSession)return unknown;
- const a=m.responsibilityAttribution;
- // Do not let a read-only dashboard reconstruct legacy attribution or choose a shift.
- if(!a||a.operator!==m.responsible||!Object.hasOwn(a,'personShift')||!(a.segmentId||a.source||a.legacyReconstructed||a.legacyNeedsRetakeover))return unknown;
- const p=currentPersonStats(structuredClone(m));
- return {...p,rate:p.target>0&&Number.isFinite(p.rate)?p.rate:null};
-}
-function rtMachine(m){
- const p=rtPerson(m),w=findWorkOrderById(m.workOrderRecordId),pending=!!m.pendingTakeover;
- const abnormal=m.status==='品質異常'||m.defectShift>0;
- const stop=m.status==='停機',age=Number.isFinite(m.lastUpdate)&&m.lastUpdate>0?ageMin(m):null;
- const stopMinutes=stop&&m.downStart?Math.max(0,Math.floor((appNow()-m.downStart)/60000)):null;
- const issues=[];
- if(stop)issues.push({rank:0,text:'停機 '+(stopMinutes===null?'時間待確認':stopMinutes+' 分')});
- if(abnormal)issues.push({rank:1,text:'異常 '+rtNum(m.defectShift)+' PCS'+(m.status==='品質異常'?'／品質異常':'')});
- if(pendingOverdueDue(m))issues.push({rank:2,text:'待接手 '+pendingOverdueMinutes(m)+' 分'});
- if(age!==null&&appNow()-m.lastUpdate>120*60000)issues.push({rank:3,text:'未更新 '+age+' 分'});
- if(p.rate!==null&&p.rate<80)issues.push({rank:4,text:'個人達成率 '+p.rate.toFixed(1)+'%'});
- const tools=new Map();
- // Same grouping identity as the existing machine-order report; limited to this work order instance.
- for(const e of downtimeEvents.filter(e=>e.machine===m.id&&e.wo===m.wo&&e.toolNumber&&w&&+e.startTime>=+w.startedAt&&(!w.closedAt||+e.startTime<=+w.closedAt))){
-  tools.set(e.groupId||e.eventId,e.toolNumber);
- }
- const counts={};for(const t of tools.values())counts[t]=(counts[t]||0)+1;
- let tool=Object.entries(counts).map(([t,n])=>t+' ×'+n).join('、')||'—';
- if(stop&&m.downToolNumber&&!tools.size)tool=m.downToolNumber+'（停機中）';
- const pct=m.orderQty>0?progress(m):null;
- return {m,p,w,pending,abnormal,stop,age,stopMinutes,issues,rank:issues[0]?.rank??9,
-  operator:m.responsible&&!m.responsibleSettled?m.responsible:'—',shift:responsibilityShift(m)||'—',
-  name:w?.drawingNameSnapshot||m.drawingName||'未留存',pct,tool,
-  waiting:pending?pendingTakeoverStats(m).output:null};
-}
-function rtRate(d){return '<span class="rt-rate rt-'+(d.p.rate===null?'blue':d.p.rate>=100?'good':d.p.rate>=80?'blue':d.p.rate>=60?'yellow':'red')+'">'+(d.p.rate===null?'—':d.p.rate.toFixed(1)+'%')+'</span>';}
-function rtStatus(d){return badge(d.m.status)+(d.pending?' <span class="badge warn">待接手</span>':'');}
-function rtFresh(d){return d.age===null?'更新時間未留存':d.issues.some(i=>i.rank===3)?'過期 · '+d.age+'分前':freshInfo(d.m).txt;}
-function rtOrder(d){return rtNum(d.m.cum)+' / '+rtNum(d.m.orderQty)+' PCS（'+(d.pct===null?'—':d.pct.toFixed(1)+'%')+'）';}
-function rtPending(d){return d.pending?rtNum(d.waiting)+' PCS／待接手'+(d.m.status==='生產中'?' '+pendingOverdueMinutes(d.m)+' 分':''):'—';}
-function rtToday(){
- const day=productionDate(),rows=monthRecords(day.slice(0,7)).filter(r=>r.productionDate===day);
- const output=rows.reduce((n,r)=>n+(Number.isFinite(r.output)?r.output:0),0);
- const confirmed=dailyPersonMachinePerformance(day.slice(0,7)).filter(r=>r.productionDate===day&&r.rate!==null);
- const target=confirmed.reduce((n,r)=>n+r.target,0),actual=confirmed.reduce((n,r)=>n+r.output,0);
- return {day,output,rate:target>0?actual/target*100:null,confirmed:confirmed.length};
-}
 function renderOwner(){
- if(!authAllowedView('owner')){document.getElementById('rtKpis').innerHTML='';alerts.innerHTML='';return;}
- const data=machines.map(rtMachine),today=rtToday();
- const kpis=[['生產中',data.filter(d=>d.m.status==='生產中').length,'台／含持續生產待接手'],['停機',data.filter(d=>d.stop).length,'台／目前停機'],['異常',data.filter(d=>d.abnormal).length,'台／品質異常或當班異常PCS > 0'],['待接手',data.filter(d=>d.pending).length,'台／已建立待接手紀錄'],['今日實際產量',rtNum(today.output),'PCS／依既有報表歸屬日'],['今日平均達成率',today.rate===null?'—':today.rate.toFixed(1)+'%','已確認資料／依應達加權']];
- document.getElementById('rtKpis').innerHTML=kpis.map(([label,value,hint])=>'<div class="rt-kpi"><span>'+label+'</span><strong>'+value+'</strong><small>'+hint+'</small></div>').join('');
- document.getElementById('rtBasis').textContent=today.day+'｜今日產量＝既有月報中歸屬今日的已存與進行中紀錄總和；跨日區段沿用原歸屬日，不推估午夜產量。平均達成率＝今日已確認、已封存人員×機台績效的總產量÷總應達（'+today.confirmed+' 組）；未封存／待確認不納入。下方個人績效為目前責任期間。';
- const issues=data.filter(d=>d.issues.length).sort((a,b)=>a.rank-b.rank||a.m.id.localeCompare(b.m.id,undefined,{numeric:true}));
- document.getElementById('rtIssueCount').textContent='（'+issues.length+' 台）';
- alerts.innerHTML=issues.map(d=>'<button class="rt-issue '+(d.rank<2?'rt-critical':'')+'" type="button" data-machine="'+escapeAttr(d.m.id)+'"><strong>'+rtEsc(d.m.id)+'｜'+rtEsc(d.m.status)+'</strong><small>'+rtEsc(d.operator)+'｜'+rtEsc(d.shift)+'｜'+rtEsc(d.m.wo)+'｜'+rtEsc(d.name)+'</small><b>'+rtEsc(d.issues.map(i=>i.text).join(' · '))+'</b></button>').join('')||'<p class="rt-note">目前沒有符合優先處理條件的機台。</p>';
- alerts.querySelectorAll('[data-machine]').forEach(b=>b.onclick=()=>rtLocate(b.dataset.machine));
- const out=machines.reduce((n,m)=>n+shiftOutput(m),0),exp=machines.reduce((n,m)=>n+expectedNow(m),0);
- document.getElementById('rtLegacySummary').textContent='原看板口徑（連續機台紀錄，非今日／個人）：本班總產量 '+rtNum(out)+' PCS｜目前分段應達 '+rtNum(exp)+' PCS｜即時達成率 '+(exp>0?(out/exp*100).toFixed(1)+'%':'—')+'｜原異常／停機 '+machines.filter(isAbnormalForOwner).length+' 台｜超過2小時未更新 '+data.filter(d=>d.age>120).length+' 台。';
  renderPendingOverdue();
-}
-function rtDetails(d){
- const m=d.m,p=d.p;
- const fields=[['程式號碼',m.program||'—'],['製令／圖號／圖名',[m.wo,m.drawing,d.name].join('／')],['目前負責人／個人班別',d.operator+'／'+d.shift],['責任開始',reportTime(p.startTime)],['累積／製令數量／進度',rtOrder(d)],['個人產量／應達',rtNum(p.output)+'／'+rtNum(p.target)+' PCS'],['個人達成率',p.rate===null?'待確認／不計個人':p.rate.toFixed(1)+'%'],['停機累計',rtNum(liveDown(m))+' 分'+(d.stop?'；目前 '+(d.stopMinutes===null?'時間待確認':d.stopMinutes+' 分')+'／'+downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''):'')],['異常',rtNum(m.defectShift)+' PCS（當班）／'+rtNum(m.defectOrder)+' PCS（製令）'],['換刀摘要（目前製令）',d.tool],['待接手（僅計機台）',rtPending(d)+(d.pending?'／上一位 '+(m.pendingTakeover.settledBy||'未留存'):'')],['最後更新',reportTime(m.lastUpdate)+'／'+rtFresh(d)],['加工模式／秒數',m.processMode+'／'+m.cycle+' s/PCS'],['機台原本班產量／分段應達',rtNum(shiftOutput(m))+'／'+rtNum(expectedNow(m))+' PCS'],['原本班差異／尚欠／超製',rtNum(shiftOutput(m)-expectedNow(m))+'／'+rtNum(remain(m))+'／'+rtNum(overproductionQty(m))+' PCS'],['製令良品／預估',rtNum(good(m))+' PCS／'+(m.eta||'—')],['系統狀態',autoShiftStateText(m)]];
- if(m.status==='待換線／待校車')fields.push(['等待換線／校車',liveWaitSetup(m)+' 分']);
- if(m.status==='校車中')fields.push(['校車時間',liveSetup(m)+' 分']);
- if(m.completedAt)fields.push(['製令完成時間',reportTime(m.completedAt)]);
- const previous=effectivePreviousOrder(m);if(previous&&['待換線／待校車','校車中'].includes(m.status))fields.push(['上一製令',previous.wo+'／'+previous.drawing+'／程式 '+(previous.program||'—')+'／'+previous.cum+'/'+previous.orderQty+'／異常 '+previous.defectOrder]);
- return '<div class="rt-detail-grid">'+fields.map(([k,v])=>'<div><b>'+rtEsc(k)+'</b>'+rtEsc(v)+'</div>').join('')+'</div><div class="rt-detail-actions">'+[['workOrderHistory','查看製令歷史'],['defectRecords','異常紀錄'],['history','操作歷程']].filter(([v])=>authAllowedView(v)).map(([v,t])=>'<button class="btn secondary" type="button" data-rt-view="'+v+'">'+t+'</button>').join('')+'</div>';
+ const run=machines.filter(m=>m.status==='生產中').length;
+ const out=machines.reduce((s,m)=>s+shiftOutput(m),0);
+ const exp=machines.reduce((s,m)=>s+expectedNow(m),0);
+ const ab=machines.filter(isAbnormalForOwner).length;
+ const stale=machines.filter(m=>ageMin(m)>120).length;
+ kRun.textContent=`${run}/${machines.length}`; kOutput.textContent=out.toLocaleString(); kExpected.textContent=exp.toLocaleString();
+ kRate.textContent=exp>0?(out/exp*100).toFixed(1)+'%':'—'; kAbnormal.textContent=ab; kStale.textContent=stale;
+ ownerRows.innerHTML=machines.map(m=>{
+  const o=shiftOutput(m), e=expectedNow(m), diff=o-e, f=freshInfo(m);
+  return `<tr><td><b>${m.id}</b></td><td>${badge(m.status)}</td>
+  <td><b>${m.responsible||'未指定'}</b>${m.responsibleSince?`<br><small>${formatClock(m.responsibleSince)}起</small>`:''}</td>
+  <td><div class="num">${m.cum}/${m.orderQty} (${progress(m).toFixed(1)}%)</div><div class="progress"><i style="width:${progress(m)}%"></i></div></td>
+  <td class="num">${o} / ${e}</td><td class="${diff>=0?'pos':'neg'} num">${diff>0?'+':''}${diff}</td>
+  <td class="num">${remain(m)}</td><td><span class="fresh ${f.cls}">${f.txt}</span></td></tr>`;
+ }).join('');
+ const issues=[...machines].sort((a,b)=>{
+   const sa=(a.status==='停機'||a.status==='品質異常'?100:0)+(ageMin(a)>120?70:0)+(rateNow(a)<85?50:0)+a.defectShift*2;
+   const sb=(b.status==='停機'||b.status==='品質異常'?100:0)+(ageMin(b)>120?70:0)+(rateNow(b)<85?50:0)+b.defectShift*2;
+   return sb-sa;
+ }).filter(m=>m.status!=='生產中'||ageMin(m)>120||rateNow(m)<85||m.defectShift>=3).slice(0,8);
+ alerts.innerHTML=issues.map(m=>{
+  const f=freshInfo(m), down=m.status==='停機'?` · ${downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||'')} 已停 ${Math.floor((appNow()-m.downStart)/60000)} 分鐘`:'';
+  const wait=m.status==='待換線／待校車'?` · 已等待 ${liveWaitSetup(m)} 分鐘`:'';
+  const setup=m.status==='校車中'?` · 校車 ${liveSetup(m)} 分鐘`:'';
+  return `<div class="alert"><strong>${m.id}｜${m.status}</strong><small>本班 ${shiftOutput(m)} / 分段應達 ${expectedNow(m)} · 即時達成率 ${rateNowText(m)} · 當班異常 ${m.defectShift} PCS${down}${wait}${setup}</small><small class="${f.cls}">${f.txt}</small></div>`;
+ }).join('')||'<div class="note">目前沒有需要優先處理的機台。</div>';
 }
 function renderCards(){
- if(!authAllowedView('owner')){machineCards.innerHTML='';return;}
- const open=new Set([...machineCards.querySelectorAll('details[open][data-machine]')].map(e=>e.dataset.machine));
- let rows=machines.map(rtMachine);const fs=filterStatus.value,q=searchBox.value.trim().toLowerCase();
- if(fs)rows=rows.filter(d=>fs==='待接手'?d.pending:fs==='有異常'?d.abnormal:d.m.status===fs);
- if(q)rows=rows.filter(d=>[d.m.id,d.m.wo,d.m.drawing,d.name,d.operator,d.m.program,d.m.nextWO,d.m.nextDrawing].join(' ').toLowerCase().includes(q));
- const machine=(a,b)=>a.m.id.localeCompare(b.m.id,undefined,{numeric:true});
- const sort={abnormal:(a,b)=>a.rank-b.rank,machine,rate:(a,b)=>(a.p.rate??Infinity)-(b.p.rate??Infinity),down:(a,b)=>liveDown(b.m)-liveDown(a.m),finish:(a,b)=>(b.pct??-1)-(a.pct??-1),stale:(a,b)=>(b.age??Infinity)-(a.age??Infinity)}[sortBy.value]||machine;
- rows.sort((a,b)=>sort(a,b)||machine(a,b));document.getElementById('rtCount').textContent='（'+rows.length+' / '+machines.length+' 台）';
- machineCards.innerHTML='<table class="rt-table"><thead><tr>'+['機台／狀態','負責人／班別','製令／圖號／圖名','製令進度','個人產量／應達','異常／停機／換刀','最後更新'].map(t=>'<th>'+t+'</th>').join('')+'</tr></thead><tbody>'+rows.map(d=>'<tr data-machine="'+escapeAttr(d.m.id)+'"><td><button class="rt-machine-link" type="button" data-detail="'+escapeAttr(d.m.id)+'">'+rtEsc(d.m.id)+' ▾</button><br>'+rtStatus(d)+'</td><td><b>'+rtEsc(d.operator)+'</b><small>'+rtEsc(d.shift)+'</small></td><td><b>'+rtEsc(d.m.wo||'—')+'</b><small>'+rtEsc(d.m.drawing||'—')+'</small>'+rtEsc(d.name)+'</td><td>'+rtOrder(d)+'<div class="progress"><i style="width:'+(d.pct??0)+'%"></i></div><small>尚欠 '+rtNum(remain(d.m))+'</small></td><td>'+rtNum(d.p.output)+' / '+rtNum(d.p.target)+'<br>'+rtRate(d)+(d.pending?'<small class="rt-yellow">待接手 '+rtNum(d.waiting)+' PCS</small>':'')+'</td><td><span class="'+(d.abnormal?'rt-red':'')+'">異常 '+rtNum(d.m.defectShift)+' PCS</span><br>停機 '+rtNum(liveDown(d.m))+' 分<small>換刀 '+rtEsc(d.tool)+'</small></td><td>'+rtEsc(reportClock(d.m.lastUpdate))+'<small class="'+(d.age>120?'rt-red':'')+'">'+rtEsc(rtFresh(d))+'</small></td></tr>').join('')+'</tbody></table><div class="rt-mobile">'+rows.map(d=>'<details class="rt-mobile-card" data-machine="'+escapeAttr(d.m.id)+'" '+(open.has(d.m.id)?'open':'')+'><summary><h3>'+rtEsc(d.m.id)+'｜'+rtStatus(d)+'</h3><div>'+rtEsc(d.operator)+'｜'+rtEsc(d.shift)+(d.pending?'｜<span class="rt-yellow">待接手</span>':'')+'</div><div>'+rtEsc(d.m.wo||'—')+'｜'+rtEsc(d.m.drawing||'—')+'｜'+rtEsc(d.name)+'</div><div>製令 '+rtOrder(d)+'</div><div>個人 '+rtNum(d.p.output)+' / '+rtNum(d.p.target)+'｜'+rtRate(d)+'</div><div><span class="'+(d.abnormal?'rt-red':'')+'">異常 '+rtNum(d.m.defectShift)+'</span>｜停機 '+rtNum(liveDown(d.m))+' 分｜換刀 '+rtEsc(d.tool)+'</div>'+(d.pending?'<div class="rt-yellow">待接手 '+rtNum(d.waiting)+' PCS（僅計機台）</div>':'')+'<p class="rt-note">最後更新 '+rtEsc(rtFresh(d))+' · 展開 ▾</p></summary>'+rtDetails(d)+'<button class="btn secondary" type="button" data-detail="'+escapeAttr(d.m.id)+'">原機台詳細資料</button></details>').join('')+'</div>'+(rows.length?'':'<p class="rt-note">沒有符合條件的機台。</p>');
- machineCards.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showDetail(b.dataset.detail));
- machineCards.querySelectorAll('[data-rt-view]').forEach(b=>b.onclick=()=>{if(!authAllowedView(b.dataset.rtView))return;const id=b.closest('[data-machine]').dataset.machine;const view=b.dataset.rtView,input=document.getElementById({history:'histSearch',defectRecords:'defectSearch',workOrderHistory:'workOrderSearch'}[view]);input.value=id;({history:renderHistory,defectRecords:renderDefectRecords,workOrderHistory:renderWorkOrderHistory}[view])();authShowView(view);});
+ let list=[...machines];
+ const fs=filterStatus.value, q=searchBox.value.trim().toLowerCase();
+ if(fs)list=list.filter(m=>m.status===fs);
+ if(q)list=list.filter(m=>[m.id,m.wo,m.drawing,m.program,m.nextWO,m.nextDrawing].join(' ').toLowerCase().includes(q));
+ const s=sortBy.value;
+ if(s==='machine')list.sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
+ if(s==='abnormal')list.sort((a,b)=>(a.status==='生產中')-(b.status==='生產中'));
+ if(s==='rate')list.sort((a,b)=>rateNow(a)-rateNow(b));
+ if(s==='down')list.sort((a,b)=>liveDown(b)-liveDown(a));
+ if(s==='finish')list.sort((a,b)=>remain(a)-remain(b));
+ if(s==='stale')list.sort((a,b)=>ageMin(b)-ageMin(a));
+ machineCards.innerHTML=list.map(m=>{
+  const f=freshInfo(m);
+  if(m.status==='待換線／待校車'||m.status==='校車中'){
+    const waiting=m.status==='待換線／待校車';
+    const mins=waiting?liveWaitSetup(m):liveSetup(m);
+    const label=waiting?'已等待':'校車時間';
+    const p=effectivePreviousOrder(m)||{wo:m.wo,drawing:m.drawing,program:m.program||'',cum:m.cum,orderQty:m.orderQty,defectOrder:m.defectOrder};
+    return `<div class="card" data-id="${m.id}">
+      <div class="card-head"><div><h3>${m.id}</h3><div class="meta">${m.status}</div></div>${badge(m.status)}</div>
+      <div class="small" style="margin:4px 0 8px">目前負責人：<b>${m.responsible||'未指定'}</b>${m.responsibleSince?` · ${formatClock(m.responsibleSince)}起`:''}</div>
+      <div class="section-title">目前</div>
+      <div class="card-grid">
+       <div class="cell"><span>${label}</span><b>${mins} 分</b></div>
+       <div class="cell"><span>目前狀態</span><b style="font-size:14px">${m.status}</b></div>
+      </div>
+      <div class="splitline"></div>
+      <div class="small">上一製令：${escapeHTML(p.wo)} · ${escapeHTML(p.drawing)}${p.program?` · 程式 ${escapeHTML(p.program)}`:''} · ${p.cum}/${p.orderQty} · 異常 ${p.defectOrder}</div>
+      <div style="margin-top:9px"><span class="fresh ${f.cls}">${f.txt}</span></div>
+    </div>`;
+  }
+  if(m.status==='製令完成'){
+    return `<div class="card" data-id="${m.id}">
+      <div class="card-head"><div><h3>${m.id}</h3><div class="meta">${escapeHTML(m.wo)} · ${escapeHTML(m.drawing)}${m.program?` · 程式 ${escapeHTML(m.program)}`:''}</div></div>${badge(m.status)}</div>
+      <div class="small" style="margin:4px 0 8px">目前負責人：<b>${m.responsible||'未指定'}</b>${m.responsibleSince?` · ${formatClock(m.responsibleSince)}起`:''}</div>
+      <div class="section-title">上一製令已完成</div>
+      <div class="card-grid">
+       <div class="cell"><span>完成數</span><b>${m.cum}</b></div>
+       <div class="cell"><span>製令異常</span><b>${m.defectOrder}</b></div>
+       <div class="cell"><span>良品</span><b>${good(m)}</b></div>
+       <div class="cell"><span>完成時間</span><b style="font-size:13px">${new Date(m.completedAt||appNow()).toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'})}</b></div>
+      </div>
+      <div style="margin-top:9px"><span class="fresh ${f.cls}">${f.txt}</span></div>
+    </div>`;
+  }
+  const o=shiftOutput(m), e=expectedNow(m), diff=o-e;
+  const stop=m.status==='停機'?`<div class="small neg" style="margin-top:7px">${escapeHTML(downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''))} · 已停 ${Math.floor((appNow()-m.downStart)/60000)} 分鐘</div>`:'';
+  return `<div class="card" data-id="${m.id}">
+   <div class="card-head"><div><h3>${m.id}</h3><div class="meta">${escapeHTML(m.wo)} · ${escapeHTML(m.drawing)}${m.program?` · 程式 ${escapeHTML(m.program)}`:''}</div></div>${badge(m.status)}</div>
+   <div class="small" style="margin:4px 0 8px">目前負責人：<b>${m.responsible||'未指定'}</b>${m.responsibleSince?` · ${formatClock(m.responsibleSince)}起`:''}</div>
+   <div class="section-title">本班</div>
+   <div class="card-grid">
+    <div class="cell"><span>實際產量</span><b>${o}</b></div>
+    <div class="cell"><span>分段應達</span><b>${e}</b></div>
+    <div class="cell"><span>差異</span><b class="${diff>=0?'pos':'neg'}">${diff>0?'+':''}${diff}</b></div>
+    <div class="cell"><span>當班異常</span><b>${m.defectShift}</b></div>
+   </div>
+   <div class="splitline"></div>
+   <div class="section-title">製令</div>
+   <div class="small">加工模式：${m.processMode} · 系統狀態：${autoShiftStateText(m)} · 目前分段應達 ${expectedNow(m)} PCS · 已加工 ${m.cum} / ${m.orderQty} · 尚欠 ${remain(m)}${overproductionQty(m)>0?` · 超製 ${overproductionQty(m)}`:''} · 製令異常 ${m.defectOrder} · 良品 ${good(m)}</div>
+   <div class="progress" style="margin-top:6px"><i style="width:${progress(m)}%"></i></div>
+   ${m.status==='生產中'&&m.orderQty>0&&m.cum>=m.orderQty?`<div class="target-reached-note">✅ 已達製令數量，等待操作員確認「製令完成」</div>`:''}
+   ${stop}
+   <div style="margin-top:9px"><span class="fresh ${f.cls}">${f.txt}</span> <span class="small">· ${m.cycle}s/PCS · 停機累計 ${liveDown(m)} 分</span></div>
+  </div>`;
+ }).join('');
+ document.querySelectorAll('.card').forEach(el=>el.onclick=()=>showDetail(el.dataset.id));
 }
-function rtLocate(id){
- if(!authAllowedView('owner'))return;
- filterStatus.value='';searchBox.value='';renderCards();
- const mobile=matchMedia('(max-width:900px)').matches;
- const el=[...machineCards.querySelectorAll(mobile?'details[data-machine]':'tr[data-machine]')].find(e=>e.dataset.machine===id);
- if(!el)return;el.classList.add('rt-focus');if(mobile)el.open=true;
- el.scrollIntoView({block:'center',behavior:'smooth'});if(mobile)el.querySelector('summary').focus();else showDetail(id);
-}
-
 function showDetail(id){
- if(!authAllowedView('owner'))return;
  const m=machines.find(x=>x.id===id), f=freshInfo(m);
  modalTitle.textContent=`${m.id}｜${m.status}`;
  let body='';
@@ -4719,10 +4734,7 @@ function showDetail(id){
     <tr><th>停機累計</th><td>${liveDown(m)} 分</td><th>預估</th><td>${m.eta}</td></tr>
    </tbody></table></div>`;
  }
- if(!authAllowedView('owner'))return;
- const d=rtMachine(m);
- modalBody.innerHTML=rtDetails(d)+'<details class="rt-legacy"><summary>原機台資料與計算說明</summary>'+body+'</details>';
- modalBody.querySelectorAll('[data-rt-view]').forEach(b=>b.onclick=()=>{detailModal.classList.remove('open');const view=b.dataset.rtView;if(!authAllowedView(view))return;const input=document.getElementById({history:'histSearch',defectRecords:'defectSearch',workOrderHistory:'workOrderSearch'}[view]);input.value=m.id;({history:renderHistory,defectRecords:renderDefectRecords,workOrderHistory:renderWorkOrderHistory}[view])();authShowView(view);});
+ modalBody.innerHTML=body;
  detailModal.classList.add('open');
 }
 
@@ -8141,7 +8153,8 @@ submitAction.onclick=async()=>{
  finally{ setTimeout(()=>{submitAction.dataset.busy='0';submitAction.disabled=false;},700); }
 };histSearch.oninput=renderHistory;histAction.onchange=renderHistory;defectSearch.oninput=renderDefectRecords;defectStatusFilter.onchange=renderDefectRecords;workOrderSearch.oninput=renderWorkOrderHistory;workOrderStatusFilter.onchange=renderWorkOrderHistory;shiftSearch.oninput=renderShiftRecords;shiftFilter.onchange=renderShiftRecords;
 document.querySelectorAll('#reportFilters input,#reportFilters select').forEach(el=>el.addEventListener('input',renderShiftRecords));
-
+kpiAbnormal.onclick=()=>showIssueList('abnormal');
+kpiStale.onclick=()=>showIssueList('stale');
 closeIssueModal.onclick=()=>issueModal.classList.remove('open');
 issueModal.onclick=e=>{if(e.target===issueModal)issueModal.classList.remove('open')};
 closeModal.onclick=()=>detailModal.classList.remove('open');detailModal.onclick=e=>{if(e.target===detailModal)detailModal.classList.remove('open')};
