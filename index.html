@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.24 即時看板整併・UI測試版</title>
+<title>德曜精密｜CNC V18.27.24.14 每日機台生產報表 UI・測試版</title>
 <style>
 :root{
  --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
@@ -596,18 +596,157 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 
 .rt-issue.rt-critical{border-left-color:#ef7373}.rt-issue.rt-critical b{color:#ffaaaa}
 
+/* V18.27.24.1: identity presentation only. Shared title row replaces the tall login bar. */
+.auth-topbar{position:fixed;inset:0 0 auto;z-index:10000;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 16px;padding:10px 18px;background:#0b1424;border-bottom:1px solid #243b58;box-shadow:0 3px 12px #0003}
+.auth-topbar h1{font-size:23px;line-height:1.35;min-width:0;margin:0;overflow-wrap:anywhere}.auth-topbar .simulation-banner{grid-column:1/-1;margin:0}
+.auth-topbar .auth-identity{position:relative;inset:auto;display:block;padding:0;border:0;background:transparent;max-width:340px;min-width:0}
+.auth-capsule{display:flex;flex-direction:column;align-items:flex-start;gap:5px;max-width:100%;border:2px solid #78c4ff;border-radius:16px;background:#102b4b;color:#fff;padding:8px 12px;cursor:pointer;box-shadow:0 0 0 3px #2699ff12;font:inherit;transition:background .15s,border-color .15s,box-shadow .15s}
+.auth-capsule-main{display:flex;align-items:center;gap:8px;max-width:100%;min-width:0}.auth-capsule b{font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.auth-chevron{font-size:10px;margin-left:auto;flex-shrink:0}
+.auth-role-badge{font-size:12px;font-weight:800;padding:3px 7px;border-radius:6px;background:#185487;color:#e2f3ff;white-space:nowrap}.auth-shift-badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:7px;background:#123c35;color:#b7f7da;line-height:1.5}
+.auth-capsule:hover{background:#183f67;border-color:#b2e2ff;box-shadow:0 0 0 3px #2699ff30}.auth-capsule:active{background:#215581}.auth-capsule:focus-visible,.auth-identity-card button:focus-visible{outline:3px solid #f8d36c;outline-offset:3px}.auth-capsule[aria-expanded="true"]{background:#183f67;border-color:#b2e2ff}.auth-capsule[aria-expanded="true"] .auth-chevron{transform:rotate(180deg)}
+.auth-identity[data-role="operator"] .auth-capsule{border-color:#658db2}.auth-identity[data-role="operator"] .auth-role-badge{display:none}
+.auth-identity-card{position:absolute;top:calc(100% + 10px);right:0;width:300px;max-width:calc(100vw - 24px);max-height:calc(100dvh - var(--auth-header-height,80px) - 20px);overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:18px;background:#10213a;border:1px solid #69b9f4;border-radius:14px;color:#f1f7ff;box-shadow:0 14px 40px #0008;overflow-wrap:anywhere}
+.auth-identity-card b{font-size:19px}.auth-identity-card>span{font-size:14px}.auth-identity-card .btn{width:100%;white-space:normal;min-height:46px;margin:0}.auth-identity-card small{font-size:12px;color:#b8c8dc;border-top:1px solid #304764;padding-top:12px;flex-basis:auto}.auth-identity-card .auth-shift-badge{align-self:flex-start}
+@media(max-width:520px){.auth-topbar{padding:8px 12px;gap:8px}.auth-topbar h1{font-size:16px}.auth-topbar h1 span{display:block;font-size:12px;color:#a8bdd7;margin-top:3px}.auth-topbar .auth-identity{max-width:min(48vw,190px)}.auth-capsule{padding:8px 10px;border-radius:13px;min-height:44px}.auth-capsule b{font-size:16px}.auth-capsule-main{gap:6px}.auth-capsule .auth-role-badge,.auth-capsule>.auth-shift-badge{display:none}.auth-identity-card{right:0}.auth-topbar .simulation-banner{font-size:12px;padding:5px 8px}}
+/* V18.27.24.6: operation visibility only; permissions remain authoritative. */
+#operator .action-btn[hidden],#operator .op-more-actions[hidden],#operator .op-entry-panel[hidden]{display:none!important}
+#operator .op-more-actions{margin:10px 0;border:1px solid #d5e4f4;border-radius:14px;padding:10px 12px;min-width:0}
+#operator .op-more-actions summary{cursor:pointer;font-weight:800;color:#123d70;min-height:44px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;list-style:none}
+#operator .op-more-actions summary::-webkit-details-marker{display:none}
+#operator .op-more-actions summary::after{content:'▼';font-size:12px}
+#operator .op-more-actions[open] summary::after{content:'▲'}
+#operator .op-more-actions .action-btn{min-height:90px}
+#operator .action-grid:empty{display:none}
+#operator .action-btn .action-hint{font-size:12px;font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+/* V18.27.24.6: tool choice controls, independent of the state action buttons. */
+#operator .tool-picker{min-width:0;margin:14px 0 0;padding:12px;border:1px solid #9cbfe5;border-radius:14px;background:#f2f8ff}
+#operator .tool-picker[hidden]{display:none!important}
+#operator .tool-picker legend{font-weight:800;color:#123d70;padding:0 5px}
+#operator .tool-picker legend small{display:block;font-size:13px;font-weight:600;margin-top:3px}
+#operator .tool-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
+#operator .tool-choice{min-width:0;min-height:52px;border:2px solid #93adc9;border-radius:10px;background:white;color:#183b63;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px 2px;cursor:pointer}
+#operator .tool-choice .tool-check{visibility:hidden}
+#operator .tool-choice[aria-pressed="true"]{background:#145cae;color:white;border-color:#06386f;box-shadow:inset 0 0 0 2px white}
+#operator .tool-choice[aria-pressed="true"] .tool-check{visibility:visible}
+#operator .tool-choice:focus-visible{outline:3px solid #d77900;outline-offset:3px}
+#operator .tool-selection{font-size:15px;font-weight:700;line-height:1.7;color:#123d70;overflow-wrap:anywhere}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.24 即時看板整併・UI測試版">
+<meta name="version" content="V18.27.24.14 每日機台生產報表 UI・測試版">
+<style id="production-monthly-ui">
+/* Scoped to production monthly; other pages retain their existing appearance. */
+#monthly{--panel:#fff;--panel2:#f6f9fc;--text:#26394d;--muted:#66778b;--line:#e6edf4;color:var(--text);background:#f4f8fb;border-radius:26px;padding:24px;min-width:0}
+#monthly [hidden]{display:none!important}
+#monthly .month-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 2px 22px}
+#monthly .month-heading h2{font-size:28px;letter-spacing:.04em;margin:2px 0 8px}
+#monthly .month-heading p{color:var(--muted);font-size:13px;margin:0;line-height:1.6}
+#monthly .month-heading .month-eyebrow{color:#477886;font-size:12px;font-weight:700;letter-spacing:.1em;margin-bottom:5px}
+#monthly .month-heading-tag{background:#e8f1f5;color:#527081;padding:10px 16px;border-radius:999px;font-size:12px;white-space:nowrap}
+#monthly .panel{background:#fff;border:0;border-radius:20px;padding:22px;box-shadow:0 4px 18px #314c6910;min-width:0;margin-bottom:16px}
+#monthly h2{color:#2c4357;font-size:18px}#monthly h3{font-size:14px;margin:20px 0 12px}
+#monthly .month-toolbar{gap:10px;margin-bottom:10px}#monthly .month-toolbar label{font-size:13px;color:var(--muted)}
+#monthly select{background:#f4f8fb;color:var(--text);border:1px solid #e4edf3;border-radius:12px;min-height:42px}
+#monthly .btn{background:#edf3f8;color:#456177;border-radius:12px;font-size:13px;padding:11px 15px;font-weight:650}
+#monthly .btn.primary{background:#387983;color:#fff}#monthly button:disabled{opacity:.42;cursor:default}
+#monthly .btn:hover:not(:disabled){background:#ddebf1}#monthly .btn.primary:hover:not(:disabled){background:#28646e}
+#monthly button:focus-visible,#monthly summary:focus-visible,#monthly select:focus-visible{outline:3px solid #377b93;outline-offset:3px}
+#monthly .month-status{border:0;font-weight:650}#monthly .month-open{background:#eaf7ef;color:#347657}#monthly .month-review{background:#fff4df;color:#91622c}#monthly .month-closed{background:#eaf0fc;color:#516f9c}
+#monthly .month-rules{font-size:12px;color:var(--muted);margin-bottom:20px}#monthly summary{cursor:pointer;line-height:1.6}#monthly .month-rules summary{width:fit-content;padding:6px 0}
+#monthly .history-note{background:#f5f8fb;border:0;color:#65778b;font-size:12px;line-height:1.8;margin-top:12px;padding:14px;border-radius:12px}
+#monthly .month-kpi-title{font-size:14px;margin:0 0 12px}#monthly .month-kpis{grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:0}
+#monthly .kpi{display:block;background:#f1f6fc;border:0;border-radius:17px;padding:18px 16px;text-align:left;font:inherit;color:var(--text)}
+#monthly .kpi:nth-child(2){background:#edf8f2}#monthly .kpi:nth-child(3){background:#fff4e9}#monthly .kpi:nth-child(4){background:#f5f1fb}#monthly .kpi:nth-child(5){background:#f0f5fa}#monthly .kpi:nth-child(6){background:#eaf5f7}
+#monthly .kpi .lab,#monthly .kpi .hint,#monthly .kpi .val{display:block}#monthly .kpi .lab{font-size:13px}#monthly .kpi .val{font-size:clamp(21px,2vw,29px);font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#monthly .kpi .hint{font-size:11px;margin-top:7px}
+#monthly .month-down-kpi{cursor:pointer}#monthly .month-down-kpi:hover{box-shadow:inset 0 0 0 2px #96bcc5}
+#monthly .month-close-strip{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:16px;color:var(--muted);font-size:12px;align-items:center}#monthly .month-close-strip span{padding:5px 0}#monthly #monthExceptionBadge.has-exception{background:#fff2df;color:#986126;padding:5px 10px;border-radius:999px}
+#monthly .month-drill{grid-template-columns:minmax(0,1.8fr) minmax(260px,1fr);gap:16px}#monthly .month-drill .panel{margin-bottom:16px}#monthly .panel h2 small{display:block;margin-top:6px;font-size:11px;font-weight:400}
+#monthly .table-wrap{border-radius:12px;max-width:100%;overflow:auto}#monthly th{background:#f6f9fc;color:#6b7c8c;font-size:12px}#monthly th,#monthly td{border-bottom:1px solid #edf2f6;padding:13px 10px}#monthly tr:hover{background:#f6fafc}#monthly td{font-variant-numeric:tabular-nums}
+#monthly .month-drill>.panel:first-child .table-wrap{max-height:480px;scrollbar-width:thin}#monthly .month-drill th{position:sticky;top:0;z-index:1}
+#monthly .month-machine-row{cursor:default}#monthly .month-link{border:0;border-radius:9px;background:#edf5f8;color:#316f80;padding:9px 10px;cursor:pointer;font-weight:650;font-size:13px;white-space:nowrap}#monthly .month-link:hover{background:#dcedf2}
+#monthly .month-spotlights{display:grid;grid-template-columns:1fr 1fr;gap:10px}#monthly .month-spotlights>div{background:#f7f9fc;border-radius:14px;padding:14px;font-size:13px;overflow-wrap:anywhere}#monthly .month-spotlights span{display:block;color:var(--muted);font-size:12px;margin-bottom:9px}#monthly .month-spotlights strong{display:block;margin-top:4px;color:#36576b;font-size:16px}
+#monthly .month-rank{display:grid;grid-template-columns:24px 1fr auto;gap:5px 10px;align-items:center;margin-bottom:15px;font-size:13px}#monthly .month-rank-num{background:#ecf2f7;border-radius:8px;padding:3px;text-align:center;color:#668095;font-size:11px}#monthly .month-rank strong{font-weight:650}#monthly .month-rank small{font-size:10px;font-weight:400;color:var(--muted)}#monthly .month-rank-bar{grid-column:2/4;background:#f0f5f7;border-radius:6px;height:5px;overflow:hidden}#monthly .month-rank-bar i{display:block;height:100%;border-radius:6px;background:#91bdc5}
+#monthly .month-fold{padding:17px 22px;scroll-margin-top:calc(var(--auth-header-height,0px) + 18px)}#monthly .month-fold>summary{font-size:14px;font-weight:650;color:#526d81}#monthly .month-fold>summary .muted{font-size:12px;font-weight:400;margin-left:8px}#monthly .month-fold[open]>summary{margin-bottom:18px}#monthly .month-fold .panel{box-shadow:none;border:1px solid #edf2f6;margin-top:14px}
+#monthly .month-down-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}#monthly .shift-strip{grid-template-columns:repeat(3,minmax(0,1fr))}#monthly .shift-box{background:#f4f8fb;border:0;border-radius:12px;min-width:0}#monthly .log-item{border-color:#edf2f6}#monthly .check-ok{color:#327451}#monthly .check-warn{color:#926228}#monthly .check-bad{color:#b44444}#monthly .bilingual-warning{background:#fff6e8;color:#976a34;border:0}#monthly .downtime-status-closed{background:#eaf6ee;color:#347352;border-color:#d3eada}
+@media(max-width:1150px){#monthly .month-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}#monthly .month-drill{grid-template-columns:1fr}#monthly .month-kpis .val{font-size:27px}}
+@media(max-width:650px){#monthly{padding:14px 10px;border-radius:20px}#monthly .month-heading{margin:4px 6px 18px}#monthly .month-heading h2{font-size:24px}#monthly .month-heading-tag{display:none}#monthly .panel{padding:16px 13px;border-radius:17px}#monthly .month-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#monthly .kpi{padding:15px 12px}#monthly .month-kpis .val{font-size:25px}#monthly .month-toolbar{gap:8px}#monthly .month-toolbar .btn{flex:1 1 40%;min-width:0}#monthly .month-toolbar select{max-width:58%}#monthly .month-fold>summary .muted{display:block;margin:3px 0 0 18px}#monthly .shift-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* V18.27.24.9: machine-button shift report UI. Presentation is scoped to this page. */
+#shiftRecords.report-light-page{--report-ink:#183a60;--report-muted:#6d8198;--report-line:#dfe9f3;--report-blue:#2f80ed;--report-bg:#f3f8fc;color:var(--report-ink);background:linear-gradient(180deg,#f8fbfe 0%,#eef6fb 100%);border-radius:26px;padding:24px;min-width:0}
+#shiftRecords .report-page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:2px 2px 18px}
+#shiftRecords .report-page-title{display:flex;gap:14px;align-items:center;min-width:0}#shiftRecords .report-page-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#e9f3ff;color:#2476d9;font-size:24px;box-shadow:0 5px 14px #315f8b14;flex:0 0 auto}
+#shiftRecords .report-page-heading h2{margin:0 0 5px;font-size:28px;color:#173b65;letter-spacing:.01em}#shiftRecords .report-page-heading p{margin:0;color:var(--report-muted);font-size:13px;line-height:1.65}
+#shiftRecords .report-scope-chip{display:inline-flex;align-items:center;min-height:38px;padding:8px 13px;border-radius:999px;background:#edf5fc;color:#4f6f90;font-size:12px;white-space:nowrap}
+#shiftRecords .report-card{background:#fff;border:1px solid #e3edf6;border-radius:20px;box-shadow:0 8px 24px #234b7010;padding:20px;margin-bottom:16px;min-width:0}
+#shiftRecords .report-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}#shiftRecords .report-card-head h3{margin:0;color:#1c4169;font-size:18px}#shiftRecords .report-card-head small{color:var(--report-muted);font-size:12px;font-weight:400}
+#shiftRecords .report-filter-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;align-items:end;margin:0}
+#shiftRecords .report-filter-grid label{display:block;color:#536e8c;font-size:12px;font-weight:700;min-width:0}#shiftRecords .report-filter-grid input,#shiftRecords .report-filter-grid select{display:block;width:100%;min-height:44px;margin-top:6px;background:#fff;color:#234665;border:1px solid #d8e5f0;border-radius:12px;padding:9px 11px;box-shadow:inset 0 1px 2px #214c7310;min-width:0}
+#shiftRecords .report-filter-grid input:focus,#shiftRecords .report-filter-grid select:focus{outline:3px solid #cfe5ff;border-color:#77abe5}
+/* V18.27.24.10: date range controls, scoped to the supervisor shift report. */
+#shiftRecords .report-date-range{min-width:0;color:#536e8c;font-size:12px;font-weight:700}
+#shiftRecords .report-date-modes{display:flex;gap:4px;margin-top:6px;padding:4px;min-height:44px;box-sizing:border-box;border:1px solid #d8e5f0;border-radius:12px;background:#f3f8fe}
+#shiftRecords .report-date-modes button{flex:1;min-width:0;margin:0;padding:6px 10px;border:0;border-radius:9px;background:transparent;color:#52708f;font:inherit;cursor:pointer}
+#shiftRecords .report-date-modes button[aria-pressed="true"]{background:#2f80ed;color:#fff;box-shadow:0 3px 8px #2f80ed26}
+#shiftRecords .report-filter-actions{display:flex;gap:8px;align-items:end}.report-filter-actions .btn{min-height:44px}
+#shiftRecords .report-soft-btn{border:1px solid #dbe7f2;background:#f8fbfe;color:#52708f;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}.report-soft-btn:hover{background:#edf5fb}
+#shiftRecords .report-machine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:10px}
+#shiftRecords .report-machine-btn{min-height:48px;border:1px solid #dce8f3;background:#fff;color:#244a70;border-radius:13px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px #244c7010;transition:.14s ease}
+#shiftRecords .report-machine-btn:hover{transform:translateY(-1px);border-color:#9ec7ef;background:#f8fbff}#shiftRecords .report-machine-btn.active{background:#2f80ed;border-color:#2f80ed;color:#fff;box-shadow:0 7px 16px #2f80ed30}#shiftRecords .report-machine-btn.empty:not(.active){color:#9baabd;background:#fbfcfd;box-shadow:none}
+#shiftRecords .report-machine-summary{display:grid;grid-template-columns:minmax(190px,1.2fr) repeat(4,minmax(130px,1fr));gap:12px;align-items:stretch}
+#shiftRecords .report-selected-machine{background:#f3f8fe;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:center;min-width:0}#shiftRecords .report-selected-machine span{color:#6e849c;font-size:12px}#shiftRecords .report-selected-machine strong{font-size:25px;color:#173f6d;margin:4px 0;overflow-wrap:anywhere}#shiftRecords .report-selected-machine small{color:#71869a;line-height:1.5}
+#shiftRecords .report-summary-tile{border-radius:16px;padding:15px 14px;min-width:0}#shiftRecords .report-summary-tile span{display:block;color:#74879b;font-size:12px}#shiftRecords .report-summary-tile strong{display:block;color:#246fcd;font-size:24px;margin:7px 0 3px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}#shiftRecords .report-summary-tile small{color:#8494a5;font-size:11px}
+#shiftRecords .report-summary-tile.output{background:#eef6ff}#shiftRecords .report-summary-tile.down{background:#fff2f4}#shiftRecords .report-summary-tile.rate{background:#effaf4}#shiftRecords .report-summary-tile.defect{background:#fff7ea}#shiftRecords .report-summary-tile.down strong{color:#d45469}#shiftRecords .report-summary-tile.rate strong{color:#23915c}#shiftRecords .report-summary-tile.defect strong{color:#cc7b13}
+#shiftRecords .report-empty-summary{grid-column:1/-1;padding:22px;text-align:center;background:#f7fafc;border-radius:16px;color:#73879a}
+#shiftRecords .report-table-title{display:flex;align-items:center;gap:9px}#shiftRecords .report-table-title .report-table-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#eaf4ff;color:#2f80ed}
+#shiftRecords .report-count{color:#7a8ea3;font-size:12px}
+#shiftRecords #shiftRows .report-order-change td{background:#f0f7fe;color:#54799e;padding:8px 12px;font-size:12px;border-bottom:1px solid #e1edf8;white-space:normal;overflow-wrap:anywhere}#shiftRecords .report-order-change span{display:inline-block;background:#e7f2fd;border-radius:8px;padding:5px 9px}
+#shiftRecords .table-wrap{overflow:auto;border:1px solid #e8eff5;border-radius:14px;background:#fff;max-width:100%}#shiftRecords table{background:#fff;color:#294966}#shiftRecords th{background:#f7fafe;color:#6e8298;font-size:12px;font-weight:750}#shiftRecords th,#shiftRecords td{border-bottom:1px solid #edf2f6;padding:12px 9px}#shiftRecords tr:hover{background:#f7fbff;color:#294966}
+#shiftRecords #shiftRows .report-summary{cursor:pointer}#shiftRecords #shiftRows .report-summary:hover{background:#f3f8fe;color:#294966}#shiftRecords #shiftRows .report-detail td{background:#fbfdff;color:#294966;padding:16px;white-space:normal}#shiftRecords .report-details-grid div{background:#f6f9fc;border:0;border-radius:10px;padding:10px}#shiftRecords .report-detail h4{color:#315777;margin:16px 0 7px}#shiftRecords .report-detail p,#shiftRecords .report-detail li{color:#58728b;line-height:1.65}
+#shiftRecords .report-rate{border-radius:9px;padding:5px 8px}#shiftRecords .report-rate.green{background:#e5f7ec;color:#22764a}#shiftRecords .report-rate.normal{background:#eaf3ff;color:#2f6fb8}#shiftRecords .report-rate.yellow{background:#fff4d5;color:#8b6817}#shiftRecords .report-rate.red{background:#ffe9ea;color:#b24646}
+#shiftRecords .report-audit details>summary{cursor:pointer;font-weight:750;color:#496986;padding:2px 0}#shiftRecords .report-audit .history-note{background:#f5f8fb;border:0;color:#6a8096;border-radius:12px}
+#shiftRecords button:focus-visible,#shiftRecords summary:focus-visible{outline:3px solid #aed4ff;outline-offset:3px}
+@media(max-width:1150px){#shiftRecords .report-filter-grid{grid-template-columns:repeat(3,minmax(150px,1fr))}#shiftRecords .report-machine-summary{grid-template-columns:repeat(2,minmax(0,1fr))}#shiftRecords .report-selected-machine{grid-column:1/-1}}
+@media(max-width:700px){#shiftRecords.report-light-page{padding:14px 10px;border-radius:20px}#shiftRecords .report-page-heading{margin:2px 4px 16px;flex-direction:column}#shiftRecords .report-page-heading h2{font-size:23px}#shiftRecords .report-card{padding:15px 12px;border-radius:17px}#shiftRecords .report-filter-grid{grid-template-columns:1fr 1fr;gap:9px}#shiftRecords .report-machine-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}#shiftRecords .report-machine-btn{min-height:46px}#shiftRecords .report-machine-summary{grid-template-columns:1fr 1fr;gap:9px}#shiftRecords .report-summary-tile{padding:13px 11px}#shiftRecords .report-summary-tile strong{font-size:21px}#shiftRecords .report-card-head{align-items:flex-start}#shiftRecords .report-filter-actions{grid-column:1/-1}#shiftRecords .report-filter-actions .report-soft-btn{width:100%}}
+@media(max-width:390px){#shiftRecords .report-filter-grid{grid-template-columns:1fr}#shiftRecords .report-machine-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#shiftRecords .report-machine-summary{grid-template-columns:1fr 1fr}#shiftRecords .report-selected-machine{grid-column:1/-1}}
+
+</style>
+<style>
+/* V18.27.24.13: operator machine picker only. */
+#operator #opMachine[hidden],#operator #opMachinePanel[hidden],#operator #opMachineBack[hidden]{display:none!important}
+#operator .op-machine-context{min-width:0}
+#operator #opMachineCurrent{font-size:15px;line-height:1.5;overflow-wrap:anywhere;margin:0 0 8px}
+#operator .op-machine-choice{min-height:48px;min-width:0;max-width:100%;padding:10px 12px;border:1px solid #b8d7f3;border-radius:12px;background:#fff;color:#174f89;font:inherit;font-weight:700;line-height:1.4;white-space:normal;overflow-wrap:anywhere;cursor:pointer;touch-action:manipulation}
+#operator #opMachineToggle{width:100%;font-size:14px}
+#operator .op-machine-panel{background:#f4f9ff;border:1px solid #d3e5f6;border-radius:16px;padding:12px;margin:0 0 12px;min-width:0;max-width:100%;box-sizing:border-box}
+#operator .op-machine-panel-head{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+#operator .op-machine-panel-head b{font-size:16px;overflow-wrap:anywhere}
+#operator .op-machine-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,80px),1fr));gap:8px}
+#operator .op-machine-choices .op-machine-choice{font-size:18px}
+#operator .op-machine-choice[aria-pressed="true"]{background:#1675dc;border-color:#1675dc;color:#fff}
+#operator .op-machine-choice:hover{box-shadow:0 0 0 2px #1675dc26}
+#operator .op-machine-choice:focus-visible{outline:3px solid #174f89;outline-offset:2px}
+#operator .op-machine-choice:disabled{opacity:.5;cursor:not-allowed}
+/* End operator machine picker styles. */
+</style>
 </head>
 <body data-auth-blocked="1">
-<div id="authIdentity" class="auth-identity" hidden><div id="simulationBanner" class="simulation-banner" hidden></div><b id="authIdentityName"></b><span id="authIdentityRole"></span><span id="authPersonShiftLabel"></span><button class="btn secondary" id="authChangePersonShift" type="button">變更今日班別 / Đổi ca hôm nay</button><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button><small>目前為單機測試版驗證，不等同正式伺服器身分驗證。</small></div>
+<div id="authTopbar" class="auth-topbar" hidden>
+ <h1>德曜精密<span>｜CNC 生產即時看板</span></h1>
+ <div id="authIdentity" class="auth-identity" hidden>
+  <button id="authCapsule" class="auth-capsule" type="button" aria-expanded="false" aria-controls="authIdentityCard" aria-label="登入狀態"><span class="auth-capsule-main"><span aria-hidden="true">👤</span><b id="authCapsuleName"></b><span id="authCapsuleRole" class="auth-role-badge"></span><span class="auth-chevron" aria-hidden="true">▼</span></span><span id="authCapsuleShift" class="auth-shift-badge"></span></button>
+  <section id="authIdentityCard" class="auth-identity-card" aria-label="登入資料" hidden>
+   <b id="authIdentityName"></b><span id="authIdentityEmployee"></span><span id="authIdentityRole"></span><span id="authPersonShiftLabel" class="auth-shift-badge"></span>
+   <button class="btn secondary" id="authChangePersonShift" type="button">修改今日班別</button><button class="btn secondary" id="authLogout" type="button">登出 / Đăng xuất</button>
+   <small>⚠ 單機測試模式</small>
+  </section>
+ </div>
+ <div id="simulationBanner" class="simulation-banner" hidden></div>
+</div>
 <div id="authGate" class="auth-gate" role="dialog" aria-modal="true" aria-label="人員登入／鎖定"></div>
 <div id="avStorageError" role="alert" hidden><div data-av-fault-text></div><label>解除原因 / Lý do mở khóa<input id="avFaultReason" maxlength="200"></label><button id="avFaultRelease" type="button" class="btn" hidden>主管解除稼動率資料鎖定 / Mở khóa dữ liệu</button></div>
 <div id="simulationLoginBanner" class="simulation-login-banner" hidden></div>
 <div class="wrap">
 <header>
-  <div><h1>德曜精密｜CNC 生產即時看板</h1><div class="sub">V18.27.24 即時看板整併・UI測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
+  <div><div class="sub">V18.27.24.14 每日機台生產報表 UI・測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -626,8 +765,8 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
  <button class="tab mgmt-only-tab" data-view="defectRecords">🔒 異常品紀錄（主管）</button>
  <button class="tab mgmt-only-tab" data-view="workOrderHistory">🔒 製令歷史（主管）</button>
  <button class="tab mgmt-only-tab" data-view="erpImportPreview">🧩 ERP製令匯入（示意）</button>
- <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 機台製令班報表（主管）</button>
- <button class="tab" data-view="monthly">歷史 / 月報</button>
+ <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 每日機台生產報表（主管）</button>
+ <button class="tab" data-view="monthly">生產月報</button>
  <button class="tab" data-view="systemAdmin" hidden>系統管理中心</button>
  <button class="tab" data-view="rules">規則說明</button>
 </div>
@@ -675,11 +814,23 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 
    <div class="op-context">
     <label class="op-context-box"><span id="lblOperator">目前登入人員 / Người đăng nhập</span><select id="operatorSelect" disabled></select></label>
-    <label class="op-context-box"><span id="lblMachine">機台 / Máy</span><select id="opMachine"></select></label>
+    <div class="op-context-box op-machine-context">
+     <select id="opMachine" hidden aria-label="機台 / Máy"></select>
+     <b id="opMachineCurrent" aria-live="polite">目前機台 / Máy：未選擇</b>
+     <button type="button" id="opMachineToggle" class="op-machine-choice" aria-expanded="false" aria-controls="opMachinePanel">選擇機台 / Chọn máy</button>
+    </div>
     <label class="op-context-box"><span id="lblWO">目前製令 / Lệnh SX hiện tại</span><input id="opWO" disabled></label>
     <label class="op-context-box"><span id="lblRole">身份 / Vai trò</span><input id="operatorRole" disabled></label>
    </div>
 
+
+   <div id="opMachinePanel" class="op-machine-panel" role="region" aria-labelledby="opMachinePanelTitle" hidden>
+    <div class="op-machine-panel-head">
+     <button type="button" id="opMachineBack" class="op-machine-choice" hidden>← 返回 / Quay lại</button>
+     <b id="opMachinePanelTitle">選擇系列 / Chọn nhóm máy</b>
+    </div>
+    <div id="opMachineChoices" class="op-machine-choices"></div>
+   </div>
 
    <div class="operator-identity">
     <div class="id-card"><span id="lblIdMachine">目前機台 / Máy hiện tại</span><b id="opHeroMachine">-</b></div>
@@ -698,7 +849,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
     <div class="shift-box"><span id="lblStartCum">班別起始累積 / SL đầu ca</span><b id="opStartCum">-</b></div>
    </div>
 
-   <div class="action-grid vn-action-grid">
+   <div class="action-grid vn-action-grid" id="opPrimaryActions">
     <button class="action-btn active" data-action="qty"><span class="action-icon">🔢</span><span class="action-zh">更新數量</span><span class="action-vi">Cập nhật số lượng</span></button>
     <button class="action-btn success" data-action="settle"><span class="action-icon">📊</span><span class="action-zh">結算</span><span class="action-vi">Chốt</span></button>
     <button class="action-btn" data-action="takeMachine"><span class="action-icon">👤</span><span class="action-zh">接手機台</span><span class="action-vi">Nhận máy</span></button>
@@ -712,6 +863,11 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
     <button class="action-btn" data-action="order"><span class="action-icon">🔄</span><span class="action-zh">換製令</span><span class="action-vi">Đổi lệnh sản xuất</span></button>
     <button class="action-btn" data-action="exception"><span class="action-icon">📌</span><span class="action-zh">例外結單</span><span class="action-vi">Kết thúc ngoại lệ</span></button>
    </div>
+
+   <details class="op-more-actions" id="opMoreActions" hidden>
+    <summary>其他處理 / Xử lý khác</summary>
+    <div class="action-grid vn-action-grid" id="opOtherActions"></div>
+   </details>
 
    <div class="op-entry-panel">
     <div class="op-entry-title" id="opEntryTitle">請選擇操作 / Chọn thao tác</div>
@@ -864,23 +1020,47 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 </section>
 
 
-<section id="shiftRecords" class="view">
- <div class="panel">
-  <h2>機台製令班報表（主管）</h2>
-  <p class="history-note">每人 × 機台 × 製令 × 責任段一列；點選列展開。加工時間依實際時段扣固定休息；個人目標沿用責任班別規則。待接手列不計個人績效。</p>
-  <div class="filters" id="reportFilters">
-   <label>月份 <input type="month" id="reportMonth"></label><label>日期 <input type="date" id="reportDate"></label>
-   <input id="reportMachine" placeholder="機台"><input id="reportOperator" placeholder="操作員"><input id="shiftSearch" placeholder="製令">
-   <select id="shiftFilter"><option value="">全部班別</option><option>早班</option><option>晚班</option></select>
-   <select id="reportRate"><option value="">全部達成率</option><option value="green">≥100%</option><option value="normal">80–99.9%</option><option value="yellow">60–79.9%</option><option value="red">&lt;60%</option><option value="unknown">未確認／不計個人</option></select>
-   <select id="reportDefect"><option value="">全部異常狀態</option><option value="yes">有異常</option><option value="no">無異常</option></select>
-   <select id="reportTool"><option value="">全部換刀狀態</option><option value="yes">有換刀</option><option value="no">無換刀</option></select>
-  </div>
-  <div class="table-wrap"><table><thead><tr><th>日期</th><th>班別</th><th>機台</th><th>製令</th><th>圖號</th><th>圖名</th><th>操作員</th><th>時間</th><th>加工時間</th><th>停機時間</th><th>實際產量</th><th>目標產量</th><th>達成率</th><th>異常</th><th>換刀</th><th>備註／狀態</th></tr></thead><tbody id="shiftRows"></tbody></table></div>
+<section id="shiftRecords" class="view report-light-page">
+ <div class="report-page-heading">
+  <div class="report-page-title"><div class="report-page-icon" aria-hidden="true">▤</div><div><h2>每日機台生產報表（主管）</h2><p>先選擇機台，查看當日或整月的正式結算紀錄；不同操作員分列，已結單的結算紀錄仍保留。</p></div></div>
+  <span class="report-scope-chip" id="reportSelectionScope">選擇機台</span>
  </div>
 
- <div class="panel" style="margin-top:12px">
-  <details><summary style="cursor:pointer;font-weight:bold">機台負責人切換紀錄（稽核明細）</summary>
+ <div class="report-card">
+  <div class="report-card-head"><h3>查詢條件</h3><small>日期與條件只會篩選目前選定的機台</small></div>
+  <div class="report-filter-grid" id="reportFilters">
+   <input type="hidden" id="reportMachine">
+   <label>日期<input type="date" id="reportDate" required></label>
+   <div class="report-date-range"><span id="reportDateRangeLabel">查詢範圍</span><div class="report-date-modes" role="group" aria-labelledby="reportDateRangeLabel">
+    <button type="button" data-report-date-mode="day" aria-pressed="true">當日</button>
+    <button type="button" data-report-date-mode="month" aria-pressed="false">整月</button>
+   </div></div>
+   <label>製令<input id="shiftSearch" placeholder="輸入製令"></label>
+   <label>操作員<input id="reportOperator" placeholder="輸入操作員"></label>
+   <label>班別<select id="shiftFilter"><option value="">全部班別</option><option>早班</option><option>晚班</option></select></label>
+   <label>達成率<select id="reportRate"><option value="">全部達成率</option><option value="green">≥100%</option><option value="normal">80–99.9%</option><option value="yellow">60–79.9%</option><option value="red">&lt;60%</option><option value="unknown">目標未確認</option></select></label>
+   <label>異常<select id="reportDefect"><option value="">全部異常狀態</option><option value="yes">有異常</option><option value="no">無異常</option></select></label>
+   <label>換刀<select id="reportTool"><option value="">全部換刀狀態</option><option value="yes">有換刀</option><option value="no">無換刀</option></select></label>
+   <div class="report-filter-actions"><button type="button" class="report-soft-btn" id="reportResetFilters">清除查詢條件</button></div>
+  </div>
+ </div>
+
+ <div class="report-card">
+  <div class="report-card-head"><div><h3>選擇機台</h3><small>點選機台按鈕後，下方只顯示該機台資料</small></div><button type="button" class="report-soft-btn" id="reportClearMachine">清除選擇</button></div>
+  <div class="report-machine-grid" id="reportMachineButtons" aria-label="選擇機台"></div>
+ </div>
+
+ <div class="report-card">
+  <div id="reportMachineSummary" class="report-machine-summary"></div>
+ </div>
+
+ <div class="report-card">
+  <div class="report-card-head"><div class="report-table-title"><span class="report-table-icon" aria-hidden="true">▦</span><div><h3 id="reportTableTitle">機台製令生產紀錄</h3><small>點選資料列可展開停機、異常、換刀、校車與稽核資訊</small></div></div><span class="report-count" id="reportRecordCount">0 筆結算紀錄</span></div>
+  <div class="table-wrap"><table><thead><tr><th>日期</th><th>班別</th><th>機台</th><th>製令</th><th>圖號</th><th>圖名</th><th>操作員</th><th>時間</th><th>加工時間</th><th>停機時間</th><th>實際產量</th><th title="本筆結束時的製令累積；缺少可靠紀錄時顯示 —">累積數</th><th>目標產量</th><th>達成率</th><th>異常</th><th>換刀</th><th>備註／狀態</th></tr></thead><tbody id="shiftRows"></tbody></table></div>
+ </div>
+
+ <div class="report-card report-audit">
+  <details><summary>機台負責人切換紀錄（稽核明細）</summary>
   <div class="history-note">「接手機台」只切換目前負責人，不切換班別。每次保存原負責人、新負責人、接手時間、當時累積、製令與班別狀態。</div>
   <div class="table-wrap">
    <table>
@@ -1127,10 +1307,11 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 </section>
 
 
-<section id="monthly" class="view"><div class="panel"><h3>稼動率暫停顯示</h3><p class="note">自動稼動率尚未建立，此版不顯示正式稼動率。</p></div>
+<section id="monthly" class="view">
+ <div class="month-heading"><div><p class="month-eyebrow">每月生產概況</p><h2>生產月報</h2><p>先看成果，再查看需要追蹤的細節。</p></div><span class="month-heading-tag">產量 · 品質 · 停機</span></div>
  <div class="panel">
   <div class="month-toolbar">
-   <strong>歷史月份</strong>
+   <label for="monthSelect">報表月份</label>
    <select id="monthSelect">
     <option value="2026-09">2026 年 9 月</option>
     <option value="2026-10">2026 年 10 月</option>
@@ -1141,100 +1322,44 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
    <button class="btn" id="monthReopenBtn">主管重新開啟</button>
    <button class="btn" id="monthExcelBtn">匯出 Excel</button>
   </div>
-  <div class="history-note">
+  <details class="month-rules"><summary>月報計算說明</summary><div class="history-note">
    新個人紀錄依接手當日歸月，跨月責任不拆段；機台產量按實際操作切點保存並依區段開始日歸月，不推估午夜累積數。異常、停機與結單依事件日期歸月；舊封存日期保持原值。<b>「本月生產製令數」是有生產紀錄的不同製令張數；「本月結單製令」只看真正按下「製令完成／例外結單」所建立的結單事件。</b> 有生產不等於已結單。已月結月份的原始紀錄不可直接覆蓋。
-  </div>
-  <div class="month-kpis">
+<br>總停機沿用原版：已結束停機事件，加上歷史示意停機；進行中事件不列入。班別分析依人員責任紀錄，與機台產量的歸屬口徑不同。</div></details>
+  <h2 class="month-kpi-title">本月摘要</h2><div class="month-kpis">
    <div class="kpi"><div class="lab">總加工數</div><div class="val" id="mTotal">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">良品數</div><div class="val" id="mGood">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">異常數</div><div class="val" id="mDefect">-</div><div class="hint">PCS</div></div>
    <div class="kpi"><div class="lab">不良率</div><div class="val" id="mDefectRate">-</div><div class="hint">異常 ÷ 加工</div></div>
-   <div class="kpi"><div class="lab">本月生產製令數</div><div class="val" id="mOrders">-</div><div class="hint">有生產的製令</div></div>
-   <div class="kpi"><div class="lab">本月結單製令</div><div class="val" id="mClosedOrders">-</div><div class="hint">依結單事件</div></div>
-   <div class="kpi"><div class="lab">正常完成</div><div class="val" id="mNormalClosed">-</div><div class="hint">製令完成</div></div>
-   <div class="kpi"><div class="lab">例外結單</div><div class="val" id="mExceptionClosed">-</div><div class="hint">例外結單事件</div></div>
-   <div class="kpi"><div class="lab">總停機</div><div class="val" id="mDown">-</div><div class="hint">分鐘</div></div>
+   <div class="kpi"><div class="lab">生產製令</div><div class="val" id="mOrders">-</div><div class="hint">有生產的製令</div></div>
+   <button type="button" class="kpi month-down-kpi" id="monthDownTrigger" aria-controls="monthDownPanel" aria-expanded="false"><span class="lab">總停機</span><span class="val" id="mDown">-</span><span class="hint">分鐘 · 點擊查看明細 ↗</span></button>
   </div>
+ <div class="month-close-strip"><span>本月結單 <b id="mClosedOrders">0</b> 張</span><span>正常完成 <b id="mNormalClosed">0</b></span><span id="monthExceptionBadge">例外結單 <b id="mExceptionClosed">0</b></span></div>
  </div>
-
- <div class="panel" style="margin-top:12px">
-  <h2>每日個人 × 機台績效</h2>
-  <div class="history-note">依上方所選月份的責任開始日、人員、保存班別、機台分組；同組已封存且可確認的責任區段相加。責任時間優先使用封存的有效分鐘，舊資料缺少此欄時才以責任起訖時間計算。任一段尚未封存或資料未確認，該組績效顯示「待確認」；不同機台不合併。</div>
-  <div class="table-wrap"><table>
-   <thead><tr><th>責任開始日</th><th>人員</th><th>班別</th><th>機台</th><th>責任段數</th><th>責任時間（分）</th><th>實際產量（PCS）</th><th>應達產量（PCS）</th><th>個人機台達成率</th><th>停機分鐘</th><th>確認狀態</th></tr></thead>
-   <tbody id="monthPersonMachineRows"></tbody>
-  </table></div>
- </div>
-
- <div class="month-drill">
-  <div class="panel">
-   <h2>機台月分析 <small class="muted">點機台可下鑽</small></h2>
+ <div class="month-drill"><div class="panel">
+   <h2>機台月分析 <small class="muted">點機台查生產紀錄・點停機查事件</small></h2>
    <div class="table-wrap"><table>
     <thead><tr><th>機台</th><th>月產量</th><th>良品</th><th>異常</th><th>不良率</th><th>停機</th><th>生產製令數</th></tr></thead>
     <tbody id="monthMachineRows"></tbody>
    </table></div>
-  </div>
-  <div class="panel">
-   <h2 id="monthDetailTitle">月份重點</h2>
-   <div id="monthDetail"></div>
-  </div>
- </div>
-
- <div class="grid2" style="margin-top:12px">
-  <div class="panel">
+  </div><div class="panel"><h2>本月重點</h2><div id="monthHighlights"></div></div></div>
+ <div class="panel">
    <h2>班別分析</h2>
    <div class="table-wrap"><table>
     <thead><tr><th>班別</th><th>加工</th><th>異常</th><th>良品</th><th>占比</th></tr></thead>
     <tbody id="monthShiftRows"></tbody>
    </table></div>
   </div>
-  <div class="panel">
-   <h2>月結檢核</h2>
-   <div id="monthCheckResults" class="log"><div class="note">按「月結檢核」檢查進行中班別、未結束停機、例外結單與資料缺漏。</div></div>
-  </div>
- </div>
-
- <div class="panel" style="margin-top:12px">
-   <h2>生產製令彙總 <small class="muted">相同製令號合併計算本月加工量</small></h2>
-   <div class="table-wrap"><table>
-    <thead><tr><th>製令</th><th>機台</th><th>本月加工</th><th>異常</th><th>良品</th><th>停機分鐘</th><th>生產紀錄</th><th>資料來源</th><th>本月結單</th></tr></thead>
-    <tbody id="monthOrderSummaryRows"></tbody>
-   </table></div>
-  </div>
-
-  <div class="panel" style="margin-top:12px">
-   <h2>製令生產紀錄 <small class="muted">逐筆顯示每次製令生產，依生產歸屬日列入本月</small></h2>
-   <div class="table-wrap"><table>
-    <thead><tr><th>生產歸屬日</th><th>班別</th><th>製令</th><th>機台</th><th>圖號</th><th>加工模式</th><th>歷史加工秒數</th><th>生產時間（開始–結束）</th><th>開始累積</th><th>結束累積</th><th>本段加工</th><th>異常</th><th>良品</th><th>應達</th><th>停機分鐘</th><th>資料來源</th></tr></thead>
-    <tbody id="monthOrderRows"></tbody>
-   </table></div>
-  </div>
-
- <div class="panel" style="margin-top:12px">
-  <h2>本月結單事件明細</h2>
-  <div class="history-note">只有真正執行「製令完成」或「例外結單」才會出現在這裡；單純有生產紀錄不算結單。</div>
-  <div class="table-wrap"><table>
-   <thead><tr><th>結單時間</th><th>生產日</th><th>班別</th><th>機台</th><th>製令</th><th>類型</th><th>實際完成</th><th>製令數量</th><th>操作員</th><th>原因</th><th>來源</th></tr></thead>
-   <tbody id="monthOrderCloseRows"></tbody>
-  </table></div>
- </div>
-
- <div class="panel" style="margin-top:12px">
-  <h2>本月停機事件明細</h2>
-  <div class="history-note">每次「開始停機」立即建立事件；「恢復生產」才結束。跨08:00／20:30不切段；只有實際責任交接或製令操作才分段，並保留同一停機群組編號。</div>
+ <details class="panel month-fold" id="monthMachineDetailPanel"><summary id="monthDetailTitle">機台生產紀錄</summary><p class="note">以下為原版生產紀錄口徑；各段停機與上方依已結束事件統計的總停機可能不同。</p><div id="monthDetail"></div></details>
+ <details class="panel month-fold" id="monthDownPanel"><summary>停機事件明細</summary>
+  <div class="month-down-tools"><strong id="monthDownScope">全部機台</strong><button type="button" class="btn" id="monthDownAll">查看全部機台</button></div><p id="monthDownNote" class="note"></p><div class="history-note">每次「開始停機」立即建立事件；「恢復生產」才結束。跨08:00／20:30不切段；只有實際責任交接或製令操作才分段，並保留同一停機群組編號。</div>
   <div class="table-wrap"><table>
    <thead><tr><th>生產日</th><th>班別</th><th>機台</th><th>製令</th><th>操作員</th><th>原因</th><th>開始</th><th>結束</th><th>分鐘</th><th>狀態</th><th>群組</th></tr></thead>
    <tbody id="monthDowntimeRows"></tbody>
   </table></div>
- </div>
-
- <div class="panel" style="margin-top:12px">
-  <h2>本月操作 / 修改追蹤</h2>
-  <div class="table-wrap"><table>
-   <thead><tr><th>時間</th><th>生產日</th><th>班別</th><th>操作員</th><th>機台</th><th>製令</th><th>動作</th><th>內容</th></tr></thead>
-   <tbody id="monthAuditRows"></tbody>
-  </table></div>
- </div>
+ </details>
+ <details class="panel month-fold" id="monthCheckPanel"><summary>月結檢核結果</summary>
+   <div id="monthCheckResults" class="log"><div class="note">按「月結檢核」檢查進行中班別、未結束停機、例外結單與資料缺漏。</div></div>
+  </details>
 </section>
 
 <section class="view" id="systemAdmin">
@@ -1432,6 +1557,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
   <h2 id="settlementChoiceTitle">機台接下來？ / Máy tiếp theo?</h2>
   <p id="settlementChoiceSummary" class="note"></p>
   <div style="display:grid;gap:14px">
+   <button class="btn successbtn" id="settlementComplete" type="button" hidden style="min-height:80px;font-size:24px">製令完成<br><small>Hoàn thành lệnh SX</small></button>
    <button class="btn successbtn" id="settlementContinue" type="button" style="min-height:80px;font-size:24px">繼續生產<br><small>Tiếp tục sản xuất</small></button>
    <button class="btn dangerbtn" id="settlementStop" type="button" style="min-height:80px;font-size:24px">停止生產<br><small>Dừng sản xuất</small></button>
   </div>
@@ -1894,7 +2020,7 @@ function mergedIntervalMinutes(intervals,start,end){
  return total/60000;
 }
 function downtimeIntervalsFor(m,start,end,wo=m.wo){
- const rows=downtimeEvents.filter(e=>e.machine===m.id&&(!e.wo||e.wo===wo))
+ const rows=downtimeEvents.filter(e=>e.machine===m.id&&e.scope!=='machine-after-order'&&(!e.wo||e.wo===wo))
   .map(e=>({start:+e.startTime,end:e.status==='open'?(+e.endTime||end):+e.endTime}))
   .filter(x=>x.start<end&&x.end>start);
  // 舊版機台狀態可能有 downStart，卻尚未建立停機事件。
@@ -2221,7 +2347,8 @@ function renderPersonShiftIdentity(){
  const p=authActive()?authPerson(authSession.employeeId):null;
  const row=p?personShiftRecord(p.employeeId,productionDate()):null;
  if(label)label.textContent=row?`今日工作班別：${row.shift}`:'';
- if(button){button.hidden=!authCan('canCorrectProduction');button.textContent='主管修正今日班別';}
+ if(button){button.hidden=!authCan('canCorrectProduction');button.textContent=operatorLang==='vi'?'Đổi ca hôm nay':'修改今日班別';}
+ authRenderCapsule();
 }
 function authPasswordValid(value){return typeof value==='string'&&value.length>=8&&value.length<=128;}
 async function authPasswordRecord(password){
@@ -2285,7 +2412,7 @@ function authFinishLogin(p){
  authSession={employeeId:p.employeeId,id:crypto.randomUUID(),locked:false,workShift:personShiftRecord(p.employeeId)?.shift||'',workShiftDate:productionDate()};
  authLastActivity=realNow();authPendingUser=null;authScreen='login';authLanguage=p.defaultLanguage;
  operatorLang=p.defaultLanguage;operatorSelect.innerHTML=p.permissions.canOperate?personnelOption(p):'';operatorSelect.value=p.name;operatorSelect.disabled=true;
- opFormDirty=false;appStorage.setItem('deyao_operator_lang',operatorLang);
+ opFormDirty=false;resetOpMachineSelection();appStorage.setItem('deyao_operator_lang',operatorLang);
  authAudit('登入成功',p.employeeId);applyOperatorLanguage();authApplyAccess();renderAll();
  authShowView(p.roleCode==='operator'?'operator':p.roleCode==='systemAdmin'?'systemAdmin':authAllowedView(previousView)?previousView:p.permissions.canOperate?'operator':p.roleCode==='qualitySupervisor'?'defectRecords':'owner');
 }
@@ -2307,7 +2434,7 @@ function authCheckIdle(now=realNow()){if(authActive()&&now-authLastActivity>=AUT
 function authActivity(){authCheckIdle();if(authActive())authLastActivity=realNow();}
 function authGoSwitch(){
  try{if(authSession)authAudit('鎖定畫面切換登入',authSession.employeeId);}catch(e){console.error('切換登入稽核保存失敗',e);}
- authSession=null;authPendingUser=null;authCancelPending();authScreen='login';authApplyAccess();renderAuthGate();
+ authSession=null;authPendingUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
 }
 async function authUnlock(password){
  if(!authSession?.locked)return {ok:false};
@@ -2319,7 +2446,7 @@ async function authUnlock(password){
 }
 function authLogout(){
  try{if(authSession)authAudit('登出',authSession.employeeId);}catch(e){console.error('登出稽核保存失敗',e);}
- authSession=null;authPendingUser=null;authCancelPending();authScreen='login';authApplyAccess();renderAuthGate();
+ authSession=null;authPendingUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
 }
 function authAllowedView(view){
  if(!authActive())return false;
@@ -2338,7 +2465,7 @@ function authShowView(view){
  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));return true;
 }
 function syncAuthHeaderHeight(){
- const identity=document.getElementById('authIdentity');
+ const identity=document.getElementById('authTopbar');
  document.documentElement.style.setProperty('--auth-header-height',`${identity.hidden?0:identity.getBoundingClientRect().height}px`);
 }
 function authApplyAccess(){
@@ -2347,9 +2474,12 @@ function authApplyAccess(){
  document.querySelectorAll('.modal').forEach(m=>m.inert=!active||!!m.dataset.authReauthBlocked);
  document.getElementById('authGate').hidden=active;
  const identity=document.getElementById('authIdentity');identity.hidden=!active;
- if(p){document.getElementById('authIdentityName').textContent=`👤 ${operatorLang==='vi'?'Đang đăng nhập':'目前登入'}：${p.name}（${p.employeeId}）`;
+ document.getElementById('authTopbar').hidden=!active;authSetCapsuleOpen(false);
+ identity.dataset.role=p?.roleCode||'';
+ if(p){document.getElementById('authIdentityName').textContent=`👤 ${p.name}`;
+  document.getElementById('authIdentityEmployee').textContent=`${operatorLang==='vi'?'Mã nhân viên':'工號'}：${p.employeeId}`;
   document.getElementById('authIdentityRole').textContent=`${operatorLang==='vi'?'Vai trò':'角色'}：${PERSONNEL_ROLES[p.roleCode].labels[operatorLang]}`;}
- renderPersonShiftIdentity();renderSimulation();syncAuthHeaderHeight();
+ renderPersonShiftIdentity();authRenderCapsule();renderSimulation();syncAuthHeaderHeight();
  document.querySelectorAll('.tab').forEach(t=>{t.hidden=!authAllowedView(t.dataset.view);});
  if(p?.roleCode==='operator' && document.querySelector('.view.active')?.id!=='operator')authShowView('operator');
  ['monthCheckBtn','monthCloseBtn','monthReopenBtn','loadDemoData','enterCleanTestMode','selectJsonRestore','downloadJsonBackup'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=!authCan('canCorrectProduction');});
@@ -2358,6 +2488,8 @@ function authApplyAccess(){
  if(active)renderAuthAccounts();
  rtApplyAccess();
  avRenderFaultUI();
+ const m=machines.find(x=>x.id===opMachine.value);
+ if(m){updateOperatorActionAvailability(m);renderOperatorSafety(m);}else renderOpMachineEmpty();
 }
 function authConfirmAction(action,m){
  if(!authActive())return false;
@@ -2516,10 +2648,30 @@ async function confirmAuthProductionCorrection(){
   document.getElementById('authProductionCorrectionModal').classList.remove('open');syncOpMachine();renderAll();return true;
  }catch(e){restoreActionState(snapshot);alert(`修正未完成：${e.message}`);return false;}
 }
+function authSetCapsuleOpen(open,restoreFocus=false){
+ const trigger=document.getElementById('authCapsule'),card=document.getElementById('authIdentityCard');
+ card.hidden=!open;trigger.setAttribute('aria-expanded',String(open));
+ if(restoreFocus)trigger.focus();
+}
+function authRenderCapsule(){
+ const p=authActive()?authPerson(authSession.employeeId):null,row=p?personShiftRecord(p.employeeId,productionDate()):null;
+ const role=p?PERSONNEL_ROLES[p.roleCode].labels[operatorLang]:'';
+ document.getElementById('authCapsuleName').textContent=p?.name||'';
+ document.getElementById('authCapsuleRole').textContent=role;
+ document.getElementById('authCapsuleShift').textContent=row?row.shift+(row.shift==='早班'?' 🟢':' 🌙'):'班別未設定';
+ document.getElementById('authCapsule').setAttribute('aria-label',p?[p.name,role,row?.shift||'班別未設定'].join('，'):'登入狀態');
+ if(!row)document.getElementById('authPersonShiftLabel').textContent='今日班別：未設定';
+ if(!p){for(const id of ['authIdentityName','authIdentityEmployee','authIdentityRole','authPersonShiftLabel'])document.getElementById(id).textContent='';}
+}
 function initializeAuthUI(){
+ document.getElementById('authCapsule').addEventListener('click',()=>authSetCapsuleOpen(document.getElementById('authIdentityCard').hidden));
+ document.addEventListener('click',event=>{if(!document.getElementById('authIdentity').contains(event.target))authSetCapsuleOpen(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('authIdentityCard').hidden){authSetCapsuleOpen(false,true);event.preventDefault();}});
+ document.getElementById('authIdentity').addEventListener('focusout',event=>{if(event.relatedTarget&&!event.currentTarget.contains(event.relatedTarget))authSetCapsuleOpen(false);});
+ document.getElementById('authChangePersonShift').addEventListener('click',()=>authSetCapsuleOpen(false));
  document.getElementById('authLogout').onclick=authLogout;
  document.getElementById('authChangePersonShift').onclick=authChangePersonShift;
- new ResizeObserver(syncAuthHeaderHeight).observe(document.getElementById('authIdentity'));
+ new ResizeObserver(syncAuthHeaderHeight).observe(document.getElementById('authTopbar'));
  window.addEventListener('resize',syncAuthHeaderHeight);
  document.getElementById('authAccountForm').onsubmit=async e=>{e.preventDefault();const status=document.getElementById('authAccountStatus');
   try{const r=await authSetTemporaryPassword(document.getElementById('authAccountSelect').value,document.getElementById('authTemporaryPassword').value);status.textContent=r.ok?'暫時密碼已建立，下次登入須變更。':r.message;document.getElementById('authTemporaryPassword').value='';}catch(e){status.textContent=e.message;}};
@@ -2772,11 +2924,11 @@ function avRequireOperation(m,action){
  if(!authCan('canOperate')||avWorkflowPermission(m,action))throw Error('目前登入者沒有此機台換線作業權限。');
 }
 function avActor(prefix){const a=authActorFields();return {[prefix+'EmployeeId']:a.actorEmployeeId,[prefix+'Name']:a.actorName,[prefix+'Role']:a.actorRole,[prefix+'SessionId']:a.actorSessionId};}
-function avWaitForm(){return `<p class="note">${opT('明確選擇這段等待是否原本排定生產，系統不會自行猜測。','Chọn rõ thời gian chờ này đã được lên kế hoạch sản xuất hay chưa.')}</p><div class="form-grid"><label><span class="op-field-label">${opT('此段時間原本是否已排定生產？','Thời gian này đã lên kế hoạch sản xuất?')}</span><select id="fWaitScheduled" required><option value="">${opT('請選擇','Hãy chọn')}</option><option value="yes">${opT('是，原本已排定生產','Có, đã lên kế hoạch sản xuất')}</option><option value="no">${opT('否，目前尚未排定生產','Không, chưa lên kế hoạch')}</option></select></label><label><span class="op-field-label">${opT('等待原因','Lý do chờ')}</span><select id="fWaitReason" required><option value="">${opT('請選擇','Hãy chọn')}</option>${Object.entries(AV_WAIT_REASONS).map(([zh,vi])=>`<option value="${escapeAttr(zh)}">${opT(zh,vi)}</option>`).join('')}</select></label><label class="full"><span class="op-field-label">${opT('補充說明（其他必填）','Ghi chú (bắt buộc khi chọn Khác)')}</span><input id="fWaitDetail" maxlength="200"></label></div>`;}
+function avWaitForm(){return `<div class="form-grid"><label><span class="op-field-label">${opT('等待原因','Lý do chờ')}</span><select id="fWaitReason" required><option value="">${opT('請選擇','Hãy chọn')}</option>${Object.entries(AV_WAIT_REASONS).map(([zh,vi])=>`<option value="${escapeAttr(zh)}">${opT(zh,vi)}</option>`).join('')}</select></label><label class="full"><span class="op-field-label">${opT('補充說明（其他必填）','Ghi chú (bắt buộc khi chọn Khác)')}</span><input id="fWaitDetail" maxlength="200"></label></div>`;}
 function avValidateWaitInputs(action){
  if(action!=='waitsetup')return true;
- const choice=document.getElementById('fWaitScheduled')?.value,reason=document.getElementById('fWaitReason')?.value,detail=document.getElementById('fWaitDetail')?.value.trim();
- if(!['yes','no'].includes(choice)||!AV_WAIT_REASONS[reason]){alert(opT('請明確選擇是否排定生產與等待原因。','Hãy chọn kế hoạch sản xuất và lý do chờ.'));return false;}
+ const reason=document.getElementById('fWaitReason')?.value,detail=document.getElementById('fWaitDetail')?.value.trim();
+ if(!AV_WAIT_REASONS[reason]){alert(opT('請選擇等待原因。','Hãy chọn lý do chờ.'));return false;}
  const check=validateOtherReason(reason,detail,'等待原因');if(!check.ok){alert(check.zh+'\n'+check.vi);return false;}
  const text=textInputCheck(detail,'等待補充',{max:200});if(!text.ok){alert(text.zh);return false;}return true;
 }
@@ -2797,11 +2949,12 @@ function avCloseEvent(kind,m,ts){
  e.endTime=ts;e.minutes=(ts-e.startTime)/60000;e.status='closed';
  Object.assign(e,avActor(kind==='waits'?'endedBy':'completedBy'));return e;
 }
-function avBeginWait(m,ts,scheduledProduction,reason,reasonDetail){
- avRequireOperation(m,'waitsetup');if(!isOrderClosedStatus(m.status)||typeof scheduledProduction!=='boolean'||!AV_WAIT_REASONS[reason]||(reason==='其他'&&!reasonDetail?.trim())||avOpenEvent('waits',m.id)||avOpenEvent('setups',m.id))throw Error('等待分類不合法或已有進行中事件。');
- const e={id:makeEventId('WAIT'),groupId:makeEventId('WAITGROUP'),machine:m.id,startTime:ts,endTime:null,minutes:0,...avShiftIdentity(ts),scheduledProduction,classification:scheduledProduction?'LOSS':'EXCLUDED',reason,reasonDetail,workOrderId:ensureWorkOrderRecord(m)?.id||'',wo:m.wo,drawing:m.drawing,...avActor('startedBy'),endedByEmployeeId:'',endedByName:'',endedByRole:'',endedBySessionId:'',status:'open'};
+function avBeginWait(m,ts,reason,reasonDetail){
+ avRequireOperation(m,'waitsetup');if(!isOrderClosedStatus(m.status)||!AV_WAIT_REASONS[reason]||(reason==='其他'&&!reasonDetail?.trim())||avOpenEvent('waits',m.id)||avOpenEvent('setups',m.id))throw Error('等待分類不合法或已有進行中事件。');
+ endClosedOrderStop(m,ts);
+ const e={id:makeEventId('WAIT'),groupId:makeEventId('WAITGROUP'),machine:m.id,startTime:ts,endTime:null,minutes:0,...avShiftIdentity(ts),scheduledProduction:null,classification:'UNCLASSIFIED',reason,reasonDetail,workOrderId:ensureWorkOrderRecord(m)?.id||'',wo:m.wo,drawing:m.drawing,...avActor('startedBy'),endedByEmployeeId:'',endedByName:'',endedByRole:'',endedBySessionId:'',status:'open'};
  avData.waits.push(e);m.waitEventId=e.id;m.waitGroupId=e.groupId;m.waitSetupStart=ts;m.status='待換線／待校車';
- avLink(m,'待換線開始',e,`${e.classification}｜${reason}${reasonDetail?'｜'+reasonDetail:''}`,ts);avSave();return e;
+ avLink(m,'待換線開始',e,`未分類｜${reason}${reasonDetail?'｜'+reasonDetail:''}`,ts);avSave();return e;
 }
 function avBeginSetup(m,ts){
  avRequireOperation(m,'setup');if(m.status!=='待換線／待校車'||avOpenEvent('setups',m.id))throw Error('只有待換線狀態可開始校車。');
@@ -2950,12 +3103,17 @@ function avRollback(snapshot){const errors=restoreActionState(snapshot);for(cons
 function avTransaction(change){
  avAssertWritable();const snapshot=captureActionState();try{const result=change();if(avSave()===false)throw Error('稼動率保存回傳false');if(saveMachineState()===false)throw Error('機台保存回傳false');return result;}catch(e){const errors=avRollback(snapshot);avError(e.message+(errors.length?'；回復失敗：'+errors.join('、'):''),errors.length>0);throw e;}
 }
+function avValidWaitClassification(row){
+ return row.classification==='UNCLASSIFIED'
+  ? row.scheduledProduction===null
+  : ['LOSS','EXCLUDED'].includes(row.classification)&&typeof row.scheduledProduction==='boolean'&&row.scheduledProduction===(row.classification==='LOSS');
+}
 function avValidateBackupRows(data,context={}){
  const all=Object.fromEntries(Object.entries(AV_KEYS).map(([kind,key])=>[kind,data[key]===undefined?[]:JSON.parse(data[key])]));const ids=new Set(),validMachines=new Set(machines.map(m=>m.id));
  const base=(r,kind)=>{if(!r||typeof r!=='object'||Array.isArray(r))throw Error(kind+' 包含非事件物件');if(typeof r.id!=='string'||!r.id.trim()||ids.has(r.id))throw Error(kind+' 事件ID空白或重複');ids.add(r.id);if(!validMachines.has(r.machine)||!(r.schemaVersion===21?['','早班','晚班']:['早班','晚班']).includes(r.shift)||!/^\d{4}-\d{2}-\d{2}$/.test(r.productionDate)||productionDate(new Date(r.productionDate+'T12:00:00').getTime())!==r.productionDate)throw Error(kind+' 機台／生產日／班別錯誤');};
- for(const kind of ['waits','setups','gaps']){const open=new Set();for(const r of all[kind]){base(r,kind);if(typeof r.groupId!=='string'||!r.groupId||!Number.isFinite(r.startTime)||r.startTime<=0||!['open','closed'].includes(r.status))throw Error(kind+' 群組／時間／狀態錯誤');if(r.status==='open'){if(r.endTime!==null||open.has(r.machine))throw Error(kind+' 重複開啟事件或endTime錯誤');open.add(r.machine);}else if(!Number.isFinite(r.endTime)||r.endTime<=r.startTime)throw Error(kind+' 結束必須晚於開始');if(r.minutes!==undefined&&(!Number.isFinite(r.minutes)||r.minutes<0||r.status==='closed'&&Math.abs(r.minutes-(r.endTime-r.startTime)/60000)>1e-7))throw Error(kind+' 分鐘資料錯誤');if(r.schemaVersion===21?productionDate(r.startTime)!==r.productionDate:(legacyProductionDate(r.startTime)!==r.productionDate||shiftAt(r.startTime)!==r.shift||kind!=='gaps'&&r.endTime!==null&&r.endTime>maxShiftEndTs(r.productionDate,r.shift)))throw Error(kind+' 班別切片錯誤');if(kind==='waits'&&(!['LOSS','EXCLUDED'].includes(r.classification)||typeof r.scheduledProduction!=='boolean'||r.scheduledProduction!==(r.classification==='LOSS')))throw Error('Wait分類錯誤');if(kind==='gaps'&&r.classification!=='EXCLUDED')throw Error('行政空檔分類錯誤');}}
+ for(const kind of ['waits','setups','gaps']){const open=new Set();for(const r of all[kind]){base(r,kind);if(typeof r.groupId!=='string'||!r.groupId||!Number.isFinite(r.startTime)||r.startTime<=0||!['open','closed'].includes(r.status))throw Error(kind+' 群組／時間／狀態錯誤');if(r.status==='open'){if(r.endTime!==null||open.has(r.machine))throw Error(kind+' 重複開啟事件或endTime錯誤');open.add(r.machine);}else if(!Number.isFinite(r.endTime)||r.endTime<=r.startTime)throw Error(kind+' 結束必須晚於開始');if(r.minutes!==undefined&&(!Number.isFinite(r.minutes)||r.minutes<0||r.status==='closed'&&Math.abs(r.minutes-(r.endTime-r.startTime)/60000)>1e-7))throw Error(kind+' 分鐘資料錯誤');if(r.schemaVersion===21?productionDate(r.startTime)!==r.productionDate:(legacyProductionDate(r.startTime)!==r.productionDate||shiftAt(r.startTime)!==r.shift||kind!=='gaps'&&r.endTime!==null&&r.endTime>maxShiftEndTs(r.productionDate,r.shift)))throw Error(kind+' 班別切片錯誤');if(kind==='waits'&&!avValidWaitClassification(r))throw Error('Wait分類錯誤');if(kind==='gaps'&&r.classification!=='EXCLUDED')throw Error('行政空檔分類錯誤');}}
  for(const kind of ['waits','setups'])for(const r of all[kind])for(const field of ['continuedFrom','previousWaitEventId'])if(r[field]){const prev=all[kind].find(x=>x.id===r[field]),ancestor=field==='previousWaitEventId'&&!!r.continuedFrom;if(!prev||prev.machine!==r.machine||prev.groupId!==r.groupId||prev.status!=='closed'||(ancestor?prev.endTime>r.startTime:prev.endTime!==r.startTime))throw Error(kind+' 延續／切點引用錯誤');}
- for(const c of all.corrections){if(!c||typeof c!=='object'||typeof c.id!=='string'||!c.id||ids.has(c.id))throw Error('分類修正ID錯誤');ids.add(c.id);const e=all.waits.find(e=>e.id===c.waitEventId);if(!e||e.machine!==c.machine||!Number.isFinite(c.time)||c.time<=0||typeof c.reason!=='string'||!c.reason.trim()||!['LOSS','EXCLUDED'].includes(c.classification)||typeof c.scheduledProduction!=='boolean'||c.scheduledProduction!==(c.classification==='LOSS'))throw Error('分類修正內容／引用錯誤');if(c.groupId&&c.groupId!==e.groupId||c.productionDate&&c.productionDate!==e.productionDate||c.shift&&c.shift!==e.shift)throw Error('分類修正切片引用錯誤');if(!c.actorEmployeeId||!c.actorName||!c.actorRole||!c.actorSessionId)throw Error('分類修正缺少操作者');if(c.before&&(!['LOSS','EXCLUDED'].includes(c.before.classification)||c.before.scheduledProduction!==(c.before.classification==='LOSS'))||c.after&&(c.after.classification!==c.classification||c.after.scheduledProduction!==c.scheduledProduction))throw Error('修正before／after矛盾');}
+ for(const c of all.corrections){if(!c||typeof c!=='object'||typeof c.id!=='string'||!c.id||ids.has(c.id))throw Error('分類修正ID錯誤');ids.add(c.id);const e=all.waits.find(e=>e.id===c.waitEventId);if(!e||e.machine!==c.machine||!Number.isFinite(c.time)||c.time<=0||typeof c.reason!=='string'||!c.reason.trim()||!['LOSS','EXCLUDED'].includes(c.classification)||typeof c.scheduledProduction!=='boolean'||c.scheduledProduction!==(c.classification==='LOSS'))throw Error('分類修正內容／引用錯誤');if(c.groupId&&c.groupId!==e.groupId||c.productionDate&&c.productionDate!==e.productionDate||c.shift&&c.shift!==e.shift)throw Error('分類修正切片引用錯誤');if(!c.actorEmployeeId||!c.actorName||!c.actorRole||!c.actorSessionId)throw Error('分類修正缺少操作者');if(c.before&&!avValidWaitClassification(c.before)||c.after&&(c.after.classification!==c.classification||c.after.scheduledProduction!==c.scheduledProduction))throw Error('修正before／after矛盾');}
  const machineRows=JSON.parse(data['deyao_v10_machine_state']||'[]'),legacy=Object.values(AV_KEYS).every(k=>data[k]===undefined)&&!/^18\.(?:26\.[23]|27(?:\.\d+)?)(?:-|$)/.test(String(context.appVersion||''));const issues=avCrossCheck(all,machineRows,{legacy});if(issues.length)throw Error(issues.join('；'));
  return true;
 }
@@ -3703,7 +3861,8 @@ function createOperatorSettlement(m,info,ts=appNow(),by=currentOperator().name,n
   productionDate:productionDate(ts),shift:'',kind:'unified',wo:m.wo
  }:null;
  m.settlementDecision={settlementId:event.id,cutTime:ts,cutCum:m.cum,wo:m.wo,
-  settledBy:by,employeeId:currentOperator().employeeId,wasStopped:m.status==='停機'};
+  settledBy:by,employeeId:currentOperator().employeeId,wasStopped:m.status==='停機',
+  phase:m.orderQty>0&&m.cum>=m.orderQty?'order':'machine',workOrderId:m.workOrderRecordId||''};
  operatorSettlementEvents.unshift(event);
  persistOperatorSettlementEvents();
 
@@ -4116,7 +4275,7 @@ function beginDowntimeEvent(m,startTs=appNow(),continued=false){
   ...authActorFields(),eventId,groupId:m.downGroupId,...meta,
   reason:m.downReason||'停機',
   reasonDetail:m.downReasonDetail||'',
-  toolNumber:m.downToolNumber||'',
+  toolNumber:m.downToolNumber||'',toolNumbers:downtimeToolNumbers(m.downToolNumber),
   reasonText:downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''),
   startTime:startTs,startCum:m.cum,responsible:meta.operator||'',
   endTime:null,minutes:null,status:'open',continued:!!continued
@@ -4140,7 +4299,7 @@ function closeDowntimePiece(m,endTs=appNow(),continued=false){
    eventId:makeEventId('DSEG'),groupId:m.downGroupId,...meta,
    reason:m.downReason||'停機',
    reasonDetail:m.downReasonDetail||'',
-   toolNumber:m.downToolNumber||'',
+   toolNumber:m.downToolNumber||'',toolNumbers:downtimeToolNumbers(m.downToolNumber),
    reasonText:downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||''),
    startTime:startTs,startCum:m.cum,responsible:meta.operator||'',
    endTime:null,minutes:null,status:'open',continued:!!continued
@@ -4156,7 +4315,8 @@ function closeDowntimePiece(m,endTs=appNow(),continued=false){
  evt.continued=!!continued;
  evt.reason=m.downReason||evt.reason||'停機';
  evt.reasonDetail=m.downReasonDetail||evt.reasonDetail||'';
- evt.toolNumber=m.downToolNumber||evt.toolNumber||'';
+ evt.toolNumbers=downtimeToolNumbers(m.downToolNumber||evt);
+ evt.toolNumber=evt.toolNumbers.join('、');
  evt.reasonText=downtimeReasonText(evt.reason,evt.reasonDetail,evt.toolNumber);
 
  if(mins>0){
@@ -4180,7 +4340,7 @@ function closeActiveDowntimeForOrder(m,ts){
 }
 
 function liveDown(m){
- const base=m.down||0;
+ const base=(m.down||0)+closedOrderStopMinutes(m);
  return m.status==='停機'&&m.downStart ? base+Math.floor((appNow()-m.downStart)/60000) : base;
 }
 
@@ -4293,12 +4453,30 @@ function pendingStopInputValue(ts){
  const d=new Date(ts);
  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
+function settlementChoicePhase(m){
+ const d=m?.settlementDecision;if(!d)return '';
+ if(isOrderClosedStatus(m.status))return 'closed';
+ if(d.phase)return d.phase;
+ return m.orderQty>0&&d.cutCum>=m.orderQty?'order':'machine';
+}
+function settledOrderCompletionPermission(m){
+ const d=m?.settlementDecision,p=currentOperator();
+ if(!pendingFlowPermission(m,true)||settlementChoicePhase(m)!=='order'||!['生產中','停機'].includes(m.status))return {ok:false,message:'目前不是等待確認製令完成的結算流程。 / Không ở bước xác nhận hoàn thành lệnh.'};
+ const event=operatorSettlementEvents.find(e=>e.id===d.settlementId&&e.machine===m.id&&e.wo===m.wo);
+ const segment=event&&responsibilityEvents.find(e=>e.id===event.responsibilitySegmentId&&e.type==='segment'&&e.status==='closed'&&e.machine===m.id&&e.wo===m.wo);
+ if(!event||!segment||event.cum!==d.cutCum||event.time!==d.cutTime||event.operator!==d.settledBy||event.endCum!==segment.endCum)return {ok:false,message:'找不到相符的已結算責任紀錄，請主管核對。 / Không tìm thấy lượt đã chốt phù hợp.'};
+ if(d.employeeId!==p.employeeId||event.actorEmployeeId!==p.employeeId)return {ok:false,message:'請由本次結算人員確認製令完成。 / Người đã chốt phải xác nhận hoàn thành lệnh.'};
+ if(m.orderQty<=0||m.cum<m.orderQty||m.cum!==d.cutCum)return {ok:false,message:'製令數量或累積數已改變，請重新核對。 / Số lượng đã thay đổi; hãy kiểm tra lại.'};
+ const w=findWorkOrderById(m.workOrderRecordId);
+ if(!w||w.machine!==m.id||w.wo!==m.wo||d.workOrderId&&d.workOrderId!==w.id||w.closedAt||orderCloseEvents.some(e=>e.workOrderId===w.id))return {ok:false,message:'製令已結單或製令資料已變更。 / Lệnh đã kết thúc hoặc đã thay đổi.'};
+ return {ok:true,event,segment};
+}
 function pendingFlowPermission(m,direct=false){
  if(!authCan('canOperate')||avStorageFault||!m||!m.wo||m.responsible)return false;
- return direct?!!m.settlementDecision&&m.settlementDecision.wo===m.wo:
+ return direct?!!m.settlementDecision&&m.settlementDecision.wo===m.wo&&(!m.settlementDecision.workOrderId||m.settlementDecision.workOrderId===m.workOrderRecordId):
   m.status==='生產中'&&!!m.pendingTakeover&&(!m.pendingTakeover.wo||m.pendingTakeover.wo===m.wo)&&!m.settlementDecision;
 }
-function pendingFlowStamp(m){return JSON.stringify([m.wo,m.status,m.cum,m.responsible,m.pendingTakeover?.cutTime,m.pendingTakeover?.cutCum,m.settlementDecision?.settlementId]);}
+function pendingFlowStamp(m){return JSON.stringify([m.wo,m.workOrderRecordId,m.orderQty,m.status,m.cum,m.responsible,m.pendingTakeover?.cutTime,m.pendingTakeover?.cutCum,m.settlementDecision?.settlementId,settlementChoicePhase(m),m.settlementDecision?.closedEventId]);}
 function assertPendingFlow(m,stamp,sessionId,direct){
  authAssertSession(sessionId);
  if(!pendingFlowPermission(m,direct)||pendingFlowStamp(m)!==stamp)throw Error('機台狀態已更新，請重新開啟並確認。');
@@ -4317,27 +4495,116 @@ function cancelPendingStop(){
 function openSettlementChoice(machineId){
  const m=machines.find(x=>x.id===machineId);
  if(!pendingFlowPermission(m,true))return;
- const d=m.settlementDecision,modal=document.getElementById('settlementChoiceModal');
+ const d=m.settlementDecision,phase=settlementChoicePhase(m),modal=document.getElementById('settlementChoiceModal');
  modal.dataset.machine=m.id;modal.dataset.stamp=pendingFlowStamp(m);modal.dataset.session=authSession.id;
- document.getElementById('settlementChoiceSummary').textContent=`${m.id}｜${d.settledBy} 個人績效已固定｜${new Date(d.cutTime).toLocaleString('zh-TW',{hour12:false})}｜${d.cutCum} PCS`;
- document.getElementById('settlementChoiceError').textContent='';
+ document.getElementById('settlementChoiceTitle').textContent=phase==='order'?'製令接下來？ / Lệnh SX tiếp theo?':phase==='closed'?'製令已完成，機台接下來？ / Đã hoàn thành lệnh, máy tiếp theo?':'機台接下來？ / Máy tiếp theo?';
+ document.getElementById('settlementChoiceSummary').textContent=`${m.id}｜${m.wo}｜${d.settledBy}｜個人績效已結算 / Đã chốt cá nhân｜${d.cutCum} / ${m.orderQty} PCS`+(phase==='closed'?'｜舊製令已正式結單 / Lệnh cũ đã kết thúc':'');
+ const complete=document.getElementById('settlementComplete'),cont=document.getElementById('settlementContinue'),stop=document.getElementById('settlementStop');
+ complete.hidden=phase!=='order';complete.disabled=phase==='order'&&!settledOrderCompletionPermission(m).ok;
+ complete.title=complete.disabled?settledOrderCompletionPermission(m).message:'';
+ cont.hidden=phase==='order';cont.innerHTML='繼續生產<br><small>Tiếp tục sản xuất</small>';
+ stop.hidden=phase==='order';
+ document.getElementById('settlementChoiceError').textContent=complete.disabled&&phase==='order'?complete.title:'';
  modal.classList.add('open');
 }
 function recordSettlementChoice(m,choice,now){
  const d=m.settlementDecision;
  const row={...authActorFields(),type:'settlementChoice',id:makeEventId('SCHOICE'),time:now,
-  machine:m.id,wo:m.wo,settlementId:d.settlementId,settlementTime:d.cutTime,settlementCum:d.cutCum,choice,
+  machine:m.id,wo:m.wo,settlementId:d.settlementId,settlementTime:d.cutTime,settlementCum:d.cutCum,orderCloseEventId:d.closedEventId||'',choice,
   productionDate:productionDate(now),shift:'',personShift:'',reportSegment:'結算後機台選擇',cum:d.cutCum,
   oldResponsible:d.settledBy,note:`${currentOperator().name}｜${choice}｜個人績效維持結算快照`};
  responsibilityEvents.unshift(row);persistResponsibilityEvents();
  audit('結算後機台選擇',m,choice,'',choice,{eventTime:now,settlementId:d.settlementId});
  m.settlementDecision=null;
 }
+function completeSettledWorkOrder(m,closeTs){
+ const permission=settledOrderCompletionPermission(m);if(!permission.ok)throw Error(permission.message);
+ const d=m.settlementDecision,downEventId=closeActiveDowntimeForOrder(m,closeTs);
+ archiveProductionSlice(m,closeTs);
+ const closedSegment=finalizeProductionSegment(m,closeTs);
+ m.responsibilityAttribution=null;m.pendingTakeover=null;m.lastPendingClosure=null;
+ m.status='製令完成';m.completedAt=closeTs;
+ const close=recordOrderCloseEvent(m,'normal',{time:closeTs});
+ if(!close)throw Error('製令結單保存失敗。');
+ m.prevOrder={wo:m.wo,drawing:m.drawing,program:m.program||'',orderQty:m.orderQty,cum:m.cum,defectOrder:m.defectOrder,good:good(m),completedAt:closeTs,segmentTarget:closedSegment?.target??0,segmentEffectiveMinutes:closedSegment?.effectiveMinutes??0};
+ d.phase='closed';d.closedEventId=close.id;d.closedAt=closeTs;d.workOrderId=close.workOrderId;
+ addLog(`${m.id}｜製令 ${m.wo} 完成｜${m.cum}/${m.orderQty}｜個人績效沿用結算快照`);
+ audit('製令完成',m,`完成 ${m.cum}/${m.orderQty} PCS｜沿用結算 ${d.settlementId}`,'','',{
+  eventId:makeEventId('AUD'),eventType:'WORK_ORDER_COMPLETE',eventTime:closeTs,settlementId:d.settlementId,
+  responsibilitySegmentId:permission.segment.id,orderCloseEventId:close.id,downtimeEventId:downEventId||'',cum:m.cum,
+  oldStatus:downEventId?'停機':'生產中',newStatus:'製令完成'});
+ m.lastUpdate=closeTs;return close;
+}
+function chooseSettlementOrderComplete(machineId){
+ const m=machines.find(x=>x.id===machineId),modal=document.getElementById('settlementChoiceModal');let snapshot;
+ const stamp=modal.dataset.stamp,sessionId=modal.dataset.session;
+ try{
+  assertPendingFlow(m,stamp,sessionId,true);if(!avGuardWrite())return false;
+  const p=settledOrderCompletionPermission(m);if(!p.ok)throw Error(p.message);
+  if(!confirm(`${m.id}｜製令 ${m.wo}｜${m.cum}/${m.orderQty} PCS\n個人績效已結算，確認正式完成製令？\nĐã chốt cá nhân. Xác nhận hoàn thành lệnh?`))return false;
+  assertPendingFlow(m,stamp,sessionId,true);
+  snapshot=captureActionState();completeSettledWorkOrder(m,appNow());
+  if(!saveMachineState())throw Error('機台狀態保存失敗');
+  syncOpMachine();renderAll();openSettlementChoice(m.id);return true;
+ }catch(e){if(snapshot)restoreActionState(snapshot);document.getElementById('settlementChoiceError').textContent=e.message;return false;}
+}
+// Machine-only downtime after formal closure: no work-order or personal attribution.
+function closedOrderStopEvent(m){
+ return downtimeEvents.find(e=>e.machine===m.id&&e.scope==='machine-after-order'&&e.status==='open');
+}
+function beginClosedOrderStop(m,ts,close){
+ if(!isOrderClosedStatus(m.status)||m.responsible||downtimeEvents.some(e=>e.machine===m.id&&e.status==='open'))throw Error('機台已有停機或尚未結單。');
+ const detached={id:m.id,wo:'',cum:0,down:0,shiftSession:null,downStart:ts,downEventId:null,downGroupId:null,
+  downReason:'結單後停止生產',downReasonDetail:'僅計機台，不歸屬製令或個人 / Chỉ tính cho máy',downToolNumber:'',
+  downMeta:{machine:m.id,wo:'',workOrderId:'',operator:'',shift:'',personShift:'',productionDate:productionDate(ts),
+   scope:'machine-after-order',previousWorkOrderId:close.workOrderId,orderCloseEventId:close.id}};
+ return beginDowntimeEvent(detached,ts,false);
+}
+function endClosedOrderStop(m,ts){
+ const e=closedOrderStopEvent(m);if(!e)return 0;
+ // Reuse the existing minute calculation with a detached ledger, leaving old snapshots untouched.
+ const detached={id:m.id,wo:'',cum:0,down:0,shiftSession:null,downStart:e.startTime,downEventId:e.eventId,downGroupId:e.groupId,
+  downMeta:e,downReason:e.reason,downReasonDetail:e.reasonDetail,downToolNumber:''};
+ const minutes=closeDowntimePiece(detached,ts,false);
+ addLog(`${m.id}｜結單後機台停機結束｜${minutes} 分｜不歸屬製令或個人`);
+ return minutes;
+}
+function closedOrderStopMinutes(m,ts=appNow()){
+ return downtimeEvents.filter(e=>e.machine===m.id&&e.scope==='machine-after-order').reduce((n,e)=>n+(e.status==='open'?Math.max(0,Math.floor((ts-e.startTime)/60000)):(+e.minutes||0)),0);
+}
+function chooseClosedOrderDisposition(machineId,choice){
+ const m=machines.find(x=>x.id===machineId),modal=document.getElementById('settlementChoiceModal');let snapshot;
+ try{
+  assertPendingFlow(m,modal.dataset.stamp,modal.dataset.session,true);if(!avGuardWrite())return false;
+  const d=m.settlementDecision,close=orderCloseEvents.find(e=>e.id===d.closedEventId&&e.workOrderId===m.workOrderRecordId&&e.machine===m.id&&e.wo===m.wo);
+  if(settlementChoicePhase(m)!=='closed'||!isOrderClosedStatus(m.status)||!close||!['next','stop'].includes(choice)||m.downStart||downtimeEvents.some(e=>e.machine===m.id&&e.status==='open'))throw Error('製令結單狀態不一致，請重新確認。 / Trạng thái kết thúc lệnh không khớp.');
+  snapshot=captureActionState();const now=appNow(),label=choice==='next'?'繼續生產（下一張製令）':'停止生產（製令已完成）';
+  m.pendingTakeover=null;m.lastPendingClosure=null;
+  m.lastClosedOrderChoice={choice,time:now,wo:m.wo,workOrderId:m.workOrderRecordId,orderCloseEventId:close.id};
+  if(choice==='stop')beginClosedOrderStop(m,now,close);
+  recordSettlementChoice(m,label,now);
+  recordWorkOrderEvent(m,'結單後機台選擇',label,{time:now,cum:m.cum,orderCloseEventId:close.id});
+  addLog(`${m.id}｜${label}｜${choice==='stop'?'開始僅計機台停機，不歸屬舊製令或個人':'舊製令保持已結單'}`);
+  m.lastUpdate=now;if(!saveMachineState())throw Error('機台狀態保存失敗');
+  modal.classList.remove('open');syncOpMachine();renderAll();
+  if(choice==='next')setAction('order');
+  return true;
+ }catch(e){if(snapshot)restoreActionState(snapshot);document.getElementById('settlementChoiceError').textContent=e.message;return false;}
+}
+function chooseSettlementStop(machineId){
+ const m=machines.find(x=>x.id===machineId);
+ if(settlementChoicePhase(m)==='closed')return chooseClosedOrderDisposition(machineId,'stop');
+ if(settlementChoicePhase(m)!=='machine')return false;
+ return openPendingStopModal(machineId,true);
+}
 function chooseSettlementContinue(machineId){
  const m=machines.find(x=>x.id===machineId),modal=document.getElementById('settlementChoiceModal');let snapshot;
  try{
   assertPendingFlow(m,modal.dataset.stamp,modal.dataset.session,true);
   if(!avGuardWrite())return false;
+  if(settlementChoicePhase(m)==='closed')return chooseClosedOrderDisposition(machineId,'next');
+  if(settlementChoicePhase(m)!=='machine')throw Error('達標結算後必須先正式完成製令。 / Phải hoàn thành lệnh trước.');
+  if(!['生產中','停機'].includes(m.status))throw Error('已結單製令不可恢復生產。');
   snapshot=captureActionState();const now=appNow(),d=m.settlementDecision;
   ensureAutoShiftSession(m,now);
   if(m.status==='停機'){
@@ -4359,7 +4626,7 @@ function chooseSettlementContinue(machineId){
 function openPendingStopModal(machineId,direct=false){
  if(!avGuardWrite())return;
  const m=machines.find(x=>x.id===machineId);
- if(!pendingFlowPermission(m,direct))return;
+ if(!pendingFlowPermission(m,direct)||direct&&settlementChoicePhase(m)!=='machine')return;
  const p=direct?m.settlementDecision:m.pendingTakeover,modal=document.getElementById('pendingStopModal');
  modal.dataset.machine=machineId;modal.dataset.direct=direct?'1':'0';modal.dataset.session=authSession.id;modal.dataset.stamp=pendingFlowStamp(m);
  document.getElementById('pendingStopTitle').textContent=direct?'停止生產 / Dừng sản xuất':'回報已停止 / Báo đã dừng';
@@ -4380,7 +4647,7 @@ function renderPostSettlementControls(m){
  panel.innerHTML='';
  if(!authCan('canOperate'))return;
  if(m.settlementDecision){
-  const b=document.createElement('button');b.type='button';b.className='btn primary';b.textContent=opT('機台接下來？繼續／停止生產','Máy tiếp theo? Tiếp tục / Dừng');b.onclick=()=>openSettlementChoice(m.id);panel.append(b);
+  const phase=settlementChoicePhase(m),b=document.createElement('button');b.type='button';b.className='btn primary';b.textContent=phase==='order'?opT('請完成製令','Hãy hoàn thành lệnh'):phase==='closed'?opT('結單後：繼續生產／停止生產','Sau khi kết thúc: tiếp tục / dừng'):opT('機台接下來？繼續／停止生產','Máy tiếp theo? Tiếp tục / Dừng');b.onclick=()=>openSettlementChoice(m.id);panel.append(b);
  }else if(pendingFlowPermission(m)){
   const b=document.createElement('button');b.type='button';b.className='btn dangerbtn';b.textContent=opT('回報已停止','Báo máy đã dừng');b.onclick=()=>openPendingStopModal(m.id);panel.append(b);
   if(pendingOverdueDue(m)){const t=document.createElement('p');t.className='note';t.textContent=opT('待接手已超過30分鐘：請接手機台，或確認實際狀況後回報已停止。','Chờ nhận máy quá 30 phút: nhận máy hoặc báo đã dừng.');panel.append(t);}
@@ -4462,6 +4729,7 @@ function pendingStopMonthsAllowed(stopTs,now){
  let date=productionDate(stopTs),end=productionDate(now);while(date<=end){if(monthCloseState[date.slice(0,7)]==='closed')return false;date=addDaysISO(date,1);}return true;
 }
 function commitReportedStop(m,p,stopTs,actual,reason,detail,toolNumber,now,direct,risk,grant){
+ if(isOrderClosedStatus(m.status)||direct&&settlementChoicePhase(m)!=='machine')throw Error('已結單或等待製令選擇時，不能新增一般停機。');
  const reporter=currentOperator();
  if(!pendingStopMonthsAllowed(stopTs,now))throw Error('停機涉及已月結月份或超過可補記範圍，請交由主管依既有月結流程處理。');
  ensureAutoShiftSession(m,now);
@@ -4510,6 +4778,7 @@ async function confirmPendingStop(){
  button.disabled=true;
  try{
   assertPendingFlow(m,stamp,sessionId,direct);if(!avGuardWrite())return false;
+  if(direct&&settlementChoicePhase(m)!=='machine')throw Error('請先完成製令選擇；已結單停止不登錄停機。');
   const p=direct?m.settlementDecision:m.pendingTakeover;
   const rawTime=document.getElementById('pendingStopTime').value,rawCum=document.getElementById('pendingStopCum').value.trim();
   const stopTs=direct?p.cutTime:(rawTime?new Date(rawTime).getTime():NaN),actual=direct?p.cutCum:Number(rawCum),now=appNow();
@@ -4579,10 +4848,10 @@ function rtMachine(m){
  if(p.rate!==null&&p.rate<80)issues.push({rank:4,text:'個人達成率 '+p.rate.toFixed(1)+'%'});
  const tools=new Map();
  // Same grouping identity as the existing machine-order report; limited to this work order instance.
- for(const e of downtimeEvents.filter(e=>e.machine===m.id&&e.wo===m.wo&&e.toolNumber&&w&&+e.startTime>=+w.startedAt&&(!w.closedAt||+e.startTime<=+w.closedAt))){
-  tools.set(e.groupId||e.eventId,e.toolNumber);
+ for(const e of downtimeEvents.filter(e=>e.machine===m.id&&e.wo===m.wo&&downtimeToolNumbers(e).length&&w&&+e.startTime>=+w.startedAt&&(!w.closedAt||+e.startTime<=+w.closedAt))){
+  tools.set(e.groupId||e.eventId,downtimeToolNumbers(e));
  }
- const counts={};for(const t of tools.values())counts[t]=(counts[t]||0)+1;
+ const counts={};for(const numbers of tools.values())for(const t of numbers)counts[t]=(counts[t]||0)+1;
  let tool=Object.entries(counts).map(([t,n])=>t+' ×'+n).join('、')||'—';
  if(stop&&m.downToolNumber&&!tools.size)tool=m.downToolNumber+'（停機中）';
  const pct=m.orderQty>0?progress(m):null;
@@ -4955,6 +5224,22 @@ const TOOL_NUMBERS=Object.freeze(['T01','T02','T03','T04','T05','T06','T07','T08
 function toolNumberOptions(){
  return `<option value="">請選擇刀號 / Chọn mã dao</option>`+TOOL_NUMBERS.map(t=>`<option value="${t}">${t}</option>`).join('');
 }
+function downtimeToolNumbers(value){
+ const raw=Array.isArray(value)?value:(value&&typeof value==='object'?(Array.isArray(value.toolNumbers)?value.toolNumbers:value.toolNumber):value);
+ const values=Array.isArray(raw)?raw:String(raw||'').split(/[、,，]/).map(t=>t.trim());
+ return TOOL_NUMBERS.filter(t=>values.includes(t));
+}
+function downtimeToolText(event){return downtimeToolNumbers(event).join('、');}
+function selectedDowntimeTools(required=false){
+ const field=document.getElementById('fDownToolField');
+ const selected=field&&!field.disabled?[...field.querySelectorAll('[data-down-tool][aria-pressed="true"]')].map(b=>b.dataset.downTool):[];
+ const numbers=downtimeToolNumbers(selected);
+ if(required&&!numbers.length){
+  alert('請至少選擇一個刀號 / Vui lòng chọn ít nhất một dao');
+  field?.querySelector('button')?.focus();return null;
+ }
+ return numbers;
+}
 function downtimeReasonText(reason,detail='',toolNumber=''){
  return reason==='換刀' ? `換刀${toolNumber?'｜'+toolNumber:''}${detail?'｜'+detail:''}` : reasonDisplay(reason,detail);
 }
@@ -5092,11 +5377,11 @@ function renderOperatorSafety(m){
    cls='danger';
    html=`<div><b>🔴 停機中 ${mins} 分鐘 / Máy đang dừng ${mins} phút</b>
     <small>${opT('開始時間','Bắt đầu')} ${new Date(m.downStart).toLocaleString('zh-TW',{hour12:false})}｜${escapeHTML(downtimeReasonText(m.downReason||'未填原因',m.downReasonDetail||'',m.downToolNumber||''))} / ${OP_REASON_VI[m.downReason]||'Chưa có lý do'}${m.downToolNumber?'｜'+m.downToolNumber:''}</small></div>
-   <button class="quick-resume" type="button" id="quickResumeBtn">▶ 恢復生產 / Tiếp tục</button>`;
+   `;
  }else if(m.status==='生產中' && m.orderQty>0 && m.cum>=m.orderQty){
    cls='info';
    html=`<div><b>✅ ${opT('已達製令數量，等待人工確認結單','Đã đạt số lượng lệnh, chờ xác nhận hoàn thành')}</b>
-   <small>${opT('系統不會自動結單。請確認數量後按「製令完成」。','Hệ thống không tự hoàn thành. Hãy kiểm tra số lượng rồi bấm “Hoàn thành lệnh SX”.')}</small></div>`;
+   <small>${opT('請先按「結算」，再確認「製令完成」。','Hãy bấm “Chốt”, sau đó xác nhận hoàn thành lệnh.')}</small></div>`;
  }else if(isOrderClosedStatus(m.status)){
    cls='info';
    html=`<div><b>✅ ${opT('目前製令已結單','Lệnh hiện tại đã kết thúc')}</b>
@@ -5119,9 +5404,27 @@ function renderOperatorSafety(m){
    cls='warn';html=`<div><b>👤 ${opT('目前尚未指定機台負責人','Chưa chỉ định người phụ trách máy')}</b><small>${opT('第一位開始顧機台的人請按「接手機台」。','Người bắt đầu phụ trách máy hãy bấm “Nhận máy”.')}</small></div>`;
  }
  opSafetyBanner.className='op-safety-banner'+(cls?` show ${cls}`:'');
- if(m.settlementDecision)html='<div><b>個人績效已結算 / Đã chốt cá nhân</b><small>請選擇機台接下來繼續生產或停止生產。</small></div>';
+ if(m.settlementDecision){
+   const phase=settlementChoicePhase(m);
+   cls='info';html=`<div><b>${phase==='closed'?'製令已正式結單 / Lệnh đã kết thúc':'個人績效已結算 / Đã chốt cá nhân'}</b><small>${phase==='order'?'請先正式完成製令。 / Hãy hoàn thành lệnh trước.':phase==='closed'?'請選繼續生產或停止生產。 / Chọn tiếp tục hoặc dừng sản xuất.':'請選繼續生產或停止生產。 / Chọn tiếp tục hoặc dừng sản xuất.'}</small></div>`;
+   opSafetyBanner.className='op-safety-banner show info';
+ }else if(isOrderClosedStatus(m.status)&&m.lastClosedOrderChoice?.workOrderId===m.workOrderRecordId&&m.lastClosedOrderChoice.choice==='stop'){
+   const stop=closedOrderStopEvent(m);
+   html+=`<div><b>已停止生產，等待下一張製令 / Đã dừng, chờ lệnh mới</b><small>${stop?'機台停機 / Máy đã dừng '+Math.max(0,Math.floor((appNow()-stop.startTime)/60000))+' 分 / phút':'尚無結單後停機紀錄 / Chưa có bản ghi dừng sau lệnh'}｜不計入舊製令或個人績效 / Không tính vào lệnh cũ hoặc cá nhân</small></div>`;
+ }
  opSafetyBanner.innerHTML=html;
- const btn=document.getElementById('quickResumeBtn');if(btn)btn.onclick=()=>setAction('resume');
+ const next=preferredActionForState(m);
+ const permission=actionPermission(m,next);
+ if(!permission.ok && !m.settlementDecision){
+   const noActions=!document.querySelector('#opPrimaryActions .action-btn:not([hidden])');
+   if(noActions){
+     const reason=m.responsible&&!authIsResponsible(m)?actionPermission(m,'takeMachine'):permission;
+     opSafetyBanner.className='op-safety-banner show warn';
+     opSafetyBanner.innerHTML=`<div><b>${opT('目前無可執行操作','Hiện không có thao tác khả dụng')}</b><small>${escapeHTML(opT(reason.zh||'',reason.vi||''))}</small></div>`;
+   }else{
+     opSafetyBanner.innerHTML+=`<div><small>${escapeHTML(opT(permission.zh||'',permission.vi||''))}</small></div>`;
+   }
+ }
 }
 
 function isOrderClosedStatus(status){
@@ -5424,15 +5727,20 @@ function actionPermission(m,a){
  }
  return {ok:false,zh:'目前狀態不能執行這個操作。',vi:'Trạng thái hiện tại không cho phép thao tác này.'};
 }
-function preferredActionForState(m){
- if(m.status==='待建立製令')return 'order';
- if(m.status==='生產中'&&!m.responsible)return 'takeMachine';
- if(m.status==='停機')return 'resume';
- if(isOrderClosedStatus(m.status))return 'waitsetup';
- if(m.status==='待換線／待校車')return 'setup';
- if(m.status==='校車中')return 'setupcomplete';
- if(m.status==='校車完成待換製令')return 'order';
- return 'qty';
+function preferredActionForState(m,all=false){
+ // One presentation priority list; actionPermission remains the sole legality gate.
+ let actions;
+ if(m.status==='待建立製令')actions=['order'];
+ else if(m.responsibilityAttribution?.legacyNeedsRetakeover && authIsResponsible(m))actions=['takeMachine'];
+ else if(m.status==='生產中'&&!m.responsible)actions=['takeMachine'];
+ else if(m.status==='停機')actions=['resume'];
+ else if(m.status==='生產中'&&m.orderQty>0&&m.cum>=m.orderQty)actions=['settle'];
+ else if(isOrderClosedStatus(m.status))actions=['order','waitsetup'];
+ else if(m.status==='待換線／待校車')actions=['setup'];
+ else if(m.status==='校車中')actions=['setupcomplete'];
+ else if(m.status==='校車完成待換製令')actions=['order'];
+ else actions=['qty','defect','down','settle'];
+ return all?actions:actions[0];
 }
 function showActionLock(m,a){
  const p=actionPermission(m,a);
@@ -5442,38 +5750,53 @@ function showActionLock(m,a){
 }
 
 function updateOperatorActionAvailability(m){
- document.querySelectorAll('.action-btn').forEach(b=>{
+ if(!m){renderOpMachineEmpty();return;}
+ const primary=document.getElementById('opPrimaryActions'),other=document.getElementById('opOtherActions'),more=document.getElementById('opMoreActions');
+ const buttons=[...document.querySelectorAll('#operator .action-btn')];
+ const allowed=new Set();
+ buttons.forEach(b=>{
    const p=actionPermission(m,b.dataset.action);
-   b.disabled=false;
+   if(p.ok)allowed.add(b.dataset.action);
+   b.hidden=!p.ok;b.disabled=!p.ok;
    b.setAttribute('aria-disabled',p.ok?'false':'true');
    b.classList.toggle('disabled-action',!p.ok);
    b.title=p.ok?'':`${p.zh||''} / ${p.vi||''}`;
  });
-  const takeBtn=document.querySelector('.action-btn[data-action="takeMachine"]');
-  if(takeBtn){
+ let main=preferredActionForState(m,true).filter(a=>allowed.has(a));
+ // A stopped machine may legally require takeover before resume.
+ if(!main.length&&allowed.size)main=[[...allowed][0]];
+ const context=JSON.stringify([m.id,m.status,m.responsible,authSession?.employeeId,[...allowed].sort(),main]);
+ if(more.dataset.context!==context){more.open=false;more.dataset.context=context;}
+ const extra=buttons.filter(b=>allowed.has(b.dataset.action)&&!main.includes(b.dataset.action));
+ more.hidden=!extra.length;
+ if(more.hidden)more.open=false;
+ main.forEach(a=>primary.appendChild(buttons.find(b=>b.dataset.action===a)));
+ buttons.filter(b=>!main.includes(b.dataset.action)).forEach(b=>other.appendChild(b));
+ const previous=currentAction;
+ if(!allowed.has(currentAction)||(!main.includes(currentAction)&&!more.open))currentAction=main[0]||'';
+ const takeBtn=buttons.find(b=>b.dataset.action==='takeMachine');
+ if(takeBtn){
    const reset=!!m.responsibilityAttribution?.legacyNeedsRetakeover && authIsResponsible(m);
-   const zh=takeBtn.querySelector('.action-zh'),vi=takeBtn.querySelector('.action-vi');
-   if(zh)zh.textContent=reset?'重新接手建立基準':'接手機台';
-   if(vi)vi.textContent=reset?'Nhận lại máy':'Nhận máy';
-  }
- const orderBtn=document.querySelector('.action-btn[data-action="order"]');
- if(orderBtn){
-   const zh=orderBtn.querySelector('.action-zh'), vi=orderBtn.querySelector('.action-vi');
-   if(m.status==='待建立製令'){
-     if(zh) zh.textContent='建立製令';
-     if(vi) vi.textContent='Tạo lệnh sản xuất';
-   }else if(isOrderClosedStatus(m.status)){
-     if(zh) zh.textContent='直接換製令';
-     if(vi) vi.textContent='Đổi lệnh trực tiếp';
-   }else{
-     if(zh) zh.textContent='換製令';
-     if(vi) vi.textContent='Đổi lệnh sản xuất';
-   }
+   takeBtn.querySelector('.action-zh').textContent=reset?'重新接手建立基準':'接手機台';
+   takeBtn.querySelector('.action-vi').textContent=reset?'Nhận lại máy':'Nhận máy';
  }
- if(!actionPermission(m,currentAction).ok) currentAction=preferredActionForState(m);
- document.querySelectorAll('.action-btn').forEach(b=>b.classList.toggle('active',b.dataset.action===currentAction));
+ const orderBtn=buttons.find(b=>b.dataset.action==='order');
+ if(orderBtn){
+   orderBtn.querySelector('.action-zh').textContent=m.status==='待建立製令'?'建立製令':'換製令';
+   orderBtn.querySelector('.action-vi').textContent=m.status==='待建立製令'?'Tạo lệnh sản xuất':'Đổi lệnh sản xuất';
+   orderBtn.querySelector('.action-hint')?.remove();
+   if(isOrderClosedStatus(m.status))orderBtn.insertAdjacentHTML('beforeend','<span class="action-hint">同品續做 / Tiếp tục cùng sản phẩm</span>');
+ }
+ buttons.forEach(b=>b.classList.toggle('active',b.dataset.action===currentAction));
+ document.querySelector('#operator .op-entry-panel').hidden=!currentAction;
+ if(previous!==currentAction){opFormDirty=false;renderDynamic();}
+ more.ontoggle=()=>{
+   if(!more.open&&other.querySelector('.action-btn.active')){
+     if(!confirmLoseUnsaved()){more.open=true;return;}
+     updateOperatorActionAvailability(machines.find(x=>x.id===opMachine.value));
+   }
+ };
 }
-
 function capacityModeVi(mode){return mode==='機械手'?'Robot':'Nạp/tháo thủ công';}
 function renderCapacityPreview(kind,m){
  if(kind!=='order') return;
@@ -5750,7 +6073,8 @@ function validateOrderInputs(m){
 }
 
 function fillMachineSelect(){
- opMachine.innerHTML=machines.map(m=>`<option>${m.id}</option>`).join('');
+ opMachine.innerHTML='<option value="">未選擇 / Chưa chọn máy</option>'+machines.map(m=>`<option>${m.id}</option>`).join('');
+ resetOpMachineSelection();
  operatorSelect.innerHTML='<option>請先登入 / Đăng nhập</option>';operatorSelect.disabled=true;
  syncOperator();
  syncOpMachine();
@@ -5761,8 +6085,91 @@ function syncOperator(){
  operatorRole.value=PERSONNEL_ROLES[op.roleCode]?.labels[operatorLang]||'請先登入 / Đăng nhập';
  if(typeof opHeroOperator!=='undefined') opHeroOperator.textContent=op.name;
 }
+// V18.27.24.13: mirror the existing select; no production or storage state.
+function syncOpMachinePicker(){
+ const select=document.getElementById('opMachine'),current=document.getElementById('opMachineCurrent'),toggle=document.getElementById('opMachineToggle');
+ if(!select||!current||!toggle)return;
+ const value=select.value;
+ current.textContent=value?'目前機台 / Máy：'+value:'目前機台 / Máy：未選擇';
+ toggle.textContent=value?'更換機台 / Đổi máy':'選擇機台 / Chọn máy';
+ toggle.disabled=select.disabled;
+ document.querySelectorAll('#opMachineChoices [data-op-machine]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.opMachine===value)));
+}
+function closeOpMachinePicker(restoreFocus=false){
+ document.getElementById('opMachinePanel').hidden=true;
+ const toggle=document.getElementById('opMachineToggle');toggle.setAttribute('aria-expanded','false');
+ if(restoreFocus)toggle.focus();
+}
+function renderOpMachineChoices(group=''){
+ const select=document.getElementById('opMachine'),panel=document.getElementById('opMachinePanel'),host=document.getElementById('opMachineChoices');
+ const groups=new Map(['A','B','D','M','other'].map(key=>[key,[]]));
+ // Options are populated by the existing machines data. Preserve their values and order.
+ for(const option of select.options){
+  if(!option.value)continue;
+  const first=option.value.trim().charAt(0).toUpperCase(),key=['A','B','D','M'].includes(first)?first:'other';
+  groups.get(key).push(option);
+ }
+ if(group&&!groups.get(group)?.length)group='';
+ panel.dataset.group=group;
+ document.getElementById('opMachineBack').hidden=!group;
+ document.getElementById('opMachinePanelTitle').textContent=group?(group==='other'?'其他 / Khác':group+' 系列 / Nhóm '+group):'選擇系列 / Chọn nhóm máy';
+ host.replaceChildren();
+ const button=(text)=>{const el=document.createElement('button');el.type='button';el.className='op-machine-choice';el.textContent=text;host.appendChild(el);return el;};
+ if(!group){
+  for(const [key,options] of groups){
+   if(!options.length)continue;
+   const el=button(key==='other'?'其他 / Khác':key);el.dataset.opSeries=key;
+   el.disabled=select.disabled||options.every(option=>option.disabled);
+   el.onclick=()=>{renderOpMachineChoices(key);document.getElementById('opMachineBack').focus();};
+  }
+  if(!host.children.length){const empty=document.createElement('p');empty.textContent='無可選機台 / Không có máy';host.appendChild(empty);}
+ }else{
+  for(const option of groups.get(group)){
+   const el=button(option.value);el.dataset.opMachine=option.value;el.disabled=select.disabled||option.disabled;
+   el.setAttribute('aria-pressed',String(select.value===option.value));
+   el.onclick=()=>{
+    select.value=option.value;
+    // Keep the existing onchange, including the unsaved-input confirmation and rollback.
+    select.dispatchEvent(new Event('change',{bubbles:true}));
+    syncOpMachinePicker();closeOpMachinePicker(true);
+   };
+  }
+ }
+ syncOpMachinePicker();
+}
+// V18.27.24.14: selection belongs only to the current login; never persist it.
+function resetOpMachineSelection(){
+ opMachine.value='';opMachine.dataset.prev='';opFormDirty=false;
+ closeOpMachinePicker();renderOpMachineEmpty();
+}
+function renderOpMachineEmpty(){
+ syncOpMachinePicker();currentAction='';
+ const hint='請先選擇機台 / Vui lòng chọn máy trước';
+ opWO.value='';
+ for(const id of ['opProdDate','opShift','opReportSegment','opResponsible','opStartCum','opHeroMachine','opHeroShift','opHeroWO',
+  'sumStart','sumCurrent','sumOutput','sumDefect','sumGood','sumDown','sumMode','sumShiftState','sumReportSegment','sumPostSettle','sumSegmentTarget','sumPersonRate']){
+  const el=document.getElementById(id);if(el){el.textContent='-';el.removeAttribute('title');}
+ }
+ opHeroOperator.textContent=currentOperator().name;
+ prevHandoff.textContent=hint;
+ opSafetyBanner.className='op-safety-banner show info';opSafetyBanner.textContent=hint;
+ const post=document.getElementById('postSettlementControls');if(post)post.replaceChildren();
+ document.querySelectorAll('#operator .action-btn').forEach(b=>{
+  b.disabled=true;b.hidden=true;b.setAttribute('aria-disabled','true');
+  b.classList.add('disabled-action');b.classList.remove('active');b.title=hint;
+ });
+ const more=document.getElementById('opMoreActions');more.open=false;more.hidden=true;delete more.dataset.context;
+ document.querySelector('#operator .op-entry-panel').hidden=true;
+ dynamicFields.replaceChildren();submitAction.disabled=true;
+ renderLog();
+}
+// End operator machine picker helpers.
 function syncOpMachine(){
- const m=machines.find(x=>x.id===opMachine.value)||machines[0];
+ syncOpMachinePicker();
+ const m=machines.find(x=>x.id===opMachine.value);
+ if(!m){renderOpMachineEmpty();return;}
+ submitAction.disabled=submitAction.dataset.busy==='1';
+ opMachine.dataset.prev=opMachine.value;
  ensureAutoShiftSession(m);
  const s=m.shiftSession;
  opWO.value=m.wo;
@@ -5783,24 +6190,30 @@ function syncOpMachine(){
  renderLog();
 }
 function setAction(a){
- const m=machines.find(x=>x.id===opMachine.value)||machines[0];
+ const m=machines.find(x=>x.id===opMachine.value);
+ if(!m){renderOpMachineEmpty();showOpToast('請先選擇機台','Vui lòng chọn máy trước','','','warn');return;}
  const p=actionPermission(m,a);
  if(!p.ok){showActionLock(m,a);return;}
+ if(a==='complete'){a='settle';if(!actionPermission(m,a).ok){showActionLock(m,a);return;}}
  if(a!==currentAction && !confirmLoseUnsaved()) return;
  opFormDirty=false;
  currentAction=a;
+ const selected=document.querySelector(`#opOtherActions .action-btn[data-action="${a}"]`);
+ if(selected&&!selected.hidden)document.getElementById('opMoreActions').open=true;
  document.querySelectorAll('.action-btn').forEach(b=>b.classList.toggle('active',b.dataset.action===a));
  renderDynamic();
 }
 function renderDynamic(){
- const m=machines.find(x=>x.id===opMachine.value)||machines[0];
+ const m=machines.find(x=>x.id===opMachine.value);
+ if(!m){renderOpMachineEmpty();return;}
+ submitAction.textContent=currentAction==='down'?opT('確認開始停機 / Xác nhận bắt đầu dừng máy','Xác nhận bắt đầu dừng máy / 確認開始停機'):opT('確認送出 / Xác nhận','Xác nhận / 確認送出');
  let h='';
  if(currentAction==='settle'){
     const person=settlementPreview(m,m.cum);
     const detail=responsibilityTimeDetail(m,person.startTime||appNow(),appNow(),m.wo);
    h=`<div class="settlement-card">
      <b>📊 ${opT('結算 / Chốt','Chốt / 結算')}</b><br>
-     <small>${opT('結算立即固定個人績效，再選「繼續生產／停止生產」。繼續生產自動待接手；後續人員可接手機台或回報已停止。','Chốt kết quả cá nhân, rồi chọn tiếp tục hoặc dừng sản xuất. Người tiếp theo nhận máy hoặc báo máy đã dừng.')}</small>
+     <small>${opT('結算立即固定個人績效。未達標選繼續／停止；已達標必須先完成製令。正式結單後，再選繼續／停止生產；停止時間僅計機台。','Chốt kết quả cá nhân. Chưa đủ số lượng: tiếp tục / dừng. Đã đủ: phải hoàn thành lệnh. Sau đó tiếp tục / dừng; thời gian dừng chỉ tính cho máy.')}</small>
     <div class="settlement-grid">
       <div><span>${opT('機台','Máy')}</span><b>${m.id}</b></div>
       <div><span>${opT('製令','Lệnh SX')}</span><b>${escapeHTML(m.wo)}</b></div>
@@ -5938,7 +6351,11 @@ function renderDynamic(){
      <option value="其他">其他 / Khác</option>
     </select>
    </label>
-   <label id="fDownToolField" hidden style="display:none;margin-top:10px"><span class="op-field-label">${opT('刀號（必填）','Mã dao (bắt buộc)')}</span><select id="fDownTool" disabled>${toolNumberOptions()}</select></label>
+   <fieldset id="fDownToolField" class="tool-picker" hidden disabled>
+    <legend>刀號（可複選）<small>Chọn một hoặc nhiều dao</small></legend>
+    <div class="tool-grid">${TOOL_NUMBERS.map(t=>`<button type="button" class="tool-choice" data-down-tool="${t}" aria-pressed="false" aria-label="${t}"><span class="tool-check" aria-hidden="true">✓</span><span>${t}</span></button>`).join('')}</div>
+    <div class="tool-selection" aria-live="polite">已選擇 / Đã chọn：<span id="fDownToolSummary">未選擇 / Chưa chọn</span></div>
+   </fieldset>
    <label style="margin-top:10px"><span class="op-field-label">${opT('補充說明','Ghi chú bổ sung')}<small>${opT('選「其他」時必填；其他原因可選填','Bắt buộc khi chọn “Khác”; lý do khác có thể để trống')}</small></span>
     <input id="fDownReasonDetail" maxlength="200" placeholder="${opT('例如：卡料、等待品管、特殊設備狀況','Ví dụ: kẹt phôi, chờ QC, tình trạng máy đặc biệt')}">
    </label>
@@ -6051,12 +6468,20 @@ function renderDynamic(){
  if(currentAction==='down'){
   const reason=document.getElementById('fDownReason');
   const field=document.getElementById('fDownToolField');
-  const tool=document.getElementById('fDownTool');
+  const buttons=[...field.querySelectorAll('[data-down-tool]')];
+  const updateTools=()=>{document.getElementById('fDownToolSummary').textContent=(selectedDowntimeTools()||[]).join('、')||'未選擇 / Chưa chọn';};
+  buttons.forEach(button=>button.onclick=()=>{
+   button.setAttribute('aria-pressed',button.getAttribute('aria-pressed')==='true'?'false':'true');
+   opFormDirty=true;updateTools();
+  });
   const syncTool=()=>{
    const show=reason.value==='換刀';
-   field.hidden=!show;field.style.display=show?'block':'none';
-   tool.disabled=!show;tool.required=show;
-   if(!show)tool.value='';
+   field.hidden=!show;field.disabled=!show;
+   if(!show)buttons.forEach(b=>b.setAttribute('aria-pressed','false'));
+   document.getElementById('fDownReasonDetail').placeholder=show
+    ? opT('例如：刀片磨損、尺寸異常…','Ví dụ: mòn mảnh dao, sai kích thước…')
+    : opT('例如：卡料、等待品管、特殊設備狀況','Ví dụ: kẹt phôi, chờ QC, tình trạng máy đặc biệt');
+   updateTools();
   };
   reason.addEventListener('change',syncTool);
   syncTool();
@@ -6255,8 +6680,9 @@ async function submitActionNow(){
  }
  const permission=actionPermission(m,currentAction);
  if(!permission.ok){showActionLock(m,currentAction);updateOperatorActionAvailability(m);renderDynamic();return;}
+ if(currentAction==='complete'){setAction('settle');return;}
  if(!validateActionTextInputs(currentAction)||!avValidateWaitInputs(currentAction))return;
- if(currentAction==='down'&&document.getElementById('fDownReason')?.value==='換刀'&&selectedToolNumber('fDownTool',true)===null)return;
+ if(currentAction==='down'&&document.getElementById('fDownReason')?.value==='換刀'&&selectedDowntimeTools(true)===null)return;
  if(currentAction==='setupcomplete'&&selectedToolNumber('fSetupTool')===null)return;
  if(!authConfirmAction(currentAction==='setupcomplete'?'校車完成 / Hoàn thành chỉnh máy':currentAction,m))return;
  let actionSnapshot;
@@ -6488,8 +6914,9 @@ async function submitActionNow(){
    }
   const downReason=document.getElementById('fDownReason').value;
   const downReasonDetail=(document.getElementById('fDownReasonDetail')?.value||'').trim();
-  const downToolNumber=selectedToolNumber('fDownTool',downReason==='換刀');
-  if(downToolNumber===null)return;
+  const downToolNumbers=downReason==='換刀'?selectedDowntimeTools(true):[];
+  if(downToolNumbers===null)return;
+  const downToolNumber=downToolNumbers.join('、');
   const otherCheck=validateOtherReason(downReason,downReasonDetail,'停機原因');
   if(!otherCheck.ok){
     alert(`⛔ ${otherCheck.zh}\n\n${otherCheck.vi}`);
@@ -6503,9 +6930,9 @@ async function submitActionNow(){
   markProductionActivity(m,downTs,'開始停機');addLog(`${m.id}｜開始停機｜${downReasonText}`);
    audit('開始停機',m,downReasonText,'','',
     {eventId:makeEventId('AUD'),eventType:'DOWNTIME_START',eventTime:downTs,
-     downtimeEventId:m.downEventId,cum:m.cum,reason:downReason,reasonDetail:downReasonDetail,toolNumber:downToolNumber,
+     downtimeEventId:m.downEventId,cum:m.cum,reason:downReason,reasonDetail:downReasonDetail,toolNumber:downToolNumber,toolNumbers:downToolNumbers,
      oldStatus:'生產中',newStatus:'停機'});
-  recordWorkOrderEvent(m,'開始停機',downReasonText,{time:downTs,cum:m.cum,reason:downReason,toolNumber:downToolNumber});
+  recordWorkOrderEvent(m,'開始停機',downReasonText,{time:downTs,cum:m.cum,reason:downReason,toolNumber:downToolNumber,toolNumbers:downToolNumbers});
   successToast=['已開始停機計時','Đã bắt đầu tính thời gian dừng máy',`${m.id}｜${downReasonText}`,`${m.id}｜${m.downReason==='其他'&&m.downReasonDetail?`Khác: ${m.downReasonDetail}`:(OP_REASON_VI[m.downReason]||m.downReason)}${m.downToolNumber?'｜'+m.downToolNumber:''}`];
  }
  if(currentAction==='resume'){
@@ -6520,28 +6947,8 @@ async function submitActionNow(){
   recordWorkOrderEvent(m,'恢復生產',`本次停機 ${n} 分鐘`,{time:endTs,cum:m.cum});
   successToast=['已恢復生產','Đã tiếp tục sản xuất',`${m.id}｜本次停機 ${n} 分鐘`,`${m.id}｜Dừng máy ${n} phút`];
  }
- if(currentAction==='complete'){
-   const closeTs=appNow();
-    const downEventId=closeActiveDowntimeForOrder(m,closeTs);
-   const closedSegment=finalizeProductionSegment(m,closeTs);
-    const ended=m.responsible&&!m.responsibleSettled
-     ? endResponsibilitySegment(m,closeTs,m.cum,'製令完成'):null;
-    auditResponsibilityEnd(m,ended,closeTs,'製令完成');
-    m.previousResponsible=m.responsible||m.previousResponsible||'';
-    m.responsible='';m.responsibleEmployeeId='';m.responsibleSince=null;m.responsibilityAttribution=null;
-    m.responsibleSettled=false;m.pendingTakeover=null;
-   m.status='製令完成';m.completedAt=closeTs;
-   recordOrderCloseEvent(m,'normal',{time:closeTs});
-   m.prevOrder={wo:m.wo,drawing:m.drawing,program:m.program||'',orderQty:m.orderQty,cum:m.cum,defectOrder:m.defectOrder,good:good(m),completedAt:m.completedAt,segmentTarget:closedSegment?.target??0,segmentEffectiveMinutes:closedSegment?.effectiveMinutes??0};
-   addLog(`${m.id}｜製令 ${m.wo} 完成｜${m.cum}/${m.orderQty}${closedSegment?`｜分段應達 ${closedSegment.target} PCS`:''}`);
-    audit('製令完成',m,`完成 ${m.cum}/${m.orderQty}${closedSegment?`｜分段應達 ${closedSegment.target} PCS｜有效 ${formatMinutesHM(closedSegment.effectiveMinutes)}`:''}`,'','',
-     {eventId:makeEventId('AUD'),eventType:'WORK_ORDER_COMPLETE',eventTime:closeTs,
-      responsibilitySegmentId:ended?.id||'',downtimeEventId:downEventId||'',cum:m.cum,
-      oldStatus:downEventId?'停機':'生產中',newStatus:'製令完成'});
-   successToast=['製令完成已登錄','Đã ghi nhận hoàn thành lệnh',`${m.id}｜${m.wo}`,`${m.id}｜${m.wo}`];
- }
  if(currentAction==='waitsetup'){
-  avBeginWait(m,appNow(),document.getElementById('fWaitScheduled').value==='yes',document.getElementById('fWaitReason').value,document.getElementById('fWaitDetail').value.trim());
+  avBeginWait(m,appNow(),document.getElementById('fWaitReason').value,document.getElementById('fWaitDetail').value.trim());
   successToast=['已登錄等待','Đã ghi nhận chờ',m.id,m.id];
  }
  if(currentAction==='setup'){
@@ -6554,6 +6961,7 @@ async function submitActionNow(){
  if(currentAction==='order'){
   const old=m.wo;
   const orderChangeTs=appNow();
+  endClosedOrderStop(m,orderChangeTs);
    const oldResponsible=m.responsible;
    const ended=oldResponsible&&!m.responsibleSettled
     ? endResponsibilitySegment(m,orderChangeTs,m.cum,'換製令'):null;
@@ -6669,7 +7077,8 @@ async function submitActionNow(){
  }
 }
 function renderLog(){
- const m=machines.find(x=>x.id===opMachine?.value)||machines[0];
+ const m=machines.find(x=>x.id===opMachine?.value);
+ if(!m){activityLog.textContent='請先選擇機台 / Vui lòng chọn máy trước';return;}
  const rows=logs.filter(x=>!m || x.text.startsWith(`${m.id}｜`)).slice(0,10);
  activityLog.innerHTML=rows.length
   ? rows.map(x=>`<div class="log-item"><b>${escapeHTML(operatorDisplayText(x.text))}</b><small>${escapeHTML(x.time)}</small></div>`).join('')
@@ -7024,7 +7433,7 @@ function machineOrderReportRows(now=appNow()){
   g.rate=g.target>0?g.output/g.target*100:null;
   const overlaps=e=>g.parts.some(p=>+e.startTime<p.endTime&&(+e.endTime||now)>p.startTime);
   g.stops=downtimeEvents.filter(e=>e.machine===g.machine&&e.wo===g.wo&&overlaps(e));
-  const tools=new Map();for(const e of g.stops.filter(e=>e.toolNumber)){const k=e.groupId||e.eventId;if(!tools.has(k))tools.set(k,e.toolNumber);}g.toolCounts={};for(const tool of tools.values())g.toolCounts[tool]=(g.toolCounts[tool]||0)+1;
+  const tools=new Map();for(const e of g.stops.filter(e=>downtimeToolNumbers(e).length)){const k=e.groupId||e.eventId;if(!tools.has(k))tools.set(k,downtimeToolNumbers(e));}g.toolCounts={};for(const numbers of tools.values())for(const tool of numbers)g.toolCounts[tool]=(g.toolCounts[tool]||0)+1;
   g.toolText=Object.entries(g.toolCounts).map(([k,v])=>`${k} ×${v}`).join('、')||'無';
   g.defects=defectEvents.filter(e=>e.machine===g.machine&&e.wo===g.wo&&(!e.operator||e.operator===g.operator)&&(e.responsibilitySegmentId&&g.resp?e.responsibilitySegmentId===g.resp.id:g.parts.some(p=>e.recordStartTime?+e.recordStartTime===p.startTime:+e.time>p.startTime&&+e.time<=p.endTime)));
   g.setups=(avData.setups||[]).filter(e=>e.machine===g.machine&&e.status==='closed'&&(e.nextWO===g.wo||(g.w&&(+e.endTime===+g.w.startedAt||e.workOrderId===g.w.id))));
@@ -7033,28 +7442,161 @@ function machineOrderReportRows(now=appNow()){
   return g;
  }).sort((a,b)=>b.startTime-a.startTime||a.machine.localeCompare(b.machine));
 }
+// V18.27.24.11: read-only eligibility for this report; the machine ledger stays intact.
+function reportSettlementEvidence(g){
+ const operator=String(g.operator||'').trim();
+ if(!operator||/^(待接手|無責任人|不計個人)(?:$|[／/｜|\s])/.test(operator)||g.live)return null;
+ const covers=(start,end)=>Number.isFinite(+start)&&+start>0&&Number.isFinite(+end)&&+end>=+start&&+start<=g.startTime&&+end>=g.endTime;
+ const r=g.resp;
+ if(r&&r.type==='segment'&&r.status==='closed'&&r.machine===g.machine&&r.operator===g.operator&&r.wo===g.wo&&covers(r.startTime,r.endTime))
+  return {startTime:+r.startTime,endTime:+r.endTime};
+ // Legacy rows need one matching settlement, never a display status or order closure alone.
+ const ids=[...new Set(g.parts.map(p=>p.responsibilitySegmentId).filter(Boolean))];
+ const matches=operatorSettlementEvents.filter(e=>{
+  if(e.machine!==g.machine||e.operator!==g.operator||e.wo!==g.wo)return false;
+  if(e.workOrderId&&g.w?.id&&e.workOrderId!==g.w.id)return false;
+  if(ids.length&&e.responsibilitySegmentId&&!ids.every(id=>id===e.responsibilitySegmentId))return false;
+  return covers(e.startTime||e.attributionStartTime,e.endTime||e.time);
+ });
+ if(matches.length!==1)return null;
+ const e=matches[0];return {startTime:+(e.startTime||e.attributionStartTime),endTime:+(e.endTime||e.time)};
+}
+// V18.27.24.12: report-only projection; never sum rows or use a live order total.
+function reportCumulativeNumber(value){
+ if((typeof value!=='number'&&typeof value!=='string')||String(value).trim()==='')return null;
+ const n=Number(value);return Number.isFinite(n)&&n>=0?n:null;
+}
+function reportEndCumulative(g){
+ if(!reportSettlementEvidence(g))return null;
+ const values=[];
+ for(const r of shiftRecordsData){
+  if(r.machine!==g.machine||r.operator!==g.operator)continue;
+  const raw=r.segments?.length?r.segments:[r],effective=effectiveShiftRecord(r);
+  const parts=effective.segments?.length?effective.segments:[effective];
+  raw.forEach((s,i)=>{
+   const start=+s.startTime||+r.startTime,end=+s.endTime||+r.endTime;
+   if(s.wo!==g.wo||end!==g.endTime||!g.parts.some(p=>p.startTime===start&&p.endTime===end))return;
+   if(s.workOrderId&&g.w?.id&&s.workOrderId!==g.w.id)return;
+   if(s.responsibilitySegmentId&&g.resp?.id&&s.responsibilitySegmentId!==g.resp.id)return;
+   // effectiveShiftRecord/legacy fallbacks can turn a missing endCum into zero.
+   // Require an actual saved value before accepting the existing correction projection.
+   if(reportCumulativeNumber(s.endCum)===null)return;
+   const n=reportCumulativeNumber(parts[i]?.endCum);if(n!==null)values.push(n);
+  });
+ }
+ if(values.length)return new Set(values).size===1?values[0]:null;
+ const r=g.resp;
+ if(r?.type==='segment'&&r.status==='closed'&&r.machine===g.machine&&r.operator===g.operator&&r.wo===g.wo&&+r.startTime<=g.startTime&&+r.endTime===g.endTime&&(!r.workOrderId||!g.w?.id||r.workOrderId===g.w.id)){
+  const n=reportCumulativeNumber(r.endCum);if(n!==null)return n;
+ }
+ const ids=[...new Set(g.parts.map(p=>p.responsibilitySegmentId).filter(Boolean))];
+ const matches=operatorSettlementEvents.filter(e=>e.machine===g.machine&&e.operator===g.operator&&e.wo===g.wo&&
+  (!e.workOrderId||!g.w?.id||e.workOrderId===g.w.id)&&
+  (!ids.length||!e.responsibilitySegmentId||ids.every(id=>id===e.responsibilitySegmentId))&&
+  +(e.startTime||e.attributionStartTime)>0&&+(e.startTime||e.attributionStartTime)<=g.startTime&&+(e.endTime||e.time)===g.endTime);
+ if(matches.length!==1)return null;
+ return reportCumulativeNumber(matches[0].endCum)??reportCumulativeNumber(matches[0].cum);
+}
+function reportOrderTransitions(rows,allRows){
+ const previousByMachine=new Map(),adjacent=new Map(),transitions=new Map();
+ for(const g of allRows){adjacent.set(g.key,previousByMachine.get(g.machine));previousByMachine.set(g.machine,g.key);}
+ rows.forEach((g,i)=>{
+  const previous=rows[i-1];
+  // Both visible neighbors must also be adjacent in the complete, sorted formal ledger.
+  if(!previous||previous.machine!==g.machine||adjacent.get(g.key)!==previous.key||!g.wo||!previous.wo||g.wo==='-'||previous.wo==='-'||g.wo===previous.wo||g.startTime===previous.startTime)return;
+  const [from,to]=g.startTime<previous.startTime?[g,previous]:[previous,g];
+  transitions.set(g.key,'↳ 換製令：'+from.wo+' → '+to.wo);
+ });
+ return transitions;
+}
 function reportRateClass(rate){return rate===null?'unknown':rate>=100?'green':rate>=80?'normal':rate>=60?'yellow':'red';}
 function reportTime(ts){return ts?new Date(ts).toLocaleString('zh-TW',{hour12:false}):'—';}
 function reportClock(ts){return ts?new Date(ts).toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'}):'—';}
 function reportDetails(g){
  const esc=v=>escapeHTML(String(v??'—')),list=rows=>rows.length?'<ul>'+rows.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'無';
- const fields=[['接手時間',g.resp?reportTime(g.resp.startTime):'原始紀錄未留存／待接手'],['結算時間',g.resp?.endTime?reportTime(g.resp.endTime):g.live?'尚未結算':'未留存'],['起始累積',g.startCum],['結束累積',g.endCum],['製令',g.wo],['圖號',g.drawing],['圖名',g.drawingName||'未留存'],['程式號碼',g.program||'—'],['加工模式', [...new Set(g.parts.map(p=>p.processMode))].join('、')],['加工秒數',[...new Set(g.parts.map(p=>p.cycle))].join('、')],['製令數量',g.orderQty],['實際產量',g.output+' PCS'],['目標產量',g.target===null?'不計個人／待確認':g.target+' PCS'],['達成率',g.rate===null?'—':g.rate.toFixed(1)+'%']];
- const stop=e=>`${esc(reportTime(e.startTime))} ～ ${esc(e.endTime?reportTime(e.endTime):'停機中')}｜${esc(e.reasonText||e.reason)}｜${esc(e.reasonDetail||'')}｜${esc(e.toolNumber||'')}｜本列扣除休息後 ${g.parts.reduce((n,p)=>n+xlsxReportSegmentHours(p,[e]).downHours*60,0).toFixed(2)} 分`;
+ const settlement=reportSettlementEvidence(g);
+ const fields=[['接手時間',settlement?reportTime(settlement.startTime):'未留存'],['結算時間',settlement?reportTime(settlement.endTime):'未留存'],['起始累積',g.startCum],['結束累積',g.endCum],['製令',g.wo],['圖號',g.drawing],['圖名',g.drawingName||'未留存'],['程式號碼',g.program||'—'],['加工模式', [...new Set(g.parts.map(p=>p.processMode))].join('、')],['加工秒數',[...new Set(g.parts.map(p=>p.cycle))].join('、')],['製令數量',g.orderQty],['實際產量',g.output+' PCS'],['目標產量',g.target===null?'不計個人／待確認':g.target+' PCS'],['達成率',g.rate===null?'—':g.rate.toFixed(1)+'%']];
+ const stop=e=>`${esc(reportTime(e.startTime))} ～ ${esc(e.endTime?reportTime(e.endTime):'停機中')}｜${esc(e.reasonText||e.reason)}｜${esc(e.reasonDetail||'')}｜${esc(downtimeToolText(e))}｜本列扣除休息後 ${g.parts.reduce((n,p)=>n+xlsxReportSegmentHours(p,[e]).downHours*60,0).toFixed(2)} 分`;
  return `<div class="report-details-grid">${fields.map(([k,v])=>`<div><b>${k}：</b>${esc(v)}</div>`).join('')}</div>
  <h4>停機明細</h4><p>主表為已結束真停機扣除固定休息重疊後的聯集；未結束停機列出但不計入主表。</p>${list(g.stops.map(stop))}
  <h4>異常明細（主表合計 ${g.defect} PCS）</h4>${list(g.defects.map(e=>{const d=effectiveDefectInfo(e);return `${esc(reportTime(e.time))}｜${esc(d.reason)} ${esc(d.reasonDetail)}｜${d.qty} PCS｜登錄人 ${esc(e.operator)}${defectCorrectionsFor(e.id).map(c=>`<br>修正：${esc(c.oldQty)} → ${esc(c.newQty)} PCS；${esc(c.oldReason)} → ${esc(c.newReason)}；${esc(c.operator||c.correctedBy||'')} ${esc(c.note||c.reason||'')}`).join('')}`;}))}${g.defect&&!g.defects.length?'<p>舊紀錄只有異常合計，未留存逐筆明細。</p>':''}
- <h4>換刀明細</h4>${list(g.stops.filter(e=>e.toolNumber).map(stop))}
+ <h4>換刀明細</h4>${list(g.stops.filter(e=>downtimeToolNumbers(e).length).map(stop))}
  <h4>校車明細</h4>${list(g.setups.map(e=>`${esc(reportTime(e.startTime))} ～ ${esc(reportTime(e.endTime))}｜${((e.endTime-e.startTime)/60000).toFixed(1)} 分｜${esc(e.reason)} ${esc(e.toolNumber||'')}；不計入製令加工時間`))}
- <h4>待接手資訊</h4>${g.operator?list(g.waiting.map(e=>`${esc(reportTime(e.waitingStartTime))} ～ ${esc(reportTime(e.time||e.takeoverTime))}｜${esc(e.waitingOutput)} PCS（不計入前後操作員）`)):`本列 ${g.output} PCS 僅計機台／製令，不計個人。`}
  <p>修正／稽核：${g.w&&authCan('canCorrectProduction')?`<button data-report-correction="${escapeAttr(g.w.id)}" data-machine="${escapeAttr(g.machine)}">產量修正</button>`:''}<button data-report-view="defectRecords">異常紀錄</button> <button data-report-view="history">操作歷程</button> <button data-report-view="workOrderHistory">製令歷史</button></p>`;
 }
+let reportMachineInitialized=false;
+let reportDateMode='day';
+function reportMachineIds(allRows){
+ return [...new Set([...(Array.isArray(machines)?machines.map(m=>m.id):[]),...allRows.map(g=>g.machine)].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'zh-Hant',{numeric:true,sensitivity:'base'}));
+}
+function reportSelectedDate(){
+ const input=document.getElementById('reportDate');
+ if(input&&!input.value)input.value=productionDate();
+ return input?.value||productionDate();
+}
+function renderReportDateModes(){
+ reportSelectedDate();
+ document.querySelectorAll('#reportFilters [data-report-date-mode]').forEach(btn=>{
+  btn.setAttribute('aria-pressed',String(btn.dataset.reportDateMode===reportDateMode));
+  btn.onclick=()=>{reportDateMode=btn.dataset.reportDateMode==='month'?'month':'day';renderShiftRecords();};
+ });
+}
+function reportScopeLabel(){
+ const date=reportSelectedDate();
+ return reportDateMode==='month'?date.slice(0,7)+' 整月':date+' 當日';
+}
+function reportMatchesFilters(g,includeMachine=true){
+ const val=id=>document.getElementById(id)?.value||'';
+ const contains=(id,v)=>!val(id)||String(v??'').toLowerCase().includes(val(id).trim().toLowerCase());
+ const selected=val('reportMachine');
+ const date=reportSelectedDate();
+ return (reportDateMode==='month'?g.productionDate.startsWith(date.slice(0,7)):g.productionDate===date)&&
+  (!includeMachine||!selected||g.machine===selected)&&
+  contains('reportOperator',g.operator)&&contains('shiftSearch',g.wo)&&
+  (!val('shiftFilter')||g.shift===val('shiftFilter'))&&
+  (!val('reportRate')||reportRateClass(g.rate)===val('reportRate'))&&
+  (!val('reportDefect')||(g.defect>0)===(val('reportDefect')==='yes'))&&
+  (!val('reportTool')||(g.toolText!=='無')===(val('reportTool')==='yes'));
+}
+function renderReportMachineButtons(allRows){
+ const host=document.getElementById('reportMachineButtons'),input=document.getElementById('reportMachine');
+ if(!host||!input)return '';
+ const ids=reportMachineIds(allRows);
+ if(!reportMachineInitialized){if(!input.value&&ids.length)input.value=ids[0];reportMachineInitialized=true;}
+ if(input.value&&!ids.includes(input.value))input.value='';
+ const selected=input.value;
+ const activeIds=new Set(allRows.filter(g=>reportMatchesFilters(g,false)).map(g=>g.machine));
+ host.innerHTML=ids.map(id=>`<button type="button" class="report-machine-btn${id===selected?' active':''}${activeIds.has(id)?'':' empty'}" data-report-machine="${escapeAttr(id)}" aria-pressed="${id===selected?'true':'false'}" title="${activeIds.has(id)?'':'目前查詢條件沒有紀錄'}">${escapeHTML(id)}</button>`).join('');
+ host.querySelectorAll('[data-report-machine]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.reportMachine||'';renderShiftRecords();});
+ const clear=document.getElementById('reportClearMachine');if(clear){clear.hidden=!selected;clear.onclick=()=>{input.value='';renderShiftRecords();};}
+ return selected;
+}
+function renderReportMachineSummary(rows,selected){
+ const host=document.getElementById('reportMachineSummary'),scope=document.getElementById('reportSelectionScope'),title=document.getElementById('reportTableTitle'),count=document.getElementById('reportRecordCount');
+ if(scope)scope.textContent=selected?`${selected}｜${reportScopeLabel()}`:'尚未選擇機台';
+ if(title)title.textContent=selected?`${selected} 製令生產紀錄`:'機台製令生產紀錄';
+ if(count)count.textContent=`${rows.length} 筆結算紀錄`;
+ if(!host)return;
+ if(!selected){host.innerHTML='<div class="report-empty-summary">請先點選上方機台按鈕，再查看該機台的結算紀錄。</div>';return;}
+ const machine=machines.find(m=>m.id===selected),output=rows.reduce((n,g)=>n+(+g.output||0),0),down=rows.reduce((n,g)=>n+(+g.downHours||0),0),defect=rows.reduce((n,g)=>n+(+g.defect||0),0);
+ const rated=rows.filter(g=>g.target>0),target=rated.reduce((n,g)=>n+(+g.target||0),0),ratedOutput=rated.reduce((n,g)=>n+(+g.output||0),0),rate=target>0?ratedOutput/target*100:null;
+ host.innerHTML=`<div class="report-selected-machine"><span>目前機台</span><strong>${escapeHTML(selected)}</strong><small>${escapeHTML(machine?.status||'無目前狀態')}｜${escapeHTML(reportScopeLabel())}</small></div>
+  <div class="report-summary-tile output"><span>篩選產量</span><strong>${output.toLocaleString()} PCS</strong><small>${rows.length} 筆結算紀錄</small></div>
+  <div class="report-summary-tile down"><span>停機時間</span><strong>${down.toFixed(2)} h</strong><small>結算紀錄的已結束停機</small></div>
+  <div class="report-summary-tile rate"><span>達成率</span><strong>${rate===null?'—':rate.toFixed(1)+'%'}</strong><small>${target>0?`${ratedOutput.toLocaleString()} / ${target.toLocaleString()} PCS`:'無可計個人目標'}</small></div>
+  <div class="report-summary-tile defect"><span>異常數</span><strong>${defect.toLocaleString()} PCS</strong><small>目前篩選範圍</small></div>`;
+}
 function renderShiftRecords(){
- const val=id=>document.getElementById(id)?.value||'',text=(id,v)=>!val(id)||String(v).toLowerCase().includes(val(id).trim().toLowerCase());
+ renderReportDateModes();
  const opened=new Set([...document.querySelectorAll('#shiftRows .report-summary[aria-expanded=true]')].map(e=>e.dataset.key));
- const rows=machineOrderReportRows().filter(g=>(!val('reportMonth')||g.productionDate.startsWith(val('reportMonth')))&&(!val('reportDate')||g.productionDate===val('reportDate'))&&text('reportMachine',g.machine)&&text('reportOperator',g.operator)&&text('shiftSearch',g.wo)&&(!val('shiftFilter')||g.shift===val('shiftFilter'))&&(!val('reportRate')||reportRateClass(g.rate)===val('reportRate'))&&(!val('reportDefect')||(g.defect>0)===(val('reportDefect')==='yes'))&&(!val('reportTool')||(g.toolText!=='無')===(val('reportTool')==='yes')));
+ const allRows=machineOrderReportRows().filter(g=>reportSettlementEvidence(g)),selected=renderReportMachineButtons(allRows);
+ const rows=selected?allRows.filter(g=>reportMatchesFilters(g,true)):[];
+ const transitions=reportOrderTransitions(rows,allRows);
+ renderReportMachineSummary(rows,selected);
+ const reset=document.getElementById('reportResetFilters');if(reset)reset.onclick=()=>{['reportOperator','shiftSearch','shiftFilter','reportRate','reportDefect','reportTool'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('reportDate').value=productionDate();reportDateMode='day';renderShiftRecords();};
  const esc=v=>escapeHTML(String(v??'—'));
- shiftRows.innerHTML=rows.map((g,i)=>{const open=opened.has(g.key),time=reportClock(g.startTime)+'–'+(new Date(g.startTime).toDateString()!==new Date(g.endTime).toDateString()?new Date(g.endTime).toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'})+' ':'')+reportClock(g.endTime);return `<tr class="report-summary" tabindex="0" data-key="${escapeAttr(g.key)}" aria-expanded="${open}" aria-controls="reportDetail${i}">
- ${[g.productionDate,g.shift||'—',g.machine,g.wo,g.drawing||'—',g.drawingName||'未留存',g.operator||'待接手',time,g.processingHours.toFixed(2)+' h',g.downHours.toFixed(2)+' h',g.output+' PCS',g.target===null?'—':g.target+' PCS'].map(x=>'<td>'+esc(x)+'</td>').join('')}<td><span class="report-rate ${reportRateClass(g.rate)}">${g.rate===null?'—':g.rate.toFixed(1)+'%'}</span></td><td>${g.defect?g.defect+' PCS ⚠️':'0'}</td><td>${esc(g.toolText)}</td><td>${esc(g.status)}${g.setups.map(e=>'<br>'+reportClock(e.startTime)+'–'+reportClock(e.endTime)+' 校車').join('')} ▾</td></tr><tr class="report-detail" id="reportDetail${i}" ${open?'':'hidden'}><td colspan="16">${reportDetails(g)}</td></tr>`}).join('')||'<tr><td colspan="16">目前沒有符合條件的紀錄。</td></tr>';
+ shiftRows.innerHTML=rows.map((g,i)=>{const open=opened.has(g.key),time=reportClock(g.startTime)+'–'+(new Date(g.startTime).toDateString()!==new Date(g.endTime).toDateString()?new Date(g.endTime).toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'})+' ':'')+reportClock(g.endTime);const cumulative=reportEndCumulative(g),transition=transitions.get(g.key);return `${transition?'<tr class="report-order-change"><td colspan="17"><span>'+esc(transition)+'</span></td></tr>':''}<tr class="report-summary" tabindex="0" data-key="${escapeAttr(g.key)}" aria-expanded="${open}" aria-controls="reportDetail${i}">
+ ${[g.productionDate,g.shift||'—',g.machine,g.wo,g.drawing||'—',g.drawingName||'未留存',g.operator||'待接手',time,g.processingHours.toFixed(2)+' h',g.downHours.toFixed(2)+' h',g.output+' PCS',cumulative===null?'—':cumulative+' PCS',g.target===null?'—':g.target+' PCS'].map(x=>'<td>'+esc(x)+'</td>').join('')}<td><span class="report-rate ${reportRateClass(g.rate)}">${g.rate===null?'—':g.rate.toFixed(1)+'%'}</span></td><td>${g.defect?g.defect+' PCS ⚠️':'0'}</td><td>${esc(g.toolText)}</td><td>${esc(g.status)}${g.setups.map(e=>'<br>'+reportClock(e.startTime)+'–'+reportClock(e.endTime)+' 校車').join('')} ▾</td></tr><tr class="report-detail" id="reportDetail${i}" ${open?'':'hidden'}><td colspan="17">${reportDetails(g)}</td></tr>`}).join('')||(selected?'<tr><td colspan="17">目前這台機台沒有符合查詢條件的結算紀錄。</td></tr>':'<tr><td colspan="17">請先點選上方機台按鈕。</td></tr>');
  shiftRows.querySelectorAll('.report-summary').forEach(tr=>{
   tr.onclick=()=>{tr.setAttribute('aria-expanded',tr.nextElementSibling.hidden?'true':'false');tr.nextElementSibling.hidden=!tr.nextElementSibling.hidden;};
   tr.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tr.click();}};
@@ -7491,7 +8033,6 @@ function renderDailyPersonMachinePerformance(month){
 function renderMonthly(){
  if(!document.getElementById('monthSelect')) return;
  const month=selectedMonth(), rows=monthRecords(month), orderSegments=monthOrderSegments(month), closeEvents=monthOrderCloseEvents(month);
- renderDailyPersonMachinePerformance(month);
  const total=rows.reduce((a,r)=>a+(+r.output||0),0);
  const defect=rows.reduce((a,r)=>a+(+r.defect||0),0);
  const good=Math.max(0,total-defect);
@@ -7528,10 +8069,12 @@ function renderMonthly(){
  });
  monthMachineRows.innerHTML=Object.keys(grouped).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).map(id=>{
    const g=grouped[id], gd=Math.max(0,g.output-g.defect), rate=g.output?g.defect/g.output*100:0;
-   return `<tr class="month-machine-row" data-month-machine="${id}"><td><b>${id}</b></td><td>${g.output.toLocaleString()}</td><td>${gd.toLocaleString()}</td><td>${g.defect}</td><td>${rate.toFixed(2)}%</td><td>${g.down} 分</td><td>${g.orders.size}</td></tr>`;
+   return `<tr class="month-machine-row"><td><button type="button" class="month-link" data-month-machine="${escapeAttr(id)}" aria-controls="monthMachineDetailPanel">${escapeHTML(id)} ↗</button></td><td>${g.output.toLocaleString()}</td><td>${gd.toLocaleString()}</td><td>${g.defect}</td><td>${rate.toFixed(2)}%</td><td><button type="button" class="month-link" data-month-down="${escapeAttr(id)}" aria-controls="monthDownPanel">${g.down} 分 ↗</button></td><td>${g.orders.size}</td></tr>`;
  }).join('')||'<tr><td colspan="7" class="muted">這個月份目前沒有班別紀錄。</td></tr>';
 
- monthMachineRows.querySelectorAll('[data-month-machine]').forEach(tr=>tr.onclick=()=>renderMonthlyMachineDetail(tr.dataset.monthMachine));
+ monthMachineRows.querySelectorAll('[data-month-machine]').forEach(btn=>btn.onclick=()=>{renderMonthlyMachineDetail(btn.dataset.monthMachine);monthOpenPanel('monthMachineDetailPanel');});
+ monthMachineRows.querySelectorAll('[data-month-down]').forEach(btn=>btn.onclick=()=>monthShowDowntime(btn.dataset.monthDown));
+ renderMonthlyHighlights(grouped);
 
  const shifts=['早班','晚班'].map(sh=>{
    const rr=responsibilityEvents.filter(e=>e.type==='segment'&&e.status==='closed'&&monthKeyFromDate(e.productionDate)===month&&savedPersonShift(e)===sh),out=rr.reduce((a,r)=>a+(+r.output||0),0),df=defectEvents.filter(e=>monthKeyFromDate(e.attributedProductionDate)===month&&e.attributedShift===sh).reduce((a,e)=>a+effectiveDefectInfo(e).qty,0);
@@ -7539,38 +8082,9 @@ function renderMonthly(){
  });
  monthShiftRows.innerHTML=shifts.map(s=>`<tr><td>${s.sh}</td><td>${s.out.toLocaleString()}</td><td>${s.df}</td><td>${s.good.toLocaleString()}</td><td>${total?(s.out/total*100).toFixed(1):0}%</td></tr>`).join('');
 
- const orderSummary=monthOrderSummary(orderSegments);
-  monthOrderSummaryRows.innerHTML=orderSummary.map(g=>`<tr>
-   <td>${escapeHTML(g.wo)}</td><td>${escapeHTML([...g.machines].join('、'))}</td>
-   <td>${g.output.toLocaleString()}</td><td>${g.defect.toLocaleString()}</td>
-   <td>${Math.max(0,g.output-g.defect).toLocaleString()}</td><td>${g.down.toLocaleString()}</td>
-   <td>${g.records} 段</td><td>${escapeHTML(monthOrderSummarySource(g))}</td><td>${escapeHTML(monthOrderCloseSummary(g.wo,closeEvents))}</td>
-  </tr>`).join('')||'<tr><td colspan="9" class="muted">尚無製令生產紀錄。</td></tr>';
-
-  const detailRows=[...orderSegments].sort((a,b)=>
-   a.productionDate.localeCompare(b.productionDate)||(+a.startTime||0)-(+b.startTime||0)||a.machine.localeCompare(b.machine,undefined,{numeric:true}));
-  monthOrderRows.innerHTML=detailRows.map(s=>`<tr>
-   <td>${escapeHTML(s.productionDate)}</td><td>${escapeHTML(s.shift)}</td>
-   <td>${escapeHTML(s.wo)}</td><td>${escapeHTML(s.machine)}</td><td>${escapeHTML(s.drawing)}</td><td>${escapeHTML(s.processMode)}</td><td>${escapeHTML(s.cycle)}</td><td>${escapeHTML(segmentTimeLabel(s))}</td>
-   <td>${escapeHTML(s.startCum??'-')}</td><td>${escapeHTML(s.endCum??'-')}</td>
-   <td>${(+s.output||0).toLocaleString()}</td><td>${(+s.defect||0).toLocaleString()}</td>
-   <td>${(+s.good||0).toLocaleString()}</td><td>${(+s.target||0).toLocaleString()}</td>
-   <td>${(+s.downMinutes||0).toLocaleString()}</td><td>${escapeHTML(monthProductionRecordSource(s))}</td>
-  </tr>`).join('')||'<tr><td colspan="16" class="muted">尚無製令生產紀錄。</td></tr>';
-
- const closeRows=[...closeEvents].sort((a,b)=>(+b.time||0)-(+a.time||0));
- if(typeof monthOrderCloseRows!=='undefined'){
-   monthOrderCloseRows.innerHTML=closeRows.length?closeRows.map(e=>`<tr>
-    <td>${e.time?new Date(e.time).toLocaleString('zh-TW',{hour12:false}):(e.timeText||'-')}</td>
-    <td>${e.productionDate||'-'}</td><td>${e.shift||'-'}</td><td>${e.machine||'-'}</td><td>${escapeHTML(e.wo||'-')}</td>
-    <td><b>${closeTypeLabel(e)}</b></td><td>${e.actualQty??'-'} PCS</td><td>${e.orderQty??'-'} PCS</td>
-    <td>${escapeHTML(e.operator||'-')}</td><td>${closeReasonLabel(e)}</td><td>${e.source||'-'}</td>
-   </tr>`).join(''):'<tr><td colspan="11" class="muted">本月目前沒有正式結單事件。</td></tr>';
- }
-
  const md=monthDownEvents.slice().sort((a,b)=>(+b.startTime||0)-(+a.startTime||0));
  if(typeof monthDowntimeRows!=='undefined'){
-   monthDowntimeRows.innerHTML=md.length?md.map(e=>`<tr>
+   monthDowntimeRows.innerHTML=md.length?md.map(e=>`<tr data-down-machine="${escapeAttr(e.machine||'-')}">
     <td>${e.productionDate||'-'}</td><td>${e.shift||'-'}</td><td>${e.machine||'-'}</td><td>${escapeHTML(e.wo||'-')}</td>
     <td>${escapeHTML(e.operator||'-')}</td><td>${e.reasonText||reasonDisplay(e.reason||'-',e.reasonDetail||'')}</td>
     <td>${e.startTime?new Date(e.startTime).toLocaleString('zh-TW',{hour12:false}):'-'}</td>
@@ -7581,20 +8095,46 @@ function renderMonthly(){
    </tr>`).join(''):'<tr><td colspan="11" class="muted">本月目前沒有正式停機事件。</td></tr>';
  }
 
- const ma=auditLogs.filter(a=>monthKeyFromDate(a.productionDate)===month);
- monthAuditRows.innerHTML=ma.slice(0,80).map(a=>`<tr><td>${escapeHTML(a.time)}</td><td>${escapeHTML(a.productionDate||'-')}</td><td>${escapeHTML(a.shift||'-')}</td><td>${escapeHTML(a.operator||'-')}</td><td>${escapeHTML(a.machine||'-')}</td><td>${escapeHTML(a.wo||'-')}</td><td>${escapeHTML(a.action||'-')}</td><td>${escapeHTML(a.content||'-')}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">目前沒有本月操作紀錄。</td></tr>';
-
  if(!monthDetail.dataset.machine) renderMonthlySummaryDetail();
+ else renderMonthlyMachineDetail(monthDetail.dataset.machine);
+ monthApplyDowntimeFilter();
+ document.getElementById('monthExceptionBadge').classList.toggle('has-exception',exceptionClosed>0);
 }
+// V18.27.24.7: read-only presentation; use the existing monthly aggregation.
+function renderMonthlyHighlights(grouped){
+ const entries=Object.entries(grouped).map(([id,g])=>({id,...g}));
+ const top=[...entries].sort((a,b)=>b.output-a.output).filter(g=>g.output>0).slice(0,5);
+ const highest=key=>{const max=Math.max(0,...entries.map(g=>g[key]));return max>0?entries.filter(g=>g[key]===max):[];};
+ const df=highest('defect'),dn=highest('down');
+ const label=(arr,key,unit)=>arr.length?`${arr.map(g=>escapeHTML(g.id)).join('、')}${arr.length>1?'（並列）':''}<strong>${arr[0][key].toLocaleString()} ${unit}</strong>`:'尚無紀錄';
+ document.getElementById('monthHighlights').innerHTML=`<div class="month-spotlights"><div><span>異常最高</span>${label(df,'defect','PCS')}</div><div><span>停機最高</span>${label(dn,'down','分')}</div></div><h3>產量前 5 台</h3><div class="month-ranking">${top.map((g,i)=>`<div class="month-rank"><span class="month-rank-num">${i+1}</span><b>${escapeHTML(g.id)}</b><strong>${g.output.toLocaleString()} <small>PCS</small></strong><div class="month-rank-bar"><i style="width:${g.output/top[0].output*100}%"></i></div></div>`).join('')||'<p class="note">本月尚無生產紀錄</p>'}</div>`;
+}
+function monthOpenPanel(id){
+ if(!authAllowedView('monthly'))return;
+ const panel=document.getElementById(id);panel.open=true;
+ panel.scrollIntoView({block:'start',behavior:'auto'});
+ panel.querySelector('summary')?.focus({preventScroll:true});
+}
+function monthShowDowntime(machineId=''){
+ if(!authAllowedView('monthly'))return;
+ document.getElementById('monthDownPanel').dataset.machine=machineId;
+ monthApplyDowntimeFilter();monthOpenPanel('monthDownPanel');
+}
+function monthApplyDowntimeFilter(){
+ const panel=document.getElementById('monthDownPanel');if(!panel)return;
+ const id=panel.dataset.machine||'';
+ document.getElementById('monthDownScope').textContent=selectedMonth()+' · '+(id||'全部機台');
+ const rows=[...document.querySelectorAll('#monthDowntimeRows tr[data-down-machine]')];
+ rows.forEach(row=>row.hidden=!!id&&row.dataset.downMachine!==id);
+ const count=rows.filter(row=>!row.hidden).length;
+ document.getElementById('monthDownNote').textContent=`${count?'已列出 '+count+' 筆已結束停機事件。':'本範圍尚無已結束停機事件。'}歷史示意停機只有彙總數，沒有對應事件明細；進行中停機不列入本月總停機。`;
+ document.getElementById('monthDownAll').hidden=!id;
+}
+
 function renderMonthlySummaryDetail(){
- const month=selectedMonth(), rows=monthRecords(month);
- monthDetailTitle.textContent='月份重點';
+ monthDetailTitle.textContent='機台生產紀錄';
  monthDetail.dataset.machine='';
- const top=[...new Set(rows.map(r=>r.machine))].map(id=>{
-   const rr=rows.filter(r=>r.machine===id);return {id,out:rr.reduce((a,r)=>a+(+r.output||0),0),df:rr.reduce((a,r)=>a+(+r.defect||0),0)};
- }).sort((a,b)=>b.out-a.out).slice(0,5);
- monthDetail.innerHTML=`<div class="note">目前查看 <b>${month}</b>。點左側機台可查看該機台的日期、班別與製令。</div>
- <h3>產量前 5 台</h3>${top.map(x=>`<div class="log-item"><b>${x.id}｜${x.out.toLocaleString()} PCS</b><small>異常 ${x.df} PCS</small></div>`).join('')||'<div class="note">尚無資料</div>'}`;
+ monthDetail.innerHTML='<p class="note">請點選上方「機台月分析」的機台名稱，查看該機台本月的生產紀錄。</p>';
 }
 function renderMonthlyMachineDetail(id){
  const month=selectedMonth();
@@ -8100,7 +8640,7 @@ function exportMonth(){
  }catch(error){console.error('月報 Excel 匯出失敗',error);alert('Excel 匯出失敗：'+error.message)}
 }
 
-function renderAll(){machines.forEach(refreshTargetReached);renderOwner();renderCards();renderLog();renderHistory();renderDefectRecords();renderWorkOrderHistory();renderShiftRecords();renderResponsibilityHistory();renderMonthly();}
+function renderAll(){machines.forEach(refreshTargetReached);renderOwner();renderCards();renderLog();renderHistory();renderDefectRecords();renderWorkOrderHistory();renderShiftRecords();renderResponsibilityHistory();renderMonthly();syncOpMachinePicker();}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>authShowView(t.dataset.view));
 document.querySelectorAll('.action-btn').forEach(b=>b.onclick=()=>setAction(b.dataset.action));
 document.getElementById('pendingOverduePanel').onclick=handlePendingOverdueClick;
@@ -8108,15 +8648,37 @@ document.getElementById('pendingStopClose').onclick=cancelPendingStop;
 document.getElementById('pendingStopCancel').onclick=cancelPendingStop;
 document.getElementById('pendingStopConfirm').onclick=confirmPendingStop;
 document.getElementById('settlementContinue').onclick=()=>chooseSettlementContinue(document.getElementById('settlementChoiceModal').dataset.machine);
-document.getElementById('settlementStop').onclick=()=>openPendingStopModal(document.getElementById('settlementChoiceModal').dataset.machine,true);
+document.getElementById('settlementStop').onclick=()=>chooseSettlementStop(document.getElementById('settlementChoiceModal').dataset.machine);
+document.getElementById('settlementComplete').onclick=()=>chooseSettlementOrderComplete(document.getElementById('settlementChoiceModal').dataset.machine);
 document.getElementById('pendingStopReason').onchange=()=>{
  const tool=document.getElementById('pendingStopTool'),show=document.getElementById('pendingStopReason').value==='換刀';
  document.getElementById('pendingStopToolField').hidden=!show;tool.disabled=!show;tool.required=show;if(!show)tool.value='';
 };
 filterStatus.onchange=renderCards;sortBy.onchange=renderCards;searchBox.oninput=renderCards;opMachine.onchange=()=>{
- if(!confirmLoseUnsaved()){ opMachine.value=opMachine.dataset.prev||machines[0].id; return; }
+ if(!confirmLoseUnsaved()){ opMachine.value=opMachine.dataset.prev||''; return; }
  opFormDirty=false;opMachine.dataset.prev=opMachine.value;syncOpMachine();
 };
+// Operator picker event wiring; retain the original select onchange above.
+document.getElementById('opMachineToggle').onclick=()=>{
+ const panel=document.getElementById('opMachinePanel');
+ if(!panel.hidden){closeOpMachinePicker();return;}
+ renderOpMachineChoices();panel.hidden=false;
+ document.getElementById('opMachineToggle').setAttribute('aria-expanded','true');
+ panel.querySelector('[data-op-series]:not(:disabled)')?.focus();
+};
+document.getElementById('opMachineBack').onclick=()=>{
+ const group=document.getElementById('opMachinePanel').dataset.group;
+ renderOpMachineChoices();
+ [...document.querySelectorAll('#opMachineChoices [data-op-series]')].find(button=>button.dataset.opSeries===group)?.focus();
+};
+document.getElementById('opMachinePanel').addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();closeOpMachinePicker(true);}});
+opMachine.addEventListener('change',syncOpMachinePicker);
+new MutationObserver(()=>{
+ syncOpMachinePicker();
+ const panel=document.getElementById('opMachinePanel');
+ if(!panel.hidden)renderOpMachineChoices(panel.dataset.group||'');
+}).observe(opMachine,{childList:true,subtree:true,attributes:true,attributeFilter:['selected','disabled','value']});
+// End operator picker event wiring.
 operatorSelect.onchange=()=>{if(authActive())operatorSelect.value=currentOperator().name;};
 langToggle.onclick=()=>{
  if(!authActive())return;
@@ -8138,7 +8700,7 @@ submitAction.onclick=async()=>{
  if(submitAction.dataset.busy==='1') return;
  submitAction.dataset.busy='1'; submitAction.disabled=true;
  try{ await submitActionNow(); }
- finally{ setTimeout(()=>{submitAction.dataset.busy='0';submitAction.disabled=false;},700); }
+ finally{ setTimeout(()=>{submitAction.dataset.busy='0';submitAction.disabled=!machines.some(m=>m.id===opMachine.value);},700); }
 };histSearch.oninput=renderHistory;histAction.onchange=renderHistory;defectSearch.oninput=renderDefectRecords;defectStatusFilter.onchange=renderDefectRecords;workOrderSearch.oninput=renderWorkOrderHistory;workOrderStatusFilter.onchange=renderWorkOrderHistory;shiftSearch.oninput=renderShiftRecords;shiftFilter.onchange=renderShiftRecords;
 document.querySelectorAll('#reportFilters input,#reportFilters select').forEach(el=>el.addEventListener('input',renderShiftRecords));
 
@@ -8168,6 +8730,12 @@ monthCheckBtn.onclick=runMonthCheck;
 monthCloseBtn.onclick=closeMonth;
 monthReopenBtn.onclick=reopenMonth;
 monthExcelBtn.onclick=exportMonth;
+document.getElementById('monthDownTrigger').onclick=()=>monthShowDowntime('');
+document.getElementById('monthDownAll').onclick=()=>monthShowDowntime('');
+document.getElementById('monthDownPanel').addEventListener('toggle',()=>document.getElementById('monthDownTrigger').setAttribute('aria-expanded',String(document.getElementById('monthDownPanel').open)));
+monthCheckBtn.addEventListener('click',()=>{if(authCan('canCorrectProduction'))monthOpenPanel('monthCheckPanel');});
+monthCloseBtn.addEventListener('click',()=>{if(authCan('canCorrectProduction'))monthOpenPanel('monthCheckPanel');});
+monthSelect.addEventListener('change',()=>{document.getElementById('monthMachineDetailPanel').open=false;document.getElementById('monthDownPanel').open=false;document.getElementById('monthDownPanel').dataset.machine='';document.getElementById('monthCheckPanel').open=false;monthApplyDowntimeFilter();});
 machines.forEach(x=>ensureAutoShiftSession(x));
 initializeWorkOrderHistory();
 renderTestModeBanner();
