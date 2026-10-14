@@ -3,12 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>德曜精密｜CNC V18.27.24.17 每日機台生產報表 UI・測試版</title>
+<title>德曜精密｜CNC V18.27.24.21 每日機台生產報表 UI・測試版</title>
 <style>
-:root{
- --bg:#0a1020;--panel:#111a2b;--panel2:#16223a;--line:#263756;--text:#eef4ff;--muted:#9eb0c9;
- --blue:#3b82f6;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--cyan:#38bdf8;
-}
 *{box-sizing:border-box} body{margin:0;padding-top:var(--auth-header-height,0px);background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans TC",sans-serif}
 button,input,select,textarea{font:inherit}.wrap{max-width:1680px;margin:auto;padding:18px}
 header{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
@@ -17,7 +13,7 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 .view{display:none}.view.active{display:block}
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:14px}.kpi .lab{font-size:12px;color:var(--muted)}.kpi .val{font-size:28px;font-weight:800;margin-top:5px}.kpi .hint{font-size:11px;color:var(--muted);margin-top:4px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px}.grid2{display:grid;grid-template-columns:2.2fr 1fr;gap:12px}.panel h2{font-size:18px;margin:0 0 12px}
-.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #dce7f2;text-align:left;white-space:nowrap}th{color:var(--muted);font-weight:600}tr:hover{background:#f3f8fd}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #dce7f2;text-align:left;white-space:nowrap}th{color:var(--muted);font-weight:600}tr:hover{background:#f3f8fd}
 .badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:800}.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
 .good{background:#edf8f2;color:#248259}.warn{background:#fff1f2;color:#986919}.bad{background:#fff1f2;color:#b84958}.info{background:#f3f8fd;color:#496480}
 .num{font-variant-numeric:tabular-nums}.pos{color:#248259}.neg{color:#b84958}.muted{color:var(--muted)}.small{font-size:11px;color:var(--muted)}
@@ -55,14 +51,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.wrap{padding:11px}.kpis{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.action-grid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:21px}}
 
-.clickable-kpi{cursor:pointer;transition:.15s ease}
-.clickable-kpi:hover{border-color:#dce7f2;transform:translateY(-1px);box-shadow:0 0 0 1px #60a5fa33}
-.clickable-kpi:active{transform:translateY(0)}
-.issue-list{display:grid;gap:8px}
-.issue-row{display:grid;grid-template-columns:90px 1fr 1fr 110px 100px;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#f3f8fd;cursor:pointer}
-.issue-row:hover{border-color:#dce7f2;background:#f3f8fd}
-.issue-head{color:var(--muted);font-size:12px;font-weight:700;background:transparent;border:0;cursor:default;padding-top:0}
-@media(max-width:760px){.issue-row{grid-template-columns:70px 1fr}.issue-row .hide-mobile{display:none}}
 
 
 .shift-strip{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:8px;margin:10px 0 14px}
@@ -456,103 +444,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 }
 
 
-/* === V18.25 ERP 匯入畫面示意：只做UI/流程預覽，不寫入正式資料 === */
-#erpImportPreview .erp-preview-banner{
- display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid #f0b429;
- background:#fff8e6;border-radius:12px;margin-bottom:14px;color:#6b4f00
-}
-#erpImportPreview .erp-preview-banner b{display:block;font-size:15px;margin-bottom:3px}
-#erpImportPreview .erp-stepper{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
-#erpImportPreview .erp-step{position:relative;padding:12px;border:1px solid #d9e2ef;border-radius:12px;background:#fff}
-#erpImportPreview .erp-step .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;
- background:#e7eef8;color:#315b8a;font-weight:800;margin-right:7px}
-#erpImportPreview .erp-step.active{border-color:#dce7f2;background:#f2f8ff}
-#erpImportPreview .erp-step.active .num{background:#f3f8fd;color:#496480}
-#erpImportPreview .erp-step.done{border-color:#dce7f2;background:#f2fff7}
-#erpImportPreview .erp-step.done .num{background:#edf8f2;color:#496480}
-#erpImportPreview .erp-step b{font-size:14px}
-#erpImportPreview .erp-step small{display:block;color:#667085;margin:6px 0 0 39px;line-height:1.4}
-#erpImportPreview .erp-top-grid{display:grid;grid-template-columns:minmax(280px,0.9fr) minmax(360px,1.4fr);gap:12px;margin-bottom:14px}
-#erpImportPreview .erp-filebox{border:2px dashed #b9c8dc;border-radius:12px;padding:20px;background:#fbfdff;text-align:center}
-#erpImportPreview .erp-filebox .fileicon{font-size:38px;margin-bottom:6px}
-#erpImportPreview .erp-file-name{margin:10px 0 0;color:#31517c;font-weight:700;word-break:break-all}
-#erpImportPreview .erp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:10px}
-#erpImportPreview .erp-kpi{padding:14px 10px;border:1px solid #dce4ef;border-radius:12px;text-align:center;background:#fff}
-#erpImportPreview .erp-kpi strong{display:block;font-size:25px;margin-bottom:4px}
-#erpImportPreview .erp-kpi small{color:#667085}
-#erpImportPreview .erp-kpi.blue strong{color:#2478d4}
-#erpImportPreview .erp-kpi.green strong{color:#1b8c55}
-#erpImportPreview .erp-kpi.orange strong{color:#cc6b16}
-#erpImportPreview .erp-kpi.yellow strong{color:#a36c00}
-#erpImportPreview .erp-file-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#erpImportPreview .erp-meta-box{padding:10px 12px;border-radius:10px;background:#f5f8fc;border:1px solid #e1e7ef;font-size:12px;line-height:1.6}
-#erpImportPreview .erp-meta-box.good{background:#effbf4;border-color:#caead8}
-#erpImportPreview .erp-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
-#erpImportPreview .erp-toolbar .spacer{flex:1}
-#erpImportPreview .erp-table-wrap{overflow:auto;border:1px solid #dbe3ee;border-radius:12px;background:#fff}
-#erpImportPreview .erp-table{border-collapse:collapse;width:100%;min-width:1480px}
-#erpImportPreview .erp-table th,#erpImportPreview .erp-table td{border-bottom:1px solid #e5eaf1;border-right:1px solid #edf0f4;padding:8px 7px;font-size:12px;vertical-align:middle}
-#erpImportPreview .erp-table th{position:sticky;top:0;background:#eef4fb;color:#233b59;font-weight:800;z-index:1;white-space:nowrap}
-#erpImportPreview .erp-table tr:nth-child(even) td{background:#fbfcfe}
-#erpImportPreview .erp-table input,#erpImportPreview .erp-table select{width:100%;min-width:84px;padding:7px;border:1px solid #cfd9e6;border-radius:7px;background:#fff}
-#erpImportPreview .erp-table .product-cell{min-width:190px;max-width:290px;line-height:1.35}
-#erpImportPreview .erp-status{display:inline-block;padding:5px 9px;border-radius:999px;font-weight:800;white-space:nowrap}
-#erpImportPreview .erp-status.ready{background:#dff7e9;color:#147a43}
-#erpImportPreview .erp-status.need{background:#fff0c9;color:#946100}
-#erpImportPreview .erp-status.done{background:#f4dede;color:#a33434}
-#erpImportPreview .erp-bottom-grid{display:grid;grid-template-columns:1.25fr 0.75fr;gap:12px;margin-top:14px}
-#erpImportPreview .erp-issues{border:1px solid #f0c7c7;background:#fff7f7;border-radius:12px;padding:12px}
-#erpImportPreview .erp-issues h3{color:#b42318;margin:0 0 8px}
-#erpImportPreview .erp-issue-row{display:grid;grid-template-columns:110px 1fr 1fr;gap:8px;padding:8px 0;border-top:1px solid #f1dede;font-size:12px}
-#erpImportPreview .erp-actionbox{border:1px solid #d8e3ef;background:#f8fbff;border-radius:12px;padding:14px}
-#erpImportPreview .erp-actionbox label{display:flex;gap:8px;align-items:flex-start;margin:9px 0;font-size:13px}
-#erpImportPreview .erp-actionbox .btn{width:100%;margin-top:9px}
-#erpImportPreview .erp-preview-note{font-size:12px;color:#667085;line-height:1.6;margin-top:10px}
-@media(max-width:900px){
- #erpImportPreview .erp-stepper{grid-template-columns:1fr 1fr}
- #erpImportPreview .erp-top-grid,#erpImportPreview .erp-bottom-grid{grid-template-columns:1fr}
- #erpImportPreview .erp-kpis{grid-template-columns:1fr 1fr}
-}
-@media(max-width:560px){
- #erpImportPreview .erp-stepper,#erpImportPreview .erp-kpis{grid-template-columns:1fr}
-}
-
-
-/* === V18.25.1 可讀性修正：ERP頁改為深色高對比 === */
-#erpImportPreview{color:#496480}
-#erpImportPreview .panel{background:linear-gradient(180deg,#f3f8fd 0%,#f3f8fd 100%);border:1px solid #dce7f2;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-#erpImportPreview h2,#erpImportPreview h3,#erpImportPreview b,#erpImportPreview strong{color:#496480}
-#erpImportPreview .small,#erpImportPreview small,#erpImportPreview p,#erpImportPreview span,#erpImportPreview label,#erpImportPreview td,#erpImportPreview th,#erpImportPreview div{color:inherit}
-#erpImportPreview .erp-preview-banner{background:#fff1f2;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-step{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-step small{color:#496480}
-#erpImportPreview .erp-step.active{background:#f3f8fd;border-color:#dce7f2}
-#erpImportPreview .erp-step.done{background:#edf8f2;border-color:#dce7f2}
-#erpImportPreview .erp-filebox{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-file-name{color:#496480}
-#erpImportPreview .erp-kpi{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-kpi small{color:#496480}
-#erpImportPreview .erp-meta-box{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-meta-box.good{background:#edf8f2;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-table-wrap{background:#f3f8fd;border-color:#dce7f2}
-#erpImportPreview .erp-table th,#erpImportPreview .erp-table td{border-bottom:1px solid #dce7f2;border-right:1px solid #dce7f2;color:#496480}
-#erpImportPreview .erp-table th{background:#f3f8fd;color:#496480}
-#erpImportPreview .erp-table td{background:#f3f8fd}
-#erpImportPreview .erp-table tr:nth-child(even) td{background:#f3f8fd}
-#erpImportPreview .erp-table small{color:#496480}
-#erpImportPreview .erp-table input,#erpImportPreview .erp-table select{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-table input::placeholder{color:#496480}
-#erpImportPreview .erp-status.ready{background:#edf8f2;color:#248259}
-#erpImportPreview .erp-status.need{background:#fff1f2;color:#986919}
-#erpImportPreview .erp-status.done{background:#fff1f2;color:#496480}
-#erpImportPreview .erp-issues{background:#fff1f2;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-issues h3{color:#496480}
-#erpImportPreview .erp-issue-row{border-top-color:#dce7f2}
-#erpImportPreview .erp-actionbox{background:#f3f8fd;border-color:#dce7f2;color:#496480}
-#erpImportPreview .erp-preview-note{color:#496480}
-#erpImportPreview .btn{box-shadow:none}
-
-
 /* AUTH 現場功能驗證版；隱藏頁面不影響原生產計時。 */
 [hidden]{display:none!important}body[data-auth-blocked="1"] .wrap{visibility:hidden}
 .auth-identity{position:fixed;top:0;left:0;right:0;z-index:10000;background:#f3f8fd;border:1px solid #dce7f2;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -572,10 +463,6 @@ h1{font-size:26px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:4p
 #avStorageError{position:sticky;top:0;z-index:30000;background:#fff1f2;color:white;padding:16px;font-size:18px;font-weight:bold}
 #avStorageError{top:var(--auth-header-height,0px);z-index:11000}#avStorageError input{display:inline-block;max-width:300px;min-height:44px;margin:8px;font-size:18px}#avStorageError .btn{min-height:48px}#avFaultRelease{background:#f3f8fd;color:#496480;border:2px solid #fff}.av-write-locked .action-btn{opacity:.55;cursor:not-allowed}
 
-.pending-review-card{border:2px solid #f59e0b;border-radius:12px;background:#fff1f2;padding:14px;margin:12px 0;color:#496480}
-.pending-review-card strong{display:block;font-size:18px;margin-bottom:6px}
-.pending-review-card small{display:block;line-height:1.6;color:#496480}
-.pending-review-card .btn{margin:9px 8px 0 0;min-height:44px}
 .person-shift-choice{margin:18px 0}.person-shift-choice select{width:100%;min-height:52px;font-size:20px}
 .pending-stop-grid{display:grid;gap:12px}.pending-stop-grid label{display:block}.pending-stop-grid input,.pending-stop-grid select{width:100%;min-height:48px;margin-top:6px}
 
@@ -632,7 +519,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 #operator .tool-selection{font-size:15px;font-weight:700;line-height:1.7;color:#123d70;overflow-wrap:anywhere}
 </style>
 <meta name="application-name" content="德曜精密 CNC 報工系統">
-<meta name="version" content="V18.27.24.17 每日機台生產報表 UI・測試版">
+<meta name="version" content="V18.27.24.21 每日機台生產報表 UI・測試版">
 <style id="production-monthly-ui">
 /* Scoped to production monthly; other pages retain their existing appearance. */
 #monthly{--panel:#fff;--panel2:#f6f9fc;--text:#26394d;--muted:#66778b;--line:#e6edf4;color:var(--text);background:#f4f8fb;border-radius:26px;padding:24px;min-width:0}
@@ -902,7 +789,7 @@ body[data-auth-blocked="0"] .simulation-login-banner{display:none}
 [style*="color:#9baabd"],[style*="color: #9baabd"]{color:#496480!important}
 [style*="border-color:#1675dc"],[style*="border-color: #1675dc"]{border-color:#dce7f2!important}
 [style*="border-color:#31517c"],[style*="border-color: #31517c"]{border-color:#dce7f2!important}
-/* V18.27.24.17 — presentation only. Existing data, controls and access gates retained. */
+/* V18.27.24.21 — presentation only. Existing data, controls and access gates retained. */
 :root{color-scheme:light;--bg:#f1f6fc;--panel:#fff;--panel2:#f7faff;--line:#dfe8f2;--text:#193656;--muted:#657b94;--blue:#3485ed;--green:#32ad7d;--yellow:#d6a439;--red:#d96976;--cyan:#388fc1}
 body{background:linear-gradient(135deg,#f3f8fd,#edf4fc);color:var(--text);line-height:1.5}
 .wrap{max-width:1680px;padding:24px 32px 40px;min-width:0}
@@ -930,19 +817,17 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
 .rt-board .panel{margin-top:18px}.rt-attention h2{font-size:19px}.rt-attention>p{margin-top:-3px}.rt-alerts{gap:12px}.rt-issue{position:relative;background:#fffaf0;border:1px solid #f2e3ba;border-left:3px solid #dfb653;border-radius:15px;color:#2d4b6c;padding:15px 28px 15px 16px}.rt-issue:after{content:'›';position:absolute;right:12px;top:20px;font-size:24px;color:#8c9caf}.rt-issue:hover{background:#fff6df;border-color:#e3c877}.rt-issue strong{font-size:14px}.rt-issue small{color:#7c8ca0;line-height:1.5}.rt-issue b{font-size:13px;color:#a37921}.rt-issue.rt-critical{background:#fff3f5;border-color:#f0cbd3;border-left-color:#db8793}.rt-issue.rt-critical b{color:#ba5061}.rt-issue.rt-critical:hover{background:#ffebef}
 .rt-board .panel>.rt-heading{margin:0 0 14px}.rt-board .panel>.rt-heading h2{font-size:21px}.rt-filters{grid-template-columns:160px minmax(180px,1fr) 190px}.rt-filters label{color:#687f99}.rt-machine-scroll{border:0}.rt-table{min-width:960px}.rt-table th{background:#f0f5fb;color:#6b819c}.rt-table td{border-color:#e4edf6}.rt-table small{color:#7489a0}.rt-machine-link{color:#285d90;font-size:18px}.rt-good{color:#27855f!important}.rt-red{color:#bb4b5e!important}.rt-yellow{color:#986f24!important}.rt-blue{color:#437ab0!important}.rt-legacy{background:#f8fbfe;border:1px solid #e2ebf4;border-radius:14px}.rt-legacy summary{color:#587995}.rt-detail-grid div{background:#f5f9fe;border:1px solid #e2ebf4;border-radius:14px}.rt-detail-grid b{color:#6e829a}
 .rt-mobile-card{background:#fff;border:1px solid #e2ebf4;border-radius:16px;color:#294b6d;box-shadow:0 4px 14px #345d8208}.rt-mobile-card summary{color:#23476e}
-.history-note,.note,.small{color:#6b8096}.history-note{background:#f4f8fd;border-color:#e0eaf4;border-radius:14px;line-height:1.7}.alert,.cell,.shift-box,.issue-row,.test-tool-card,.clean-confirm,.backup-status,.confirm-box,.op-context-box{background:#f7faff;border-color:#dfe9f3;border-radius:14px;color:#365674}.log-item{border-color:#e4edf5}.issue-row:hover{background:#edf5ff}
-.test-mode-banner,.test-mode-banner.demo,.auth-test-warning,.simulation-banner,.simulation-login-banner,.pending-review-card,.bilingual-warning,.unlock-summary{background:#fff8e8;color:#8b6722;border:1px solid #ead9b2;border-radius:14px;box-shadow:none}.test-mode-banner{font-size:13px;padding:11px 15px}.test-mode-banner.clean{background:#edf6ff;color:#4378a7;border-color:#d7e8f7}.auth-test-warning{font-size:15px}.pending-review-card small,.unlock-summary b{color:#916c2c}.simulation-banner,.simulation-login-banner{font-size:13px}
+.history-note,.note,.small{color:#6b8096}.history-note{background:#f4f8fd;border-color:#e0eaf4;border-radius:14px;line-height:1.7}.alert,.cell,.shift-box,.test-tool-card,.clean-confirm,.backup-status,.confirm-box,.op-context-box{background:#f7faff;border-color:#dfe9f3;border-radius:14px;color:#365674}.log-item{border-color:#e4edf5}
+.test-mode-banner,.test-mode-banner.demo,.auth-test-warning,.simulation-banner,.simulation-login-banner,.bilingual-warning,.unlock-summary{background:#fff8e8;color:#8b6722;border:1px solid #ead9b2;border-radius:14px;box-shadow:none}.test-mode-banner{font-size:13px;padding:11px 15px}.test-mode-banner.clean{background:#edf6ff;color:#4378a7;border-color:#d7e8f7}.auth-test-warning{font-size:15px}.unlock-summary b{color:#916c2c}.simulation-banner,.simulation-login-banner{font-size:13px}
 .auth-gate{background:#f1f6fc}.auth-card{box-shadow:0 18px 65px #315a8417}.auth-language button{background:#edf5ff;color:#346898;border:1px solid #d8e7f7;border-radius:12px}.auth-note{color:#6b8096}.modal{background:#18324f55;backdrop-filter:blur(3px)}.modal-card{padding:22px}.auth-card [role="alert"]{color:#b64c5b}
 #monthly,#shiftRecords.report-light-page{background:transparent;padding:0;border-radius:20px}#monthly .panel,#shiftRecords .report-card{border-color:#e2ebf4;box-shadow:0 7px 25px #345d8210}#monthly .month-heading,#shiftRecords .report-page-heading{margin:8px 2px 22px}#monthly .month-heading h2,#shiftRecords .report-page-heading h2{font-size:28px}#monthly th,#shiftRecords th{background:#f0f5fb}#monthly .month-kpis{gap:12px}#monthly .kpi{border-radius:16px}
 #operator.operator-mobile-theme{background:transparent;padding:0}#operator .dy-brand-header{border-radius:20px;padding:14px 20px}.dy-brand-main .dx-brand{width:175px}.dy-divider{font-size:26px}.dy-cnc-title{font-size:25px}.dy-6s{margin-left:0;font-size:12px;padding:5px 10px;flex-wrap:wrap}.dy-6s b{padding:3px 12px}.dy-brand-main{gap:14px}#operator .panel{border-radius:20px;box-shadow:0 7px 25px #345d8210}#operator .op-machine-picker{border-radius:16px}#operator .op-machine-toggle{border-radius:14px}
-#erpImportPreview{background:transparent;color:#294b6d}#erpImportPreview .erp-card,#erpImportPreview .erp-actionbox{background:#fff;border:1px solid #e0eaf4;color:#345674;border-radius:18px}#erpImportPreview th{background:#f0f5fb;color:#657e97}#erpImportPreview td{color:#345674;border-color:#e5edf5}#erpImportPreview .erp-kpi{background:#f0f6fd;color:#326b9e}#erpImportPreview .erp-muted,#erpImportPreview .erp-preview-note{color:#6b8199}
 .kpis,.cards,.form-grid,.action-grid{min-width:0}.kpi{background:#fff;color:#23476e;border-color:#e0eaf4;border-radius:18px;box-shadow:0 5px 18px #345d820b}
 @media(max-width:1100px){.wrap{padding:20px}.auth-topbar{padding:9px 20px 0}.rt-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.rt-kpi:before{float:right;margin:0 0 6px 8px}.panel{padding:18px}}
 @media(max-width:700px){.wrap{padding:16px 12px 28px}.auth-topbar{padding:7px 12px 0;gap:4px 8px}.auth-topbar .dx-brand{width:145px}.auth-topbar .dx-brand-title>span{display:none}.auth-topbar .auth-identity{max-width:145px}.auth-capsule{padding:7px 9px;min-height:42px}.auth-capsule b{font-size:14px}.tabs .tab{padding:9px 11px}.panel,.modal-card{padding:16px;border-radius:18px}.rt-heading{margin-top:4px;gap:8px}.rt-heading h2{font-size:24px}.rt-heading p{font-size:12px}.rt-tag{font-size:11px;padding:5px 9px}.rt-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.rt-kpi{padding:14px;border-radius:17px}.rt-kpi strong{font-size:27px}.rt-kpi:before{width:28px;height:28px;border-radius:10px;float:none;margin-bottom:8px}.rt-kpi span{font-size:12px}.rt-kpi small{font-size:10px}.rt-alerts{grid-template-columns:1fr}.rt-filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:11px;gap:9px}.rt-filters label:nth-child(2){grid-column:1/-1;grid-row:2}.filters>input,.filters>select{width:100%;flex:1 1 100%}.rt-heading h2,#monthly .month-heading h2,#shiftRecords .report-page-heading h2{overflow-wrap:anywhere}.rt-board .panel>.rt-heading{flex-wrap:wrap}.rt-board .panel>.rt-heading h2{font-size:19px}.form-grid{grid-template-columns:minmax(0,1fr)}.auth-management form input{flex-basis:100%}.unlock-actions{flex-wrap:wrap}.dy-brand-main .dx-brand{width:145px}.dy-cnc-title{font-size:21px}.dy-divider{display:none}#operator .dy-brand-header{padding:12px}.test-tool-grid,.grid2,.month-drill{grid-template-columns:minmax(0,1fr)}.report-details-grid{grid-template-columns:minmax(0,1fr)}.view h2{overflow-wrap:anywhere}.view .note,.view p{overflow-wrap:anywhere}.auth-card{padding:18px}#systemAdmin .admin-grid{grid-template-columns:minmax(0,1fr)}#monthly .panel{padding:16px 12px}#shiftRecords .report-card{padding:16px 12px}}
 @media(max-width:360px){.auth-topbar .dx-brand{width:126px}.auth-topbar .auth-identity{max-width:130px}.wrap{padding:12px 9px 24px}.rt-heading h2{font-size:22px}.rt-kpi{padding:12px}.rt-kpi strong{font-size:25px}.panel{padding:13px}.rt-board .panel{padding:13px}}
 .rt-kpi{padding:19px 16px 17px 64px;min-height:146px}.rt-kpi:before{position:absolute;top:19px;left:16px;width:36px;height:36px;border-radius:50%;background:#eaf3ff!important;box-shadow:none!important;margin:0}.rt-kpi:nth-child(1):before{background:#e2f6eb!important}.rt-kpi:nth-child(2):before,.rt-kpi:nth-child(3):before{background:#fdebed!important}.rt-kpi:nth-child(4):before{background:#fff4d9!important}.rt-kpi:after{content:'';position:absolute;top:27px;left:24px;width:20px;height:20px;background-repeat:no-repeat;background-position:center;background-size:contain}.rt-alerts{max-height:236px;overflow-y:auto;padding:2px 6px 3px 2px;scrollbar-width:thin;scrollbar-color:#cbd8e8 transparent}.rt-issue{min-height:99px}
 #systemAdmin .account-warning{background:#fff8e8;color:#8b6722;border:1px solid #ead9b2;border-radius:14px;font-size:15px}
-#erpImportPreview .erp-wrap{background:#fff;box-shadow:0 7px 25px #345d8210;border-color:#e2ebf4;border-radius:20px}#erpImportPreview tbody tr{background:white}#erpImportPreview tbody tr:hover{background:#f4f9ff}
 @media(max-width:1100px){.rt-kpi{min-height:130px}.rt-kpi:before{float:none}}
 @media(max-width:700px){.rt-kpi{padding:48px 13px 13px;min-height:144px}.rt-kpi:before{width:28px;height:28px;left:13px;top:12px}.rt-kpi:after{width:17px;height:17px;top:17px;left:19px}.rt-alerts{max-height:330px}.rt-kpi strong{margin:6px 0 8px}}
 #shiftRecords .report-date-modes button[aria-pressed="true"],#shiftRecords .report-machine-btn.active,#monthly .btn.primary{background:#3485ed;color:white;border-color:#3485ed;box-shadow:0 3px 10px #3485ed20}
@@ -956,6 +841,15 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
 .rt-kpi:nth-child(4):after{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23986c16%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203a9%209%200%201%200%200%2018%209%209%200%200%200%200-18m0%204v5l3%202%22%2F%3E%3C%2Fsvg%3E")}
 .rt-kpi:nth-child(5):after{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%233485ed%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M5%2014v6m7-11v11m7-17v17%22%2F%3E%3C%2Fsvg%3E")}
 .rt-kpi:nth-child(6):after{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%233485ed%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203a9%209%200%201%200%209%209m-9-4a4%204%200%201%200%204%204m-4%200%209-9m-5%200h5v5%22%2F%3E%3C%2Fsvg%3E")}
+</style>
+<style>
+/* V18.27.24.21: accessible, initially collapsed recent activity. */
+.operator-recent>summary{cursor:pointer;font-weight:700;font-size:16px;min-height:44px;padding:10px 0;overflow-wrap:anywhere}
+.operator-recent>summary:focus-visible{outline:2px solid #437ab0;outline-offset:3px}
+/* V18.27.24.21: expandable record navigation; existing destination styles retained. */
+.auth-topbar .records-nav{flex-wrap:wrap;margin:0;padding:3px 0 9px}
+.auth-topbar .records-nav[hidden]{display:none}
+.tabs .tab:focus-visible{outline:2px solid #2476d9;outline-offset:-2px}
 </style>
 </head>
 <body data-auth-blocked="1">
@@ -975,15 +869,18 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
       <span class="operator-tab-zh">👷 操作員輸入</span>
       <span class="operator-tab-vi">Nhập liệu vận hành</span>
     </button>
- <button class="tab mgmt-only-tab" data-view="history">🔒 操作歷程（主管）</button>
- <button class="tab mgmt-only-tab" data-view="defectRecords">🔒 異常品紀錄（主管）</button>
- <button class="tab mgmt-only-tab" data-view="workOrderHistory">🔒 製令歷史（主管）</button>
- <button class="tab mgmt-only-tab" data-view="erpImportPreview">🧩 ERP製令匯入（示意）</button>
  <button class="tab mgmt-only-tab" data-view="shiftRecords">🔒 每日機台生產報表（主管）</button>
  <button class="tab" data-view="monthly">生產月報</button>
+ <button class="tab records-toggle" id="recordsToggle" type="button" aria-expanded="false" aria-controls="recordsNav" hidden>紀錄 ▾</button>
+ <button class="tab" data-view="testTools" hidden>測試工具</button>
  <button class="tab" data-view="systemAdmin" hidden>系統管理中心</button>
  <button class="tab" data-view="rules">規則說明</button>
 </div>
+<nav id="recordsNav" class="tabs records-nav" aria-label="紀錄查詢" hidden>
+ <button class="tab mgmt-only-tab" data-view="history">🔒 操作歷程（主管）</button>
+ <button class="tab mgmt-only-tab" data-view="defectRecords">🔒 異常品紀錄（主管）</button>
+ <button class="tab mgmt-only-tab" data-view="workOrderHistory">🔒 製令歷史（主管）</button>
+</nav>
  <div id="simulationBanner" class="simulation-banner" hidden></div>
 </div>
 <div id="authGate" class="auth-gate" role="dialog" aria-modal="true" aria-label="人員登入／鎖定"></div>
@@ -991,7 +888,7 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
 <div id="simulationLoginBanner" class="simulation-login-banner" hidden></div>
 <div class="wrap">
 <header>
-  <div><div class="sub">V18.27.24.17 每日機台生產報表 UI・測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
+  <div><div class="sub">V18.27.24.21 每日機台生產報表 UI・測試版｜每日人員班別｜結算後繼續／停止生產｜實際停機回報｜統一結算｜待接手分級防呆｜換刀整合停機｜月報 Excel 匯出｜每日個人 × 機台績效｜操作員純報工模式｜登入列固定</div></div>
   <div class="clock" id="clock"></div>
 </header>
 
@@ -1014,7 +911,6 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
    <label>排序<select id="sortBy"><option value="abnormal">有問題優先</option><option value="machine">機台編號</option><option value="rate">達成率最低</option><option value="down">停機最久</option><option value="finish">製令快完成</option><option value="stale">最久未更新</option></select></label>
   </div>
   <div class="table-wrap rt-machine-scroll" tabindex="0" aria-label="全部機台資料"><div id="machineCards"></div></div>
-  <details class="rt-legacy"><summary>既有管理摘要與待接手處理</summary><div id="rtLegacySummary" class="rt-note"></div><div id="pendingOverduePanel"></div><button class="btn secondary" type="button" onclick="showIssueList('abnormal')">原異常／停機清單</button> <button class="btn secondary" type="button" onclick="showIssueList('stale')">資料過期清單</button></details>
  </div>
 </section>
 
@@ -1114,16 +1010,11 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
     <div class="operator-mini-card">
      <h3 id="shiftSummaryTitle">目前人員摘要</h3>
      <div class="summary-grid">
-      <div class="summary-item"><span id="sumStartLabel">產量歸屬起點</span><b id="sumStart">-</b></div>
       <div class="summary-item"><span id="sumCurrentLabel">目前累積</span><b id="sumCurrent">-</b></div>
       <div class="summary-item"><span id="sumOutputLabel">目前人員產量</span><b id="sumOutput">-</b></div>
       <div class="summary-item"><span id="sumDefectLabel">異常</span><b id="sumDefect">-</b></div>
       <div class="summary-item"><span id="sumGoodLabel">良品</span><b id="sumGood">-</b></div>
-      <div class="summary-item"><span id="sumDownLabel">停機</span><b id="sumDown">-</b></div>
-      <div class="summary-item"><span id="sumModeLabel">加工模式</span><b id="sumMode" style="font-size:13px">-</b></div>
-      <div class="summary-item"><span id="sumShiftStateLabel">實際班別狀態</span><b id="sumShiftState" style="font-size:13px">-</b></div>
-      <div class="summary-item"><span id="sumReportSegmentLabel">報表區段</span><b id="sumReportSegment" style="font-size:13px">-</b></div>
-      <div class="summary-item"><span id="sumPostSettleLabel">待接手產量</span><b id="sumPostSettle">-</b></div>
+      <div class="summary-item"><span id="sumDownLabel">個人停機</span><b id="sumDown">-</b></div>
       <div class="summary-item"><span id="sumSegmentTargetLabel">目前人員應達</span><b id="sumSegmentTarget">-</b></div>
       <div class="summary-item"><span id="sumPersonRateLabel">目前人員達成率</span><b id="sumPersonRate">-</b></div>
      </div>
@@ -1134,11 +1025,11 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
      <div id="prevHandoff" class="prev-handoff">-</div>
     </div>
 
-    <div class="operator-mini-card">
-     <h3 id="recentTitle">最近紀錄</h3>
+    <details class="operator-mini-card operator-recent" id="operatorRecent">
+     <summary><span id="recentTitle">最近紀錄</span></summary>
      <div class="recent-limit-note" id="recentLimitNote">只顯示目前機台最近 10 筆，方便立刻檢查有沒有輸錯。</div>
      <div class="log" id="activityLog"></div>
-    </div>
+    </details>
    </div>
   </div>
  </div>
@@ -1303,238 +1194,7 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
 
 
 
-<section id="erpImportPreview" class="view">
- <div class="erp-preview-banner">
-  <div style="font-size:22px">⚠️</div>
-  <div><b>這是 ERP 匯入「畫面／流程預覽」</b>
-   目前不會把任何資料寫入機台、製令、WorkOrder、班別紀錄或 localStorage；你可以先操作畫面、補機台／程式／加工秒數，確認設計合不合用後再決定是否正式加入。
-  </div>
- </div>
 
- <div class="panel">
-  <h2>🧩 ERP 製令匯入 <span style="font-size:12px;color:#9a6a00">（示意版）</span></h2>
-  <div class="erp-stepper">
-   <div class="erp-step done"><span class="num">1</span><b>上傳檔案</b><small>選擇 ERP 匯出的 Excel / CSV</small></div>
-   <div class="erp-step active"><span class="num">2</span><b>資料解析</b><small>過濾 CNC 製令並檢查欄位</small></div>
-   <div class="erp-step"><span class="num">3</span><b>確認與補資料</b><small>補機台／程式／加工秒數</small></div>
-   <div class="erp-step"><span class="num">4</span><b>匯入完成</b><small>正式版才會加入待生產製令池</small></div>
-  </div>
-
-  <div class="erp-top-grid">
-   <div class="erp-filebox">
-    <div class="fileicon">📊</div>
-    <b>ERP Excel / CSV</b>
-    <p class="small">此預覽頁的「選擇檔案」只用來體驗畫面，不會解析或寫入資料。</p>
-    <input id="erpPreviewFile" type="file" accept=".xlsx,.xls,.csv" hidden>
-    <button class="btn primary" id="erpPreviewChooseFile" type="button">選擇檔案（示意）</button>
-    <div class="erp-file-name" id="erpPreviewFileName">目前示意資料來源：RptProduceDetail.xlsx</div>
-   </div>
-
-   <div>
-    <div class="erp-kpis">
-     <div class="erp-kpi blue"><strong>308</strong><small>ERP原始資料</small></div>
-     <div class="erp-kpi green"><strong>118</strong><small>CNC相關製令</small></div>
-     <div class="erp-kpi orange"><strong>86</strong><small>未完成製令</small></div>
-     <div class="erp-kpi yellow"><strong id="erpNeedCount">10</strong><small>本頁需補資料</small></div>
-    </div>
-    <div class="erp-file-meta">
-     <div class="erp-meta-box">
-      <b>本次示意</b><br>
-      ERP列印日期：2026/09/18<br>
-      生產日期區間：2026/08/01～2026/10/07<br>
-      下方先顯示前10筆 CNC 未完成製令
-     </div>
-     <div class="erp-meta-box good">
-      <b>CNC篩選概念</b><br>
-      先以 ERP 生產單位 01／02／04／05／08／16 作為候選。<br>
-      非 CNC 製程與已完成製令不進待生產池。
-     </div>
-    </div>
-   </div>
-  </div>
-
-  <h2 style="margin-top:16px">3. CNC 製令預覽（前10筆）</h2>
-  <div class="erp-toolbar">
-   <button class="btn" id="erpPreviewSelectAll" type="button">全選</button>
-   <button class="btn" id="erpPreviewClearAll" type="button">取消全選</button>
-   <span class="small">機台、程式號碼、加工秒數目前不是 ERP 提供的欄位，可在這裡體驗補資料流程。</span>
-   <span class="spacer"></span>
-   <b id="erpPreviewSelectedCount">已選 10 筆</b>
-  </div>
-
-  <div class="erp-table-wrap">
-   <table class="erp-table">
-    <thead><tr>
-     <th>匯入</th><th>製令單號／交期</th><th>品名規格</th><th>製程／ERP單位</th>
-     <th>ERP總數</th><th>已完成</th><th>剩餘</th><th>指定機台</th><th>程式號碼</th><th>加工秒數</th><th>加工模式</th><th>狀態</th>
-    </tr></thead>
-    <tbody id="erpPreviewRows">
-<tr class="erp-preview-row" data-erp-row="1">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260806003NF"></td>
- <td><b>20260806003NF</b><br><small style="color:#667085">2026/09/11</small></td>
- <td class="product-cell"><span>CE05-18RS-1810</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">4800</td>
- <td style="text-align:right">4608</td>
- <td style="text-align:right"><b>192</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="2">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260810003NF"></td>
- <td><b>20260810003NF</b><br><small style="color:#667085">2026/08/14</small></td>
- <td class="product-cell"><span>97J81W-20(D122)</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">3686</td>
- <td style="text-align:right">3678</td>
- <td style="text-align:right"><b>8</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="3">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260807001KSK"></td>
- <td><b>20260807001KSK</b><br><small style="color:#667085">2026/09/11</small></td>
- <td class="product-cell"><span>P1053*6mm小-拉線底座25.5*42.5版次b2</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">1127</td>
- <td style="text-align:right">1114</td>
- <td style="text-align:right"><b>13</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="4">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260812004NF"></td>
- <td><b>20260812004NF</b><br><small style="color:#667085">2026/08/19</small></td>
- <td class="product-cell"><span>CE05-22RS-2222</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">5467</td>
- <td style="text-align:right">5456</td>
- <td style="text-align:right"><b>11</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="5">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260814002NF"></td>
- <td><b>20260814002NF</b><br><small style="color:#667085">2026/08/19</small></td>
- <td class="product-cell"><span>CE05-18RS-1810</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">3600</td>
- <td style="text-align:right">3581</td>
- <td style="text-align:right"><b>19</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="6">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260817003NF"></td>
- <td><b>20260817003NF</b><br><small style="color:#667085">2026/08/20</small></td>
- <td class="product-cell"><span>CE05-22RS-2222</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">3069</td>
- <td style="text-align:right">3049</td>
- <td style="text-align:right"><b>20</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="7">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 YT20260819001"></td>
- <td><b>YT20260819001</b><br><small style="color:#667085">2026/08/24</small></td>
- <td class="product-cell"><span>GV3-B</span></td>
- <td>製程號 <br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">1387</td>
- <td style="text-align:right">1386</td>
- <td style="text-align:right"><b>1</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="8">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260818001KSK"></td>
- <td><b>20260818001KSK</b><br><small style="color:#667085">2026/08/28</small></td>
- <td class="product-cell"><span>R531P03029-185-01-S6200-35*382RL外管/S6200-35-185L(28*118.5-107)陽極黑版次a1(銑邊條)</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">2000</td>
- <td style="text-align:right">1999</td>
- <td style="text-align:right"><b>1</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="9">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260818003NF"></td>
- <td><b>20260818003NF</b><br><small style="color:#667085">2026/08/25</small></td>
- <td class="product-cell"><span>CE05-18RS-1810</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">6228</td>
- <td style="text-align:right">6133</td>
- <td style="text-align:right"><b>95</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr>
-<tr class="erp-preview-row" data-erp-row="10">
- <td style="text-align:center"><input class="erp-row-check" type="checkbox" checked aria-label="選取 20260819002NF"></td>
- <td><b>20260819002NF</b><br><small style="color:#667085">2026/08/31</small></td>
- <td class="product-cell"><span>97J81W-22(D122)</span></td>
- <td>CNC車床(A面)<br><small style="color:#667085">01 A車床01(A面)</small></td>
- <td style="text-align:right">8394</td>
- <td style="text-align:right">8280</td>
- <td style="text-align:right"><b>114</b></td>
- <td><select class="erp-demo-machine"><option value="">待分配</option><option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option><option value="D6">D6</option><option value="D7">D7</option><option value="D8">D8</option><option value="D9">D9</option><option value="D10">D10</option><option value="D11">D11</option><option value="D12">D12</option><option value="D13">D13</option><option value="D14">D14</option><option value="D15">D15</option><option value="B1">B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option><option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="MC1">MC1</option><option value="MC2">MC2</option></select></td>
- <td><input class="erp-demo-program" maxlength="30" placeholder="例：O0101"></td>
- <td><input class="erp-demo-cycle" inputmode="decimal" placeholder="秒"></td>
- <td><select class="erp-demo-mode"><option value="">待確認</option><option>機械手</option><option>人工上下料</option></select></td>
- <td><span class="erp-status need">需補資料</span></td>
-</tr></tbody>
-   </table>
-  </div>
-
-  <div class="erp-bottom-grid">
-   <div class="erp-issues">
-    <h3>⚠️ 目前要討論的資料問題</h3>
-     <div class="erp-issue-row"><b>產品編號</b><span>ERP雖然有</span><span>不匯入、不帶入網站製令資料</span></div>
-    
-    <div class="erp-issue-row"><b>ERP單位</b><span>例如 01 A車床01(A面)</span><span>目前先當製程群組，不直接等於 D1／A1 等實體機台</span></div>
-    <div class="erp-issue-row"><b>已完成數量</b><span>ERP可能已有4608 PCS</span><span>進行中製令仍建議用機台實體累積確認接手起點</span></div>
-    <div class="erp-issue-row"><b>缺少欄位</b><span>機台、程式、加工秒數</span><span>正式匯入前要決定由誰補、在哪裡補</span></div>
-   </div>
-
-   <div class="erp-actionbox">
-    <h3 style="margin-top:0">匯入選項（示意）</h3>
-    <label><input type="checkbox" checked disabled> <span>只匯入 ERP 未完成製令</span></label>
-    <label><input type="checkbox" checked disabled> <span>非 CNC 製程自動排除</span></label>
-    <label><input type="checkbox" disabled> <span>直接指定到機台（目前不建議）</span></label>
-    <label><input type="checkbox" checked disabled> <span>正式匯入前必須人工確認</span></label>
-    <button class="btn primary" id="erpPreviewConfirm" type="button">✅ 確認匯入選取製令（示意）</button>
-    <button class="btn" id="erpPreviewReset" type="button">恢復示意資料</button>
-    <div class="erp-preview-note">按「確認匯入」只會跳出說明，不會改動 V18.24 的任何正式資料或 localStorage。</div>
-   </div>
-  </div>
- </div>
-</section>
 
 
 <section id="monthly" class="view">
@@ -1594,27 +1254,25 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
 
 <section class="view" id="systemAdmin">
 <div class="panel auth-management" id="authAccountsPanel" hidden>
-<h2>公司主帳號｜系統管理中心</h2><p id="authPasswordPauseNote" class="account-warning" hidden>🧪 測試階段暫停使用密碼管理；正式上線前須恢復密碼驗證。<br>🧪 Tạm ngừng quản lý mật khẩu trong giai đoạn thử nghiệm; phải khôi phục xác thực mật khẩu trước khi dùng chính thức.</p>
+<h2>公司主帳號｜系統管理中心</h2><p id="authAccountPolicyNote" class="account-warning">一般員工以員工編號登入；公司主帳號保留密碼驗證。<br>Nhân viên đăng nhập bằng mã nhân viên; tài khoản quản trị công ty vẫn xác thực bằng mật khẩu.</p>
 <p class="account-warning">目前帳號／人員資料只存在此裝置。不同平板或電腦不會自動同步。<br>目前為單機現場功能驗證版。公司主帳號與人員帳號只存在目前裝置，並非正式中央帳號系統。</p>
 <h3>新增員工</h3><form id="adminCreateForm" class="admin-grid">
 <label>員工編號（建立後不可直接更改）<input id="adminNewId" required maxlength="40"></label>
 <label>姓名<input id="adminNewName" required maxlength="60"></label>
-<label>角色<select id="adminNewRole"><option value="operator">操作員</option><option value="supervisor">主管</option><option value="owner">老闆</option><option value="qualitySupervisor">品管主管</option></select></label>
+<label>角色<select id="adminNewRole"><option value="operator">操作員</option><option value="supervisor">主管</option></select></label>
 <label>預設語言<select id="adminNewLanguage"><option value="zh">中文</option><option value="vi">Tiếng Việt</option></select></label>
 <button class="btn primary">新增員工</button></form>
-<h3>人員帳號管理</h3><div class="table-wrap"><table><thead><tr><th>員工編號</th><th>姓名</th><th>角色</th><th>預設語言</th><th>帳號狀態</th><th>密碼狀態</th><th>建立日期</th><th>最後修改</th><th>操作</th></tr></thead><tbody id="authAccountRows"></tbody></table></div>
+<h3>人員帳號管理</h3><div class="table-wrap"><table><thead><tr><th>員工編號</th><th>姓名</th><th>角色</th><th>預設語言</th><th>帳號狀態</th><th>建立日期</th><th>最後修改</th><th>操作</th></tr></thead><tbody id="authAccountRows"></tbody></table></div>
 <form id="adminEditForm" class="admin-grid"><label>目標員工<select id="authAccountSelect"></select></label>
-<label>修改項目<select id="adminAction"><option value="RESET_TEMP_PASSWORD">建立／重設暫時密碼</option><option value="DELETE_ACCOUNT">永久刪除帳號</option><option value="CHANGE_ROLE">角色變更</option><option value="CHANGE_LANGUAGE">預設語言</option><option value="CHANGE_NAME">姓名修正</option></select></label>
-<label id="adminValueLabel">新值<input id="adminValue" maxlength="128" autocomplete="off"></label>
-<label>角色新值<select id="adminRole"><option value="operator">操作員</option><option value="supervisor">主管</option><option value="owner">老闆</option><option value="qualitySupervisor">品管主管</option></select></label>
+<label>修改項目<select id="adminAction"><option value="DELETE_ACCOUNT">永久刪除帳號</option><option value="CHANGE_ROLE">角色變更</option><option value="CHANGE_LANGUAGE">預設語言</option></select></label>
+<label>角色新值<select id="adminRole"><option value="operator">操作員</option><option value="supervisor">主管</option></select></label>
 <label>語言新值<select id="adminLanguage"><option value="zh">中文</option><option value="vi">Tiếng Việt</option></select></label>
 <label>修改原因（必填）<input id="adminReason" required maxlength="200"></label><button class="btn primary">確認帳號變更</button></form>
-<form id="authAccountForm" hidden><input id="authTemporaryPassword" type="password"><button type="submit">legacy / migration only（停用入口）</button></form>
 <p id="authAccountStatus" role="status"></p>
 <h3>公司主帳號設定</h3><p>此公司主帳號目前只存在這台瀏覽器／裝置。帳號ID不可直接變更。</p>
 <form id="adminSelfForm" class="admin-grid"><label>設定<select id="adminSelfAction"><option value="SYSTEM_ADMIN_NAME_CHANGED">顯示名稱</option><option value="SYSTEM_ADMIN_PASSWORD_CHANGED">密碼（至少12字元）</option></select></label><label>新值<input id="adminSelfValue" required maxlength="128"></label><label>修改原因<input id="adminSelfReason" required maxlength="200"></label><button class="btn primary">更新主帳號設定</button></form>
 </div></section>
-<section id="rules" class="view">
+<section id="testTools" class="view" aria-label="測試工具">
  <div class="panel" id="simulationCard" hidden>
   <h2>🧪 正式流程模擬</h2>
   <p id="simulationStatus"></p>
@@ -1638,6 +1296,41 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
  </div>
 
 
+  <div class="panel" style="margin-top:14px;border-color:#31517c">
+   <h2>🧪 測試版工具</h2>
+   <p class="note"><b>兩種模式分開：</b>示意資料用來展示畫面；真正到現場測流程時使用乾淨測試模式。兩種模式都只影響目前這台電腦／瀏覽器。</p>
+   <div class="test-tool-grid">
+    <div class="test-tool-card demo">
+     <h3>📊 示意資料模式</h3>
+     <p>重新載入本版本內建的機台、月報與歷史範例資料，適合展示給同事或主管看功能。</p>
+     <button class="btn" id="loadDemoData" type="button">載入示意資料</button>
+    </div>
+    <div class="test-tool-card clean">
+     <h3>🧹 乾淨測試模式</h3>
+     <p>清除所有示意生產資料與測試歷史，但保留機台清單、加工模式規則、班別／休息時間、原因選項、中越文、帳號與所有防呆規則。</p>
+     <label class="clean-confirm">
+      <input id="cleanModeConfirm" type="checkbox">
+      <span><b>我知道這會清除目前瀏覽器的所有測試生產資料</b><br><small>進入後機台顯示「待建立製令」，從第一張測試製令重新開始。</small></span>
+     </label>
+     <button class="btn primary" id="enterCleanTestMode" type="button">確認清除並進入乾淨測試模式</button>
+    </div>
+
+    <div class="test-tool-card backup">
+     <h3>💾 JSON 備份／還原</h3>
+     <p>把目前瀏覽器內的機台狀態、製令、累積數、班別、異常、停機、接手／結算、WorkOrder／WorkOrderEvent、結單與月結資料整包存成 JSON。需要時可用同一功能還原。</p>
+     <div class="backup-actions">
+      <button class="btn successbtn" id="downloadJsonBackup" type="button">⬇ 下載 JSON 備份</button>
+      <button class="btn secondary" id="selectJsonRestore" type="button">⬆ 選擇 JSON 還原</button>
+      <input id="jsonRestoreFile" type="file" accept=".json,application/json" hidden>
+     </div>
+     <div id="jsonBackupStatus" class="backup-status">只還原本系統產生的 JSON 備份。還原會覆蓋目前瀏覽器的測試資料，操作前建議先下載一份目前備份。</div>
+    </div>
+   </div>
+   <p class="small" style="margin-top:10px">乾淨模式會清除：機台目前製令／累積、班別紀錄、異常、停機、接手、結算、Audit、WorkOrder／WorkOrderEvent、結單事件、月報示意資料與月結狀態；系統設定與機台清單不刪除。</p>
+   <p class="small" style="margin-top:8px">V18.20新增示意／乾淨測試模式切換；操作員正式流程與原本防呆規則不變。</p>
+  </div>
+</section>
+<section id="rules" class="view">
  <div class="panel">
   <h2>目前已納入的系統規則</h2>
   <div class="table-wrap"><table>
@@ -1656,7 +1349,7 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
     <tr><td>個人達成率起訖</td><td>「接手機台」是個人達成率起點，「結算」是終點。待接手期間產量只列機台，不列入前後兩人的個人績效；下一位從實際接手時間與實體累積開始計算。</td></tr>
     <tr><td>人工分段扣除</td><td>早班：10:00–10:10休息、12:00–13:00午休、15:00–15:10休息、16:50–17:00交接/倒鐵屑、18:30–19:00晚餐、20:20–20:30交接/倒鐵屑。晚班：22:30–22:40休息、00:30–01:00吃飯、03:00–03:10休息、04:50–05:00倒鐵屑、05:00–05:30吃飯、07:50–08:00交接/倒鐵屑。</td></tr>
     <tr><td>機械手分段</td><td>機械手不扣人工休息，只扣真正停機；人工扣該責任人班別休息表與真正停機，重疊只扣一次。</td></tr>
-    <tr><td>同班換製令</td><td>換製令時保存上一製令的產量、加工設定、起訖與停機；新製令累積歸零，機台紀錄持續。不等待08:00／20:30封存。</td></tr>
+
     <tr><td>本班 vs 製令</td><td>班別統計依個人責任保存的班別歸類；製令累積跨日持續，直到換製令才歸零。待接手產量只計機台／製令。</td></tr>
     <tr><td>機台記錄產量</td><td>依機台連續紀錄的起始累積與各製令分段合計，不依時鐘早晚班切割。</td></tr>
     <tr><td>機台編號</td><td>公司目前納入看板的機台為 D1～D15、A1～A6、B1～B5、MC1～MC2。</td></tr><tr><td>加工模式</td><td>加工模式跟著製令／品項走，不跟機台寫死。每張製令可選「機械手」或「人工上下料」。</td></tr><tr><td>加工秒數</td><td>沿用公司現行定義：1 PCS 完整總節拍。機械手模式含機械手換料時間；人工模式含人工上、下料合計時間。</td></tr>
@@ -1734,8 +1427,6 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
     <tr><td>乾淨模式班別啟動</td><td>待建立製令的空白機台不建立生產紀錄；建立製令後開始連續記錄，依實際操作保存分段。</td></tr>
     <tr><td>結算文字一致性</td><td>結算後到下一位真正接手前，只累積機台產量，不計入任何人的個人產量、個人應達或達成率；下一位從實際接手時間與實體累積開始計算。</td></tr>
     <tr><td>JSON備份／還原</td><td>V18.24新增：可把目前瀏覽器的測試生產資料整包下載為 JSON，並在同一網站選擇該備份還原。還原前會檢查備份格式、機台清單與資料結構，顯示摘要後再要求人工確認；不接受任意 JSON 直接寫入。</td></tr>
-    <tr><td>ERP匯入畫面預覽</td><td>V18.25僅新增主管用的ERP匯入UI示意頁；可操作補機台／程式／加工秒數與查看狀態，但「確認匯入」不會寫入製令、機台、WorkOrder或localStorage。是否正式加入，待流程確認後再決定。</td></tr>
-    <tr><td>ERP產品編號</td><td>V18.25.2確認：ERP的「產品編號」不匯入CNC網站，也不自動當作圖號使用；ERP預覽頁只保留品名規格供辨識。</td></tr>
     <tr><td>重新整理保留狀態</td><td>本測試版會把機台目前狀態、製令、累積數、停機／校車計時等保存於瀏覽器 localStorage，重新整理後可恢復；正式版仍應改由中央資料庫保存。</td></tr>
     <tr><td>異常登錄</td><td>目前先簡化為「異常數量＋異常原因」，直接記在目前製令與責任紀錄保存的班別；無責任人不猜班別，上一製令追溯仍走主管流程。</td></tr>
     <tr><td>「其他」原因必填</td><td>異常品、停機、例外結單若原因選「其他」，補充說明立即變成必填。不得只輸入空白、標點符號或純數字，至少要有2個有效字元；例如「卡料」「等品管」可接受，「.」「0」不可接受。若已選明確原因，補充說明維持選填。</td></tr>
@@ -1744,39 +1435,7 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
    </tbody>
   </table></div>
 
-  <div class="panel" style="margin-top:14px;border-color:#31517c">
-   <h2>🧪 測試版工具</h2>
-   <p class="note"><b>兩種模式分開：</b>示意資料用來展示畫面；真正到現場測流程時使用乾淨測試模式。兩種模式都只影響目前這台電腦／瀏覽器。</p>
-   <div class="test-tool-grid">
-    <div class="test-tool-card demo">
-     <h3>📊 示意資料模式</h3>
-     <p>重新載入本版本內建的機台、月報與歷史範例資料，適合展示給同事或主管看功能。</p>
-     <button class="btn" id="loadDemoData" type="button">載入示意資料</button>
-    </div>
-    <div class="test-tool-card clean">
-     <h3>🧹 乾淨測試模式</h3>
-     <p>清除所有示意生產資料與測試歷史，但保留機台清單、加工模式規則、班別／休息時間、原因選項、中越文、帳號與所有防呆規則。</p>
-     <label class="clean-confirm">
-      <input id="cleanModeConfirm" type="checkbox">
-      <span><b>我知道這會清除目前瀏覽器的所有測試生產資料</b><br><small>進入後機台顯示「待建立製令」，從第一張測試製令重新開始。</small></span>
-     </label>
-     <button class="btn primary" id="enterCleanTestMode" type="button">確認清除並進入乾淨測試模式</button>
-    </div>
 
-    <div class="test-tool-card backup">
-     <h3>💾 JSON 備份／還原</h3>
-     <p>把目前瀏覽器內的機台狀態、製令、累積數、班別、異常、停機、接手／結算、WorkOrder／WorkOrderEvent、結單與月結資料整包存成 JSON。需要時可用同一功能還原。</p>
-     <div class="backup-actions">
-      <button class="btn successbtn" id="downloadJsonBackup" type="button">⬇ 下載 JSON 備份</button>
-      <button class="btn secondary" id="selectJsonRestore" type="button">⬆ 選擇 JSON 還原</button>
-      <input id="jsonRestoreFile" type="file" accept=".json,application/json" hidden>
-     </div>
-     <div id="jsonBackupStatus" class="backup-status">只還原本系統產生的 JSON 備份。還原會覆蓋目前瀏覽器的測試資料，操作前建議先下載一份目前備份。</div>
-    </div>
-   </div>
-   <p class="small" style="margin-top:10px">乾淨模式會清除：機台目前製令／累積、班別紀錄、異常、停機、接手、結算、Audit、WorkOrder／WorkOrderEvent、結單事件、月報示意資料與月結狀態；系統設定與機台清單不刪除。</p>
-   <p class="small" style="margin-top:8px">V18.20新增示意／乾淨測試模式切換；操作員正式流程與原本防呆規則不變。</p>
-  </div>
  </div>
 </section>
 </div>
@@ -1817,13 +1476,6 @@ table{color:#345271;background:#fff}th{background:#f0f5fb;color:#667f98;font-siz
   </div>
  </div>
 </div>
-<div class="modal" id="issueModal">
- <div class="modal-card">
-  <div class="modal-head"><h2 id="issueModalTitle">機台清單</h2><button class="close" id="closeIssueModal">×</button></div>
-  <div id="issueModalBody"></div>
- </div>
-</div>
-
 <div class="modal" id="detailModal">
  <div class="modal-card">
   <div class="modal-head"><h2 id="modalTitle">機台明細</h2><button class="close" id="closeModal">×</button></div>
@@ -2442,7 +2094,7 @@ const PERSONNEL_ROLES = Object.freeze({
   permissions: Object.freeze({canView:true,canOperate:false,canCorrectProduction:false,canCorrectDefect:false,canConfirmDefect:true})
  })
 });
-// Initial local accounts: store only salted password hashes; first login must change the password.
+// Initial local personnel; legacy salt/hash fields are retained only as source compatibility data and are not written or used.
 const COMPANY_INITIAL_EMPLOYEES = Object.freeze([
  {employeeId:'DY003',name:'蔡證聰',roleCode:'supervisor',defaultLanguage:'zh',salt:'58da7b80443003e765875de29be18846',hash:'92244e407afb7418aa8093e3c7128c55407c6a49c2955bb60fe786a0a153dba2'},
  {employeeId:'DY004',name:'李茂億',roleCode:'supervisor',defaultLanguage:'zh',salt:'ea73abaacef985d42de12132559bad2f',hash:'079b75cdeaffa8bfc153a3fa5954d8e0435ba458cbd69a6cd9e6f75e31d98c51'},
@@ -2475,11 +2127,14 @@ const AUTH_KEYS=Object.freeze({accounts:'deyao_auth_v1_accounts',audit:'deyao_au
 const ADMIN_KEYS=Object.freeze({personnel:'deyao_auth_v2_personnel',systemAdmin:'deyao_auth_v2_system_admin',lifecycle:'deyao_auth_v2_account_audit',seeded:'deyao_auth_v2_initial_employees_seeded'});
 const PERSON_SHIFT_KEY='deyao_v18_27_16_person_shift';
 const AUTH_MONTH_HISTORY_KEY='deyao_auth_v2_month_history';
-// 測試階段免密碼旁路；正式版改為 false，即恢復既有密碼與首次改密碼流程。
-const AUTH_TEST_PASSWORDLESS=true;
+// V18.27.24.21: employee-ID login is permanent; company administrator always requires a password.
+function authRequiresPassword(id){
+ const key=String(id||'').trim().toUpperCase();
+ return key==='ADMIN'||key===systemAdminAccount?.employeeId?.toUpperCase()||authPerson(key)?.roleCode==='systemAdmin';
+}
 const AUTH_ENV_SUPPORTED=window.isSecureContext===true&&!!globalThis.crypto?.subtle&&typeof globalThis.crypto?.randomUUID==='function';
 const AUTH_IDLE_MS=300000;
-let authAccounts={},authAccountsError='',authSession=null,authPendingUser=null;
+let authAccounts={},authAccountsError='',authSession=null,authPendingUser=null,authIdentityUser=null;
 let authLastActivity=0,authLanguage='zh',authScreen='login',authReauthResolver=null,authBusy=false;
 try{authAccounts=JSON.parse(appStorage.getItem(AUTH_KEYS.accounts)||'{}');
  if(!authAccounts||Array.isArray(authAccounts)||typeof authAccounts!=='object')throw Error('帳號格式錯誤');
@@ -2498,7 +2153,8 @@ function authPerson(id){
  id=String(id||'').trim().toUpperCase();
  const p=systemAdminAccount?.employeeId?.toUpperCase()===id?systemAdminAccount:personnelStore[id];
  if(!p||!PERSONNEL_ROLES[p.roleCode]||(p.roleCode==='systemAdmin'&&p!==systemAdminAccount))return null;
- return {...p,role:PERSONNEL_ROLES[p.roleCode].labels.zh,permissions:PERSONNEL_ROLES[p.roleCode].permissions};
+ // Legacy first-login status remains readable, but no longer starts a password workflow.
+ return {...p,status:p.status==='PENDING_FIRST_LOGIN'?'ACTIVE':p.status,role:PERSONNEL_ROLES[p.roleCode].labels.zh,permissions:PERSONNEL_ROLES[p.roleCode].permissions};
 }
 function authActive(){if(!authSession||authSession.locked)return false;const p=authPerson(authSession.employeeId);return !!p&&p.status!=='DISABLED';}
 function authCan(permission){return authActive()&&!!authPerson(authSession.employeeId)?.permissions[permission];}
@@ -2550,7 +2206,7 @@ function savePersonShiftRecord(employeeId,pd,row){
  personShiftRecords=next;
 }
 function authCompleteLogin(p){
- authSession=null;
+ authIdentityUser=null;authSession=null;
  authPendingUser={employeeId:p.employeeId,productionDate:productionDate()};
  authScreen='personShift';authLanguage=p.defaultLanguage;
  authApplyAccess();renderAuthGate();
@@ -2599,11 +2255,10 @@ function renderPersonShiftIdentity(){
  if(button){button.hidden=!authCan('canCorrectProduction');button.textContent=operatorLang==='vi'?'Đổi ca hôm nay':'修改今日班別';}
  authRenderCapsule();
 }
-function authPasswordValid(value){return typeof value==='string'&&value.length>=8&&value.length<=128;}
 async function authPasswordRecord(password){
  const salt=crypto.getRandomValues(new Uint8Array(16));
  const saltHex=[...salt].map(n=>n.toString(16).padStart(2,'0')).join('');
- return {salt:saltHex,hash:await authHashPassword(password,saltHex),iterations:120000,mustChange:true,updatedAt:appNow()};
+ return {salt:saltHex,hash:await authHashPassword(password,saltHex),iterations:120000,updatedAt:appNow()};
 }
 async function authHashPassword(password,saltHex){
  if(!AUTH_ENV_SUPPORTED)throw Error(authT('目前登入功能需要安全瀏覽環境，本測試版請使用本機檔案或受信任HTTPS。','Cần môi trường an toàn. Hãy dùng tệp cục bộ hoặc HTTPS đáng tin cậy.'));
@@ -2615,46 +2270,31 @@ async function authHashPassword(password,saltHex){
 async function authVerify(id,password){
  if(!AUTH_ENV_SUPPORTED)return false;
  id=String(id||'').trim().toUpperCase();
- const record=systemAdminAccount?.employeeId?.toUpperCase()===id?systemAdminAccount.password:authAccounts[id];
+ const record=systemAdminAccount?.employeeId?.toUpperCase()===id?systemAdminAccount.password:null;
  if(!record||record.iterations!==120000||!/^\w{32}$/.test(record.salt||'')||!/^\w{64}$/.test(record.hash||''))return false;
  return (await authHashPassword(password,record.salt))===record.hash;
 }
 function authSaveAccounts(next){appStorage.setItem(AUTH_KEYS.accounts,JSON.stringify(next));authAccounts=next;}
-async function authSetTemporaryPassword(id,password,ownPassword,reason='建立／重設暫時密碼'){
- if(AUTH_TEST_PASSWORDLESS)return {ok:false,message:'測試階段暫停使用密碼管理。'};
- if(!authCan('canManageAccounts')||!personnelStore[id]||personnelStore[id].status==='DISABLED')return {ok:false,message:'只有公司主帳號可管理啟用的人員帳號。'};
- if(!authPasswordValid(password)||!reason.trim())return {ok:false,message:'暫時密碼須8～128字元，原因必填。'};
- const sessionId=authSession.id;
- if(!await adminVerifyOperation(ownPassword,'建立／重設暫時密碼'))return {ok:false,message:'請重新驗證目前公司主帳號本人。'};
- const record=await authPasswordRecord(password);authAssertSession(sessionId);
- const before={status:personnelStore[id].status,passwordStatus:authAccounts[id]?'已設定':'尚未建立'};
- record.resetBy=authSession.employeeId;
- adminCommit(()=>{authSaveAccounts({...authAccounts,[id]:record});personnelStore[id]={...personnelStore[id],status:'PENDING_FIRST_LOGIN',updatedAt:appNow()};
-  adminSavePersonnel();adminAudit('RESET_TEMP_PASSWORD',personnelStore[id],before,{status:'PENDING_FIRST_LOGIN',passwordStatus:'待首次變更'},reason);});
- renderAuthAccounts();return {ok:true};
-}
 async function authLogin(id,password){
  id=String(id||'').trim().toUpperCase();
  if(!AUTH_ENV_SUPPORTED)return {ok:false,message:authT('目前登入功能需要安全瀏覽環境，本測試版請使用本機檔案或受信任HTTPS。','Cần môi trường an toàn. Hãy dùng tệp cục bộ hoặc HTTPS đáng tin cậy.')};
  if(authPerson(id)?.status==='DISABLED')return {ok:false,message:authT('此帳號已停用，請聯絡公司管理人員。','Tài khoản đã bị vô hiệu hóa. Hãy liên hệ quản trị công ty.')};
  if(authScreen==='lock')return {ok:false,message:authT('請解鎖原使用者，或先選擇切換使用者。','Hãy mở khóa hoặc chọn đổi người dùng.')};
  if(authAccountsError)return {ok:false,message:authAccountsError};
- const p=authPerson(id),ok=p&&(AUTH_TEST_PASSWORDLESS||await authVerify(id,password));
- if(!ok){authAudit('登入失敗',id,'帳號或密碼錯誤；不鎖帳號');return {ok:false,message:AUTH_TEST_PASSWORDLESS?authT('員工編號不存在；帳號未停用。','Mã nhân viên không tồn tại; tài khoản không bị khóa.'):authT('員工編號或密碼錯誤；帳號未停用。','Mã hoặc mật khẩu không đúng; tài khoản không bị khóa.')};}
- if(!AUTH_TEST_PASSWORDLESS&&p.roleCode!=='systemAdmin'&&authAccounts[id]?.mustChange){authPendingUser={employeeId:id};authScreen='change';renderAuthGate();return {ok:true,mustChange:true};}
- return authCompleteLogin(p);
+ const p=authPerson(id),ok=p&&(!authRequiresPassword(id)||await authVerify(id,password));
+ if(!ok){authAudit('登入失敗',id,'帳號或密碼錯誤；不鎖帳號');return {ok:false,message:!authRequiresPassword(id)?authT('員工編號不存在；帳號未停用。','Mã nhân viên không tồn tại; tài khoản không bị khóa.'):authT('員工編號或密碼錯誤；帳號未停用。','Mã hoặc mật khẩu không đúng; tài khoản không bị khóa.')};}
+ if(authRequiresPassword(id))return authCompleteLogin(p);
+ authSession=null;authPendingUser=null;
+ authIdentityUser={employeeId:p.employeeId,name:p.name,roleCode:p.roleCode};
+ authScreen='identity';authLanguage=p.defaultLanguage;authApplyAccess();renderAuthGate();
+ return {ok:true,needsIdentityConfirmation:true};
 }
-async function authChangeFirstPassword(password,repeat){
- if(AUTH_TEST_PASSWORDLESS)return {ok:false,message:'測試階段暫停使用密碼管理。'};
- if(!authPendingUser)return {ok:false,message:'請先使用暫時密碼登入。'};
- if(!authPasswordValid(password)||password!==repeat)return {ok:false,message:authT('新密碼須為 8～128 字元，兩次輸入相同。','Mật khẩu mới 8–128 ký tự, nhập hai lần giống nhau.')};
- const id=authPendingUser.employeeId;
- if(await authVerify(id,password))return {ok:false,message:authT('新密碼不可與暫時密碼相同。','Mật khẩu mới phải khác mật khẩu tạm.')};
- const record=await authPasswordRecord(password);
- if(authPendingUser?.employeeId!==id)return {ok:false,message:'登入流程已改變。'};
- authSaveAccounts({...authAccounts,[id]:{...record,mustChange:false}});
- if(personnelStore[id]){personnelStore[id]={...personnelStore[id],status:'ACTIVE',updatedAt:appNow()};adminSavePersonnel();}
- authAudit('首次密碼變更完成',id);authPendingUser=null;return authCompleteLogin(authPerson(id));
+function authConfirmIdentity(){
+ if(authScreen!=='identity'||!authIdentityUser)return {ok:false};
+ const expected=authIdentityUser,p=authPerson(expected.employeeId);
+ if(!p||p.status==='DISABLED'||authRequiresPassword(expected.employeeId)||p.name!==expected.name||p.roleCode!==expected.roleCode)
+  return {ok:false,message:authT('帳號資料已變更或停用，請返回修改員工編號後重新確認。','Thông tin tài khoản đã thay đổi hoặc bị vô hiệu hóa. Hãy quay lại nhập mã và xác nhận lại.')};
+ return authCompleteLogin(p);
 }
 function authFinishLogin(p,workShift,workShiftDate){
  if(!['早班','晚班'].includes(workShift)||!authPendingUser||authPendingUser.employeeId!==p.employeeId||authPendingUser.productionDate!==workShiftDate||workShiftDate!==productionDate())throw Error('請重新登入並選擇工作班別。');
@@ -2684,19 +2324,19 @@ function authCheckIdle(now=realNow()){if(authActive()&&now-authLastActivity>=AUT
 function authActivity(){authCheckIdle();if(authActive())authLastActivity=realNow();}
 function authGoSwitch(){
  try{if(authSession)authAudit('鎖定畫面切換登入',authSession.employeeId);}catch(e){console.error('切換登入稽核保存失敗',e);}
- authSession=null;authPendingUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
+ authSession=null;authPendingUser=null;authIdentityUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
 }
 async function authUnlock(password){
  if(!authSession?.locked)return {ok:false};
  const id=authSession.employeeId,sessionId=authSession.id;
- if(authPerson(id)?.status==='DISABLED')return {ok:false,message:'此帳號已停用，請聯絡公司管理人員。'};
- if(!AUTH_TEST_PASSWORDLESS&&!await authVerify(id,password)){authAudit('解鎖失敗',id,'密碼錯誤；不鎖帳號');return {ok:false,message:authT('密碼錯誤，請再輸入。','Mật khẩu không đúng, hãy thử lại.')};}
+ if(!authPerson(id)||authPerson(id).status==='DISABLED')return {ok:false,message:'此帳號已停用或不存在，請聯絡公司管理人員。'};
+ if(authRequiresPassword(id)&&!await authVerify(id,password)){authAudit('解鎖失敗',id,'密碼錯誤；不鎖帳號');return {ok:false,message:authT('密碼錯誤，請再輸入。','Mật khẩu không đúng, hãy thử lại.')};}
  if(authSession?.id!==sessionId)return {ok:false};
  authSession.locked=false;authLastActivity=realNow();authAudit('解鎖成功',id);authApplyAccess();return {ok:true};
 }
 function authLogout(){
  try{if(authSession)authAudit('登出',authSession.employeeId);}catch(e){console.error('登出稽核保存失敗',e);}
- authSession=null;authPendingUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
+ authSession=null;authPendingUser=null;authIdentityUser=null;authCancelPending();resetOpMachineSelection();authScreen='login';authApplyAccess();renderAuthGate();
 }
 function authAllowedView(view){
  if(!authActive())return false;
@@ -2704,15 +2344,30 @@ function authAllowedView(view){
  if(p.roleCode==='operator')return view==='operator';
  if(p.roleCode==='systemAdmin')return true;
  if(view==='systemAdmin')return false;
+ if(view==='testTools')return canManageSimulation()||authCan('canCorrectProduction');
  if(view==='operator')return p.permissions.canOperate;
- if(view==='erpImportPreview')return p.roleCode==='supervisor';
  return true;
 }
 function authShowView(view){
  if(!authAllowedView(view))return false;
  if(view==='supervisor')view='owner'; // Retain the old route as an alias.
- document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===view));
+ document.querySelectorAll('.tab[data-view]').forEach(t=>{
+  const selected=t.dataset.view===view;t.classList.toggle('active',selected);
+  if(selected)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current');
+ });
+ document.getElementById('recordsToggle').classList.toggle('active',['history','defectRecords','workOrderHistory'].includes(view));
+ setRecordsNavOpen(false);
  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));return true;
+}
+function setRecordsNavOpen(open,focusFirst=false){
+ const toggle=document.getElementById('recordsToggle'),nav=document.getElementById('recordsNav');
+ const wasFocused=nav.contains(document.activeElement);
+ open=!!open&&!toggle.hidden;
+ nav.hidden=!open;toggle.setAttribute('aria-expanded',String(open));
+ toggle.textContent=open?'紀錄 ▴':'紀錄 ▾';
+ if(open&&focusFirst)nav.querySelector('button:not([hidden])')?.focus();
+ else if(!open&&wasFocused&&!toggle.hidden)toggle.focus();
+ syncAuthHeaderHeight();
 }
 function syncAuthHeaderHeight(){
  const identity=document.getElementById('authTopbar');
@@ -2730,7 +2385,10 @@ function authApplyAccess(){
   document.getElementById('authIdentityEmployee').textContent=`${operatorLang==='vi'?'Mã nhân viên':'工號'}：${p.employeeId}`;
   document.getElementById('authIdentityRole').textContent=`${operatorLang==='vi'?'Vai trò':'角色'}：${PERSONNEL_ROLES[p.roleCode].labels[operatorLang]}`;}
  renderPersonShiftIdentity();authRenderCapsule();renderSimulation();syncAuthHeaderHeight();
- document.querySelectorAll('.tab').forEach(t=>{t.hidden=!authAllowedView(t.dataset.view);});
+ document.querySelectorAll('.tab[data-view]').forEach(t=>{t.hidden=!authAllowedView(t.dataset.view);});
+ document.getElementById('recordsToggle').hidden=!['history','defectRecords','workOrderHistory'].some(authAllowedView);
+ setRecordsNavOpen(false);
+ if(active&&!authAllowedView(document.querySelector('.view.active')?.id))authShowView(p.permissions.canOperate?'operator':'owner');
  if(p?.roleCode==='operator' && document.querySelector('.view.active')?.id!=='operator')authShowView('operator');
  ['monthCheckBtn','monthCloseBtn','monthReopenBtn','loadDemoData','enterCleanTestMode','selectJsonRestore','downloadJsonBackup'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=!authCan('canCorrectProduction');});
  document.getElementById('authAccountsPanel').hidden=!authCan('canManageAccounts');
@@ -2765,7 +2423,7 @@ function authProtectedRecord({machine,wo,productionDate:pd,shift,time,workOrderI
 }
 function authProtectedDefect(e){return authProtectedRecord({machine:e.machine,wo:e.wo,productionDate:e.attributedProductionDate,shift:e.attributedShift,time:e.time,workOrderId:e.workOrderId});}
 async function authReverify(password){
- if(AUTH_TEST_PASSWORDLESS)return authCan('canCorrectProduction')||authCan('canCorrectDefect')||authCan('canManageAccounts');
+ if(!authRequiresPassword(authSession?.employeeId))return authCan('canCorrectProduction')||authCan('canCorrectDefect');
  if(!authCan('canCorrectProduction')&&!authCan('canManageAccounts'))return false;
  const id=authSession.employeeId,sessionId=authSession.id,ok=await authVerify(id,password);
  if(!authActive()||authSession.id!==sessionId)return false;
@@ -2773,7 +2431,7 @@ async function authReverify(password){
 }
 function authRequestReverification(context){
  if(!authCan('canCorrectProduction')&&!authCan('canManageAccounts'))return Promise.resolve(false);
- if(AUTH_TEST_PASSWORDLESS){const p=authPerson(authSession.employeeId);return Promise.resolve(confirm(`🧪 測試模式：確認由 ${p.name}（${p.employeeId}／${p.role}）執行「${context}」？`));}
+ if(!authRequiresPassword(authSession.employeeId)){const p=authPerson(authSession.employeeId);return Promise.resolve(confirm(`確認由 ${p.name}（${p.employeeId}／${p.role}）執行「${context}」？`));}
  authCancelReverification();
  const modal=document.getElementById('authReauthModal');
  const p=authPerson(authSession.employeeId);document.getElementById('authReauthWho').textContent=`${p.employeeId}｜${p.name}｜${p.role}｜${context}`;
@@ -2810,11 +2468,26 @@ function renderAuthAccounts(){
  document.getElementById('authAccountSelect').innerHTML=people.map(p=>`<option value="${escapeAttr(p.employeeId)}">${escapeHTML(p.employeeId)}｜${escapeHTML(p.name)}｜${PERSONNEL_ROLES[p.roleCode].labels.zh}</option>`).join('');
  if(personnelStore[selected])document.getElementById('authAccountSelect').value=selected;
  const date=v=>v?new Date(v).toLocaleString('zh-TW'):'-';
- document.getElementById('authAccountRows').innerHTML=people.map(p=>`<tr><td>${escapeHTML(p.employeeId)}</td><td>${escapeHTML(p.name)}</td><td>${PERSONNEL_ROLES[p.roleCode].labels.zh}</td><td>${p.defaultLanguage==='vi'?'Tiếng Việt':'中文'}</td><td>${p.status==='PENDING_FIRST_LOGIN'?(AUTH_TEST_PASSWORDLESS?'測試可登入':'待首次登入'):'啟用'}</td><td>${AUTH_TEST_PASSWORDLESS?'測試階段暫停使用':!authAccounts[p.employeeId]?'尚未建立正式密碼':authAccounts[p.employeeId].mustChange?'待首次變更密碼':'已設定個人密碼（不可查看）'}</td><td>${date(p.createdAt)}</td><td>${date(p.updatedAt)}</td><td><button class="btn secondary" type="button" data-admin-select="${escapeAttr(p.employeeId)}">管理此帳號</button></td></tr>`).join('');
+ document.getElementById('authAccountRows').innerHTML=people.map(p=>`<tr><td>${escapeHTML(p.employeeId)}</td><td>${escapeHTML(p.name)}</td><td>${PERSONNEL_ROLES[p.roleCode].labels.zh}</td><td>${p.defaultLanguage==='vi'?'Tiếng Việt':'中文'}</td><td>${p.status==='DISABLED'?'停用':'啟用'}</td><td>${date(p.createdAt)}</td><td>${date(p.updatedAt)}</td><td><button class="btn secondary" type="button" data-admin-select="${escapeAttr(p.employeeId)}">管理此帳號</button></td></tr>`).join('');
  document.querySelectorAll('[data-admin-select]').forEach(b=>b.onclick=()=>{document.getElementById('authAccountSelect').value=b.dataset.adminSelect;document.getElementById('adminEditForm').scrollIntoView({block:'center'});});
 }
 function renderAuthGate(){
  const gate=document.getElementById('authGate'),locked=authScreen==='lock'&&authSession?.locked;
+ if(authScreen==='identity'&&authIdentityUser){
+  const p=authIdentityUser,role=PERSONNEL_ROLES[p.roleCode].labels[authLanguage]||PERSONNEL_ROLES[p.roleCode].labels.zh;
+  gate.innerHTML=`<div class="auth-card"><div class="auth-language"><button type="button" data-auth-lang="zh">中文</button><button type="button" data-auth-lang="vi">Tiếng Việt</button></div>
+   <h1>${authT('確認登入身分','Xác nhận danh tính')}</h1>
+   <p id="authIdentitySummary" style="overflow-wrap:anywhere">${escapeHTML(p.employeeId)}｜${escapeHTML(p.name)}｜${escapeHTML(role)}</p>
+   <p>${authT('請確認這是您的帳號，再選擇今日班別。','Hãy xác nhận đây là tài khoản của bạn trước khi chọn ca hôm nay.')}</p>
+   <button class="btn primary" type="button" id="authIdentityConfirm">${authT('確認登入','Xác nhận đăng nhập')}</button>
+   <p id="authGateError" role="alert"></p>
+   <button class="btn secondary" type="button" id="authIdentityBack">${authT('返回修改員工編號','Quay lại sửa mã nhân viên')}</button></div>`;
+  gate.hidden=false;
+  gate.querySelectorAll('[data-auth-lang]').forEach(b=>b.onclick=()=>{authLanguage=b.dataset.authLang;renderAuthGate();});
+  document.getElementById('authIdentityConfirm').onclick=()=>{const r=authConfirmIdentity();if(!r.ok)document.getElementById('authGateError').textContent=r.message||authT('請重新登入。','Vui lòng đăng nhập lại.');};
+  document.getElementById('authIdentityBack').onclick=()=>{const id=authIdentityUser.employeeId;authIdentityUser=null;authPendingUser=null;authScreen='login';renderAuthGate();const input=document.getElementById('authLoginId');input.value=id;input.focus();input.select();};
+  return;
+ }
  if(authScreen==='personShift'&&authPendingUser){
   const p=authPerson(authPendingUser.employeeId);
   gate.innerHTML=`<div class="auth-card"><h1>${authT('選擇今日工作班別','Chọn ca làm việc hôm nay')}</h1>
@@ -2829,24 +2502,32 @@ function renderAuthGate(){
   document.getElementById('authShiftCancel').onclick=()=>{authPendingUser=null;authScreen='login';renderAuthGate();};
   return;
  }
- const change=!AUTH_TEST_PASSWORDLESS&&authScreen==='change';
  gate.innerHTML=`<div class="auth-card"><div class="auth-language"><button type="button" data-auth-lang="zh">中文</button><button type="button" data-auth-lang="vi">Tiếng Việt</button></div>
- <h1>${authT(locked?'畫面已鎖定':change?'第一次登入：設定新密碼':'德曜精密｜人員登入',locked?'Màn hình đã khóa':change?'Lần đầu: đặt mật khẩu mới':'Đức Diệu｜Đăng nhập')}</h1>
- <p>${locked?`${authPerson(authSession.employeeId).employeeId}｜${authPerson(authSession.employeeId).name}`:AUTH_TEST_PASSWORDLESS?authT('請輸入員工編號；公司主帳號請輸入 admin。','Nhập mã nhân viên; tài khoản quản trị công ty nhập admin.'):authT('請輸入員工編號與密碼。','Nhập mã nhân viên và mật khẩu.')}</p>
- ${AUTH_TEST_PASSWORDLESS?'<div class="auth-test-warning" role="note">🧪 測試模式：目前免密碼登入，正式上線前必須恢復密碼驗證。<br>🧪 Chế độ thử nghiệm: Hiện đăng nhập không cần mật khẩu; phải khôi phục xác thực mật khẩu trước khi dùng chính thức.</div>':''}
+ <h1>${authT(locked?'畫面已鎖定':'德曜精密｜人員登入',locked?'Màn hình đã khóa':'Đức Diệu｜Đăng nhập')}</h1>
+ <p>${locked?`${authPerson(authSession.employeeId).employeeId}｜${authPerson(authSession.employeeId).name}`:authT('請輸入員工編號；公司主帳號請輸入 admin。','Nhập mã nhân viên; tài khoản quản trị công ty nhập admin.')}</p>
+ <p class="auth-note">${authT('一般員工以員工編號登入；公司主帳號保留密碼驗證。','Nhân viên đăng nhập bằng mã nhân viên; tài khoản quản trị công ty vẫn xác thực bằng mật khẩu.')}</p>
  <form id="authGateForm">
- ${!locked&&!change?`<label>${authT('員工編號','Mã nhân viên')}<input id="authLoginId" autocomplete="username" placeholder="DY003" required></label>`:''}
- ${AUTH_TEST_PASSWORDLESS?'':`<label>${authT(change?'新密碼':'密碼',change?'Mật khẩu mới':'Mật khẩu')}<input id="authLoginPassword" type="password" autocomplete="${change?'new-password':'current-password'}" required maxlength="128"></label>`}
- ${change?`<label>${authT('再次輸入新密碼','Nhập lại mật khẩu mới')}<input id="authRepeatPassword" type="password" autocomplete="new-password" required maxlength="128"></label>`:''}
- <button class="btn primary" id="authLoginSubmit">${authT(locked?'原使用者解鎖':change?'儲存新密碼並登入':'登入',locked?'Mở khóa':change?'Lưu và đăng nhập':'Đăng nhập')}</button></form>
+ ${!locked?`<label>${authT('員工編號','Mã nhân viên')}<input id="authLoginId" autocomplete="username" placeholder="DY003" required></label>`:''}
+ <label id="authLoginPasswordLabel" hidden>${authT('公司主帳號密碼','Mật khẩu quản trị công ty')}<input id="authLoginPassword" type="password" autocomplete="current-password" disabled maxlength="128"></label>
+ <button class="btn primary" id="authLoginSubmit">${authT(locked?'原使用者解鎖':'登入',locked?'Mở khóa':'Đăng nhập')}</button></form>
  <p id="authGateError" role="alert"></p>
  ${locked?`<button class="btn secondary" id="authSwitchUser">${authT('切換使用者','Đổi người dùng')}</button>`:''}
  <p class="auth-note">目前為單機測試版驗證，不等同正式伺服器身分驗證。<br>Chỉ xác thực thử trên một máy, không phải xác thực máy chủ chính thức.</p></div>`;
  gate.hidden=authActive();
  gate.querySelectorAll('[data-auth-lang]').forEach(b=>b.onclick=()=>{authLanguage=b.dataset.authLang;renderAuthGate();});
+ const updatePasswordField=()=>{
+  const needed=authRequiresPassword(locked?authSession.employeeId:document.getElementById('authLoginId').value);
+  const input=document.getElementById('authLoginPassword');
+  document.getElementById('authLoginPasswordLabel').hidden=!needed;input.disabled=!needed;input.required=needed;
+  if(!needed)input.value='';
+  if(!locked)document.getElementById('authLoginSubmit').textContent=needed?authT('登入','Đăng nhập'):authT('下一步：確認身分','Tiếp theo: xác nhận danh tính');
+ };
+ document.getElementById('authLoginId')?.addEventListener('input',updatePasswordField);
+ document.getElementById('authLoginId')?.addEventListener('change',updatePasswordField);
+ updatePasswordField();
  const handle=async fn=>{if(authBusy)return;authBusy=true;try{const result=await fn();if(!result?.ok)document.getElementById('authGateError').textContent=result?.message||'驗證失敗 / Không thành công';}catch(e){document.getElementById('authGateError').textContent=e.message;}finally{authBusy=false;}};
  document.getElementById('authGateForm').onsubmit=e=>{e.preventDefault();const pw=document.getElementById('authLoginPassword')?.value||'';
-  handle(()=>locked?authUnlock(pw):change?authChangeFirstPassword(pw,document.getElementById('authRepeatPassword').value):authLogin(document.getElementById('authLoginId').value,pw));};
+  handle(()=>locked?authUnlock(pw):authLogin(document.getElementById('authLoginId').value,pw));};
  document.getElementById('authSwitchUser')?.addEventListener('click',authGoSwitch);
  if(authAccountsError)document.getElementById('authGateError').textContent=authAccountsError;
  if(!AUTH_ENV_SUPPORTED){document.getElementById('authGateError').textContent=authT('目前登入功能需要安全瀏覽環境，本測試版請使用本機檔案或受信任HTTPS。','Cần môi trường an toàn. Hãy dùng tệp cục bộ hoặc HTTPS đáng tin cậy.');gate.querySelectorAll('input,button[type=submit],#authLoginSubmit').forEach(el=>el.disabled=true);}
@@ -2923,10 +2604,8 @@ function initializeAuthUI(){
  document.getElementById('authChangePersonShift').onclick=authChangePersonShift;
  new ResizeObserver(syncAuthHeaderHeight).observe(document.getElementById('authTopbar'));
  window.addEventListener('resize',syncAuthHeaderHeight);
- document.getElementById('authAccountForm').onsubmit=async e=>{e.preventDefault();const status=document.getElementById('authAccountStatus');
-  try{const r=await authSetTemporaryPassword(document.getElementById('authAccountSelect').value,document.getElementById('authTemporaryPassword').value);status.textContent=r.ok?'暫時密碼已建立，下次登入須變更。':r.message;document.getElementById('authTemporaryPassword').value='';}catch(e){status.textContent=e.message;}};
  document.getElementById('authReauthForm').onsubmit=async e=>{e.preventDefault();if(authBusy)return;authBusy=true;
-  try{if(await authReverify(document.getElementById('authReauthPassword').value)){const resolve=authReauthResolver;authReauthResolver=null;authCancelReverification();resolve?.(true);}else document.getElementById('authReauthError').textContent='目前登入主管的密碼不正確。';}finally{authBusy=false;document.getElementById('authReauthPassword').value='';}};
+  try{if(await authReverify(document.getElementById('authReauthPassword').value)){const resolve=authReauthResolver;authReauthResolver=null;authCancelReverification();resolve?.(true);}else document.getElementById('authReauthError').textContent='目前公司主帳號的密碼不正確。';}finally{authBusy=false;document.getElementById('authReauthPassword').value='';}};
  document.getElementById('authReauthCancel').onclick=authCancelReverification;
  document.getElementById('authProductionCorrectionBtn').onclick=openAuthProductionCorrection;
  document.getElementById('authCorrectionSubmit').onclick=confirmAuthProductionCorrection;
@@ -2978,12 +2657,11 @@ function migrateCompanyAccounts(){
    delete personnelStore[id];delete nextAccounts[id];appStorage.removeItem('deyao_test_personnel_lang_'+id);
   }
   for(const {salt,hash,...person} of pending){
-   personnelStore[person.employeeId]={...person,temporaryEmployeeId:false,status:'PENDING_FIRST_LOGIN',createdAt:now,updatedAt:now,createdBy:'SYSTEM_INITIAL'};
-   nextAccounts[person.employeeId]={salt,hash,iterations:120000,mustChange:true,updatedAt:now};
+   personnelStore[person.employeeId]={...person,temporaryEmployeeId:false,status:'ACTIVE',createdAt:now,updatedAt:now,createdBy:'SYSTEM_INITIAL'};
   }
   if(correctDy046){const before={...personnelStore.DY046};personnelStore.DY046={...before,name:'楊茗凱',updatedAt:now};adminAudit('CHANGE_NAME',personnelStore.DY046,{name:before.name},{name:'楊茗凱'},'員工姓名錯字修正');}
   authSaveAccounts(nextAccounts);adminSavePersonnel();
-  for(const {employeeId} of pending)adminAudit('CREATE_EMPLOYEE',personnelStore[employeeId],null,{...personnelStore[employeeId],passwordStatus:'待首次變更'},'初始名單匯入');
+  for(const {employeeId} of pending)adminAudit('CREATE_EMPLOYEE',personnelStore[employeeId],null,{...personnelStore[employeeId]},'初始名單匯入');
   appStorage.setItem(ADMIN_KEYS.seeded,'1');
  },languageKeys);
 }
@@ -3002,9 +2680,9 @@ async function adminCreateEmployee(id,name,roleCode,defaultLanguage){
  id=String(id||'').trim().toUpperCase();name=String(name||'').trim();
  if(/^TEST\d{3}$/.test(id))return {ok:false,message:'TEST 暫時編號已移除，請使用正式員工編號。'};
  if(!/^[A-Z0-9_.-]{1,40}$/.test(id)||personnelStore[id]||systemAdminAccount?.employeeId?.toUpperCase()===id)return {ok:false,message:'員工編號必填且不可重複，建立後不可直接更改。'};
- if(!adminNameValid(name)||!['owner','supervisor','operator','qualitySupervisor'].includes(roleCode)||!['zh','vi'].includes(defaultLanguage))return {ok:false,message:'姓名、合法角色、語言皆必填；姓名不可含HTML標記。'};
+ if(!adminNameValid(name)||!['operator','supervisor'].includes(roleCode)||!['zh','vi'].includes(defaultLanguage))return {ok:false,message:'姓名、合法角色、語言皆必填；姓名不可含HTML標記。'};
  const p={employeeId:id,name,roleCode,defaultLanguage,status:'ACTIVE',createdAt:appNow(),updatedAt:appNow(),createdBy:authSession.employeeId};
- if(!adminSummary('新增員工',p,null,{id,name,roleCode,defaultLanguage,status:'ACTIVE',passwordStatus:'尚未建立正式密碼'}))return {ok:false,message:'已取消。'};
+ if(!adminSummary('新增員工',p,null,{id,name,roleCode,defaultLanguage,status:'ACTIVE'}))return {ok:false,message:'已取消。'};
  adminCommit(()=>{personnelStore[id]=p;adminSavePersonnel();adminAudit('CREATE_EMPLOYEE',p,null,{...p},'主帳號新增員工');});
  renderAuthAccounts();return {ok:true};
 }
@@ -3013,7 +2691,7 @@ async function adminChangeEmployee(id,action,value,reason,ownPassword){
  reason=String(reason||'').trim();if(!reason||reason.length>200)return {ok:false,message:'修改原因必填（最多200字）。'};
  const p=personnelStore[id],before={status:p.status,roleCode:p.roleCode,name:p.name,defaultLanguage:p.defaultLanguage},after={...before};
  if(action==='DELETE_ACCOUNT'){
-  if(!confirm(`確定永久刪除 ${p.name}（${id}）的員工帳號與登入密碼？\n\n刪除後無法登入；生產與稽核歷史仍保留。\n刪除原因：${reason}`))return {ok:false,message:'已取消。'};
+  if(!confirm(`確定永久刪除 ${p.name}（${id}）的員工帳號？\n\n刪除後無法登入；生產與稽核歷史仍保留。\n刪除原因：${reason}`))return {ok:false,message:'已取消。'};
   const sessionId=authSession.id;
   if(!await adminVerifyOperation(ownPassword,'永久刪除帳號：'+id))return {ok:false,message:'請重新驗證目前公司主帳號本人。'};
   authAssertSession(sessionId);
@@ -3022,15 +2700,8 @@ async function adminChangeEmployee(id,action,value,reason,ownPassword){
   adminCommit(()=>{const next={...authAccounts};delete next[id];delete personnelStore[id];authSaveAccounts(next);adminSavePersonnel();appStorage.removeItem(languageKey);adminAudit('DELETE_ACCOUNT',p,before,{deleted:true},reason);},[languageKey]);
   renderAuthAccounts();return {ok:true};
  }
- if(action==='RESET_TEMP_PASSWORD'){
-  if(AUTH_TEST_PASSWORDLESS)return {ok:false,message:'測試階段暫停使用密碼管理。'};
-  if(!authPasswordValid(value))return {ok:false,message:'暫時密碼須8～128字元。'};
-  if(!adminSummary(action,p,{passwordStatus:authAccounts[id]?'已設定':'尚未建立'},{passwordStatus:'待首次登入（不顯示密碼）'}))return {ok:false,message:'已取消。'};
-  return authSetTemporaryPassword(id,value,ownPassword,reason);
- }
- if(action==='CHANGE_ROLE'){if(!['owner','supervisor','operator','qualitySupervisor'].includes(value))return {ok:false,message:'角色不合法。'};after.roleCode=value;}
+ if(action==='CHANGE_ROLE'){if(!['operator','supervisor'].includes(value))return {ok:false,message:'角色不合法。'};after.roleCode=value;}
  else if(action==='CHANGE_LANGUAGE'){if(!['zh','vi'].includes(value))return {ok:false,message:'語言不合法。'};after.defaultLanguage=value;}
- else if(action==='CHANGE_NAME'){value=String(value||'').trim();if(!adminNameValid(value))return {ok:false,message:'姓名必填（最多60字），不可含HTML標記。'};after.name=value;}
  else return {ok:false,message:'不支援此管理操作。'};
  if(!adminSummary(action,p,before,after))return {ok:false,message:'已取消。'};
  const sessionId=authSession.id;
@@ -3047,7 +2718,7 @@ async function adminChangeSelf(action,value,reason,ownPassword){
  const p=systemAdminAccount,sessionId=authSession.id;reason=String(reason||'').trim();
  if(!reason||reason.length>200)return {ok:false,message:'原因必填。'};
  if(action==='SYSTEM_ADMIN_NAME_CHANGED'){value=String(value||'').trim();if(!adminNameValid(value))return {ok:false,message:'名稱必填（最多60字），不可含HTML標記。'};}
- else if(action==='SYSTEM_ADMIN_PASSWORD_CHANGED'){if(AUTH_TEST_PASSWORDLESS)return {ok:false,message:'測試階段暫停使用密碼管理。'};if(typeof value!=='string'||value.length<12||value.length>128)return {ok:false,message:'主帳號密碼須12～128字元。'};}
+ else if(action==='SYSTEM_ADMIN_PASSWORD_CHANGED'){if(typeof value!=='string'||value.length<12||value.length>128)return {ok:false,message:'主帳號密碼須12～128字元。'};}
  else return {ok:false,message:'不支援此主帳號設定。'};
  const before=action==='SYSTEM_ADMIN_NAME_CHANGED'?{name:p.name}:{passwordStatus:'已設定（不顯示）'},after=action==='SYSTEM_ADMIN_NAME_CHANGED'?{name:value}:{passwordStatus:'新密碼（不顯示）'};
  if(!adminSummary(action,p,before,after)||!await adminVerifyOperation(ownPassword,'公司主帳號設定'))return {ok:false,message:'請再次驗證目前公司主帳號本人。'};
@@ -3057,18 +2728,15 @@ async function adminChangeSelf(action,value,reason,ownPassword){
  authApplyAccess();return {ok:true};
 }
 function initializeAdminUI(){
- document.getElementById('authPasswordPauseNote').hidden=!AUTH_TEST_PASSWORDLESS;
- document.querySelector('#adminAction option[value="RESET_TEMP_PASSWORD"]').hidden=AUTH_TEST_PASSWORDLESS;
- document.querySelector('#adminSelfAction option[value="SYSTEM_ADMIN_PASSWORD_CHANGED"]').hidden=AUTH_TEST_PASSWORDLESS;
- if(AUTH_TEST_PASSWORDLESS)document.getElementById('adminAction').value='CHANGE_NAME';
+ document.getElementById('adminAction').value='CHANGE_ROLE';
  const status=r=>document.getElementById('authAccountStatus').textContent=r.ok?'管理操作完成。':r.message;
  let busy=false;
  const handle=async fn=>{if(busy)return;busy=true;try{status(await fn());}catch(e){status({message:e.message});}finally{busy=false;}};
  document.getElementById('adminCreateForm').onsubmit=e=>{e.preventDefault();handle(()=>adminCreateEmployee(document.getElementById('adminNewId').value,document.getElementById('adminNewName').value,document.getElementById('adminNewRole').value,document.getElementById('adminNewLanguage').value));};
  document.getElementById('adminEditForm').onsubmit=e=>{e.preventDefault();const action=document.getElementById('adminAction').value;
-  const value=action==='CHANGE_ROLE'?document.getElementById('adminRole').value:action==='CHANGE_LANGUAGE'?document.getElementById('adminLanguage').value:document.getElementById('adminValue').value;
-  handle(async()=>{const r=await adminChangeEmployee(document.getElementById('authAccountSelect').value,action,value,document.getElementById('adminReason').value);document.getElementById('adminValue').value='';return r;});};
- document.getElementById('adminAction').onchange=()=>{const a=document.getElementById('adminAction').value;document.getElementById('adminValue').type=a==='RESET_TEMP_PASSWORD'?'password':'text';document.getElementById('adminValueLabel').hidden=!['RESET_TEMP_PASSWORD','CHANGE_NAME'].includes(a);document.getElementById('adminRole').parentElement.hidden=a!=='CHANGE_ROLE';document.getElementById('adminLanguage').parentElement.hidden=a!=='CHANGE_LANGUAGE';};
+  const value=action==='CHANGE_ROLE'?document.getElementById('adminRole').value:action==='CHANGE_LANGUAGE'?document.getElementById('adminLanguage').value:'';
+  handle(async()=>{const r=await adminChangeEmployee(document.getElementById('authAccountSelect').value,action,value,document.getElementById('adminReason').value);return r;});};
+ document.getElementById('adminAction').onchange=()=>{const a=document.getElementById('adminAction').value;document.getElementById('adminRole').parentElement.hidden=a!=='CHANGE_ROLE';document.getElementById('adminLanguage').parentElement.hidden=a!=='CHANGE_LANGUAGE';};
  document.getElementById('adminAction').onchange();
  document.getElementById('adminSelfAction').onchange=()=>document.getElementById('adminSelfValue').type=document.getElementById('adminSelfAction').value==='SYSTEM_ADMIN_PASSWORD_CHANGED'?'password':'text';
  document.getElementById('adminSelfForm').onsubmit=e=>{e.preventDefault();handle(async()=>{const r=await adminChangeSelf(document.getElementById('adminSelfAction').value,document.getElementById('adminSelfValue').value,document.getElementById('adminSelfReason').value);document.getElementById('adminSelfValue').value='';return r;});};
@@ -4594,72 +4262,6 @@ function liveDown(m){
  return m.status==='停機'&&m.downStart ? base+Math.floor((appNow()-m.downStart)/60000) : base;
 }
 
-function isAbnormalForOwner(m){
- return ['停機','品質異常','待料'].includes(m.status);
-}
-function abnormalDetail(m){
- if(m.status==='停機') return `${downtimeReasonText(m.downReason||'停機',m.downReasonDetail||'',m.downToolNumber||'')} · 已停 ${Math.max(0,Math.floor((appNow()-m.downStart)/60000))} 分`;
- if(m.status==='品質異常') return `當班異常 ${m.defectShift} PCS`;
- if(m.status==='待料') return `等待材料`;
- return m.status;
-}
-function formatAge(a){
- if(a<60) return `${a} 分鐘`;
- const h=Math.floor(a/60), mm=a%60;
- return mm?`${h} 小時 ${mm} 分`:`${h} 小時`;
-}
-function showIssueList(type){
- let list=[], title='';
- if(type==='abnormal'){
-   list=machines.filter(isAbnormalForOwner);
-   title=`異常 / 停機機台（${list.length}）`;
- }else{
-   list=machines.filter(m=>ageMin(m)>120);
-   title=`資料過期機台（${list.length}）`;
- }
- issueModalTitle.textContent=title;
- if(!list.length){
-   issueModalBody.innerHTML='<div class="note">目前沒有符合條件的機台。</div>';
- }else if(type==='abnormal'){
-   issueModalBody.innerHTML=`
-    <div class="issue-list">
-     <div class="issue-row issue-head"><div>機台</div><div>狀態</div><div class="hide-mobile">原因 / 狀況</div><div class="hide-mobile">製令</div><div>資料</div></div>
-     ${list.map(m=>{
-       const f=freshInfo(m);
-       return `<div class="issue-row" data-machine="${m.id}">
-        <div><b>${m.id}</b></div>
-        <div>${badge(m.status)}</div>
-        <div class="hide-mobile">${abnormalDetail(m)}</div>
-        <div class="hide-mobile">${m.wo}</div>
-        <div><span class="${f.cls}">${f.txt}</span></div>
-       </div>`;
-     }).join('')}
-    </div>`;
- }else{
-   issueModalBody.innerHTML=`
-    <div class="issue-list">
-     <div class="issue-row issue-head"><div>機台</div><div>最後更新</div><div class="hide-mobile">已過多久</div><div class="hide-mobile">目前狀態</div><div>製令</div></div>
-     ${list.sort((a,b)=>ageMin(b)-ageMin(a)).map(m=>{
-       const a=ageMin(m);
-       return `<div class="issue-row" data-machine="${m.id}">
-        <div><b>${m.id}</b></div>
-        <div>${new Date(m.lastUpdate).toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'})}</div>
-        <div class="hide-mobile fresh-bad">${formatAge(a)}</div>
-        <div class="hide-mobile">${badge(m.status)}</div>
-        <div>${m.wo}</div>
-       </div>`;
-     }).join('')}
-    </div>`;
- }
- issueModalBody.querySelectorAll('.issue-row[data-machine]').forEach(el=>{
-   el.onclick=()=>{
-     issueModal.classList.remove('open');
-     showDetail(el.dataset.machine);
-   };
- });
- issueModal.classList.add('open');
-}
-
 function liveWaitSetup(m){
  const base=m.waitSetup||0;
  return (m.status==='待換線／待校車' && m.waitSetupStart) ? base+Math.floor((appNow()-m.waitSetupStart)/60000) : base;
@@ -4681,23 +4283,6 @@ function pendingOverdueMinutes(m,ts=appNow()){
 function pendingOverdueDue(m,ts=appNow()){
  const p=m.pendingTakeover;
  return !!(m.status==='生產中'&&p&&!m.settlementDecision&&ts-p.cutTime>30*60000);
-}
-function renderPendingOverdue(ts=appNow()){
- const panel=document.getElementById('pendingOverduePanel');
- if(!panel)return;
- panel.hidden=!authCan('canCorrectProduction');
- if(panel.hidden){panel.innerHTML='';return;}
- const pending=machines.filter(m=>pendingOverdueDue(m,ts));
- panel.innerHTML=pending.map(m=>{
-  const p=m.pendingTakeover;
-  return `<div class="pending-review-card">
-   <strong>⚠️ ${escapeHTML(m.id)}｜待接手逾時</strong>
-   <small>上一位 ${escapeHTML(p.settledBy||'-')}｜結算 ${new Date(p.cutTime).toLocaleString('zh-TW',{hour12:false})}｜已待接手 ${pendingOverdueMinutes(m,ts)} 分鐘</small>
-   <small>結算累積 ${p.cutCum} PCS｜目前累積 ${m.cum} PCS｜待接手產量 ${pendingTakeoverStats(m,ts).output} PCS</small>
-   <button class="btn secondary" type="button" data-pending-action="take" data-machine="${escapeAttr(m.id)}">接手機台</button>
-   <button class="btn primary" type="button" data-pending-action="stop" data-machine="${escapeAttr(m.id)}">回報已停止</button>
-  </div>`;
- }).join('');
 }
 function pendingStopInputValue(ts){
  const d=new Date(ts);
@@ -5060,20 +4645,12 @@ async function confirmPendingStop(){
  }catch(e){if(snapshot)restoreActionState(snapshot);error.textContent='停機登錄未完成：'+e.message;return false;}
  finally{button.disabled=false;}
 }
-function handlePendingOverdueClick(e){
- const b=e.target.closest('button[data-pending-action]');if(!b)return;
- if(b.dataset.pendingAction==='stop')openPendingStopModal(b.dataset.machine);
- if(b.dataset.pendingAction==='take'&&authCan('canOperate')){
-  authShowView('operator');opMachine.value=b.dataset.machine;syncOpMachine();setAction('takeMachine');
- }
-}
-
 // Read-only UI projections: no storage writes, no changes to calculation helpers.
 function rtEsc(v){return escapeHTML(String(v??'—'));}
 function rtApplyAccess(){
  if(authAllowedView('owner'))return;
- document.getElementById('detailModal').classList.remove('open');document.getElementById('issueModal').classList.remove('open');
- for(const id of ['modalBody','machineCards','alerts','rtKpis','rtBasis','rtLegacySummary','pendingOverduePanel'])document.getElementById(id).innerHTML='';
+ document.getElementById('detailModal').classList.remove('open');
+ for(const id of ['modalBody','machineCards','alerts','rtKpis','rtBasis'])document.getElementById(id).innerHTML='';
 }
 function rtNum(v){return typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('zh-TW',{maximumFractionDigits:2}):'—';}
 function rtPerson(m){
@@ -5132,9 +4709,6 @@ function renderOwner(){
  document.getElementById('rtIssueCount').textContent='（'+issues.length+' 台）';
  alerts.innerHTML=issues.map(d=>'<button class="rt-issue '+(d.rank<2?'rt-critical':'')+'" type="button" data-machine="'+escapeAttr(d.m.id)+'"><strong>'+rtEsc(d.m.id)+'｜'+rtEsc(d.m.status)+'</strong><small>'+rtEsc(d.operator)+'｜'+rtEsc(d.shift)+'｜'+rtEsc(d.m.wo)+'｜'+rtEsc(d.name)+'</small><b>'+rtEsc(d.issues.map(i=>i.text).join(' · '))+'</b></button>').join('')||'<p class="rt-note">目前沒有符合優先處理條件的機台。</p>';
  alerts.querySelectorAll('[data-machine]').forEach(b=>b.onclick=()=>rtLocate(b.dataset.machine));
- const out=machines.reduce((n,m)=>n+shiftOutput(m),0),exp=machines.reduce((n,m)=>n+expectedNow(m),0);
- document.getElementById('rtLegacySummary').textContent='原看板口徑（連續機台紀錄，非今日／個人）：本班總產量 '+rtNum(out)+' PCS｜目前分段應達 '+rtNum(exp)+' PCS｜即時達成率 '+(exp>0?(out/exp*100).toFixed(1)+'%':'—')+'｜原異常／停機 '+machines.filter(isAbnormalForOwner).length+' 台｜超過2小時未更新 '+data.filter(d=>d.age>120).length+' 台。';
- renderPendingOverdue();
 }
 function rtDetails(d){
  const m=d.m,p=d.p;
@@ -5545,16 +5119,11 @@ function applyOperatorLanguage(){
  prevHandoffTitle.textContent=opT('上一班結算資訊','Kết quả ca trước');
  recentTitle.textContent=opT('最近紀錄','Lịch sử gần đây');
  if(typeof recentLimitNote!=='undefined') recentLimitNote.textContent=opT('只顯示目前機台最近 10 筆，方便立刻檢查有沒有輸錯。','Chỉ hiển thị 10 thao tác gần nhất của máy hiện tại để dễ kiểm tra nhập sai.');
- if(typeof sumStartLabel!=='undefined') sumStartLabel.textContent=opT('產量歸屬起點','Mốc bắt đầu tính sản lượng');
  if(typeof sumCurrentLabel!=='undefined') sumCurrentLabel.textContent=opT('目前累積','Hiện tại');
  if(typeof sumOutputLabel!=='undefined') sumOutputLabel.textContent=opT('目前人員產量','Sản lượng người hiện tại');
  if(typeof sumDefectLabel!=='undefined') sumDefectLabel.textContent=opT('異常','Hàng lỗi');
  if(typeof sumGoodLabel!=='undefined') sumGoodLabel.textContent=opT('良品','Hàng tốt');
  if(typeof sumDownLabel!=='undefined') sumDownLabel.textContent=opT('個人停機','Dừng máy cá nhân');
- if(typeof sumModeLabel!=='undefined') sumModeLabel.textContent=opT('加工模式','Chế độ');
- if(typeof sumShiftStateLabel!=='undefined') sumShiftStateLabel.textContent=opT('實際班別狀態','Trạng thái ca thực tế');
- if(typeof sumReportSegmentLabel!=='undefined') sumReportSegmentLabel.textContent=opT('報表區段','Phân đoạn báo cáo');
- if(typeof sumPostSettleLabel!=='undefined') sumPostSettleLabel.textContent=opT('待接手產量','Sản lượng chờ nhận');
  if(typeof sumSegmentTargetLabel!=='undefined') sumSegmentTargetLabel.textContent=opT('目前人員應達','Mục tiêu người hiện tại');
  if(typeof sumPersonRateLabel!=='undefined') sumPersonRateLabel.textContent=opT('目前人員達成率','Tỷ lệ đạt của người hiện tại');
  syncOperator();
@@ -5571,16 +5140,11 @@ function renderOperatorSummary(m){
  const person=currentPersonStats(m);
  const pending=pendingTakeoverStats(m);
  const defect=s?(s.defect||0):0;
- if(typeof sumStart!=='undefined') sumStart.textContent=person.startCum!==null&&person.startCum!==undefined?`${person.startCum} PCS`:'-';
  if(typeof sumCurrent!=='undefined') sumCurrent.textContent=`${m.cum} PCS`;
  if(typeof sumOutput!=='undefined') sumOutput.textContent=m.responsible?(person.output===null?opT('待確認','Chờ xác nhận'):`${person.output} PCS`):'-';
  if(typeof sumDefect!=='undefined') sumDefect.textContent=s?`${defect} PCS`:'-';
  if(typeof sumGood!=='undefined') sumGood.textContent=m.responsible?(person.output===null?opT('待確認','Chờ xác nhận'):`${Math.max(0,person.output)} PCS`):'-';
  if(typeof sumDown!=='undefined') sumDown.textContent=operatorLang==='vi'?`${person.downMinutes??0} phút`:`${person.downMinutes??0} 分`;
- if(typeof sumMode!=='undefined') sumMode.textContent=opT(m.processMode,m.processMode==='機械手'?'Robot':'Thủ công');
- if(typeof sumShiftState!=='undefined') sumShiftState.textContent=autoShiftStateTextBi(m);
- if(typeof sumReportSegment!=='undefined') sumReportSegment.textContent=reportSegmentTextBi(m);
- if(typeof sumPostSettle!=='undefined') sumPostSettle.textContent=m.pendingTakeover?`${pending.output} PCS`:'0 PCS';
  if(typeof sumSegmentTarget!=='undefined'){
    sumSegmentTarget.textContent=m.responsible?(person.needsRetakeover?opT('舊資料需重新接手','Cần nhận lại máy'):`${person.target} PCS`):'-';
    sumSegmentTarget.title=m.responsible
@@ -6156,7 +5720,7 @@ function requestSupervisorUnlock(m,q,risk,context='更新數量'){
   主管解鎖門檻：約 +${risk.extremeThreshold} PCS
  `;
  supervisorUnlockModal.classList.add('open');
- setTimeout(()=>(AUTH_TEST_PASSWORDLESS?supervisorUnlockReason:supervisorUnlockPin)?.focus(),50);
+ setTimeout(()=>supervisorUnlockReason?.focus(),50);
 
  return new Promise(resolve=>{
   supervisorUnlockResolver=resolve;
@@ -6397,7 +5961,7 @@ function renderOpMachineEmpty(){
  const hint='請先選擇機台 / Vui lòng chọn máy trước';
  opWO.value='';
  for(const id of ['opProdDate','opShift','opReportSegment','opResponsible','opStartCum','opHeroMachine','opHeroShift','opHeroWO',
-  'sumStart','sumCurrent','sumOutput','sumDefect','sumGood','sumDown','sumMode','sumShiftState','sumReportSegment','sumPostSettle','sumSegmentTarget','sumPersonRate']){
+  'sumCurrent','sumOutput','sumDefect','sumGood','sumDown','sumSegmentTarget','sumPersonRate']){
   const el=document.getElementById(id);if(el){el.textContent='-';el.removeAttribute('title');}
  }
  opHeroOperator.textContent=currentOperator().name;
@@ -7396,7 +6960,7 @@ function openDefectCorrection(eventId){
  const info=effectiveDefectInfo(e);
  const supervisors=operators.filter(o=>o.role==='主管');
  defectCorrectionSupervisor.innerHTML=personnelOption(currentOperator());defectCorrectionSupervisor.disabled=true;
- defectCorrectionPin.closest('label').hidden=AUTH_TEST_PASSWORDLESS||!authProtectedDefect(e);
+ defectCorrectionPin.closest('label').hidden=!authRequiresPassword(authSession?.employeeId)||!authProtectedDefect(e);
  const current=currentOperator();
  if(current.roleCode==='systemAdmin'||(current.role==='主管'&&supervisors.some(o=>o.name===current.name)))defectCorrectionSupervisor.value=current.name;
 
@@ -7421,7 +6985,7 @@ function openDefectCorrection(eventId){
   ${info.corrected?`<br>已修正：${info.correctionCount} 次`:''}
  `;
  defectCorrectionModal.classList.add('open');
- setTimeout(()=>(AUTH_TEST_PASSWORDLESS?defectCorrectionQty:defectCorrectionPin)?.focus(),50);
+ setTimeout(()=>(defectCorrectionPin.closest('label').hidden?defectCorrectionQty:defectCorrectionPin)?.focus(),50);
 }
 
 function showDefectCorrectionError(msg){
@@ -8912,9 +8476,17 @@ function exportMonth(){
 }
 
 function renderAll(){machines.forEach(refreshTargetReached);renderOwner();renderCards();renderLog();renderHistory();renderDefectRecords();renderWorkOrderHistory();renderShiftRecords();renderResponsibilityHistory();renderMonthly();syncOpMachinePicker();}
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>authShowView(t.dataset.view));
+document.querySelectorAll('.tab[data-view]').forEach(t=>t.onclick=()=>authShowView(t.dataset.view));
+document.getElementById('recordsToggle').addEventListener('click',()=>{
+ const open=document.getElementById('recordsNav').hidden;setRecordsNavOpen(open,open);
+});
+document.getElementById('recordsToggle').addEventListener('keydown',e=>{
+ if(e.key==='ArrowDown'){e.preventDefault();setRecordsNavOpen(true,true);}
+});
+document.getElementById('authTopbar').addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&!document.getElementById('recordsNav').hidden){e.preventDefault();setRecordsNavOpen(false);document.getElementById('recordsToggle').focus();}
+});
 document.querySelectorAll('.action-btn').forEach(b=>b.onclick=()=>setAction(b.dataset.action));
-document.getElementById('pendingOverduePanel').onclick=handlePendingOverdueClick;
 document.getElementById('pendingStopClose').onclick=cancelPendingStop;
 document.getElementById('pendingStopCancel').onclick=cancelPendingStop;
 document.getElementById('pendingStopConfirm').onclick=confirmPendingStop;
@@ -8975,8 +8547,6 @@ submitAction.onclick=async()=>{
 };histSearch.oninput=renderHistory;histAction.onchange=renderHistory;defectSearch.oninput=renderDefectRecords;defectStatusFilter.onchange=renderDefectRecords;workOrderSearch.oninput=renderWorkOrderHistory;workOrderStatusFilter.onchange=renderWorkOrderHistory;shiftSearch.oninput=renderShiftRecords;shiftFilter.onchange=renderShiftRecords;
 document.querySelectorAll('#reportFilters input,#reportFilters select').forEach(el=>el.addEventListener('input',renderShiftRecords));
 
-closeIssueModal.onclick=()=>issueModal.classList.remove('open');
-issueModal.onclick=e=>{if(e.target===issueModal)issueModal.classList.remove('open')};
 closeModal.onclick=()=>detailModal.classList.remove('open');detailModal.onclick=e=>{if(e.target===detailModal)detailModal.classList.remove('open')};
 function updateClock(){
  clock.textContent=appDate().toLocaleString('zh-TW',{hour12:false})+'｜'+shiftName();
@@ -9015,73 +8585,6 @@ fillMachineSelect();
 opMachine.dataset.prev=opMachine.value;
 document.getElementById('resetTestData')?.addEventListener('click',resetLocalTestData);
 document.getElementById('loadDemoData')?.addEventListener('click',loadDemoTestData);
-
-function refreshErpPreviewDemo(){
- const rows=[...document.querySelectorAll('#erpPreviewRows .erp-preview-row')];
- let selected=0,need=0;
- rows.forEach(row=>{
-  const checked=row.querySelector('.erp-row-check')?.checked;
-  if(checked)selected++;
-  const machine=(row.querySelector('.erp-demo-machine')?.value||'').trim();
-  const program=(row.querySelector('.erp-demo-program')?.value||'').trim();
-  const cycleRaw=(row.querySelector('.erp-demo-cycle')?.value||'').trim();
-  const mode=(row.querySelector('.erp-demo-mode')?.value||'').trim();
-  const cycle=Number(cycleRaw);
-  const ok=!!machine && !!program && cycleRaw!=='' && Number.isFinite(cycle) && cycle>0 && !!mode;
-  const badge=row.querySelector('.erp-status');
-  if(badge){
-   badge.textContent=ok?'可匯入':'需補資料';
-   badge.className='erp-status '+(ok?'ready':'need');
-  }
-  if(!ok)need++;
- });
- const count=document.getElementById('erpPreviewSelectedCount');
- if(count)count.textContent=`已選 ${selected} 筆`;
- const needEl=document.getElementById('erpNeedCount');
- if(needEl)needEl.textContent=String(need);
-}
-document.getElementById('erpPreviewChooseFile')?.addEventListener('click',()=>document.getElementById('erpPreviewFile')?.click());
-document.getElementById('erpPreviewFile')?.addEventListener('change',e=>{
- const file=e.target.files?.[0];
- if(file){
-  const el=document.getElementById('erpPreviewFileName');
-  if(el)el.textContent=`已選擇：${file.name}（示意版不解析檔案）`;
- }
- e.target.value='';
-});
-document.querySelectorAll('#erpPreviewRows input,#erpPreviewRows select').forEach(el=>{
- el.addEventListener('input',refreshErpPreviewDemo);
- el.addEventListener('change',refreshErpPreviewDemo);
-});
-document.getElementById('erpPreviewSelectAll')?.addEventListener('click',()=>{
- document.querySelectorAll('#erpPreviewRows .erp-row-check').forEach(x=>x.checked=true);
- refreshErpPreviewDemo();
-});
-document.getElementById('erpPreviewClearAll')?.addEventListener('click',()=>{
- document.querySelectorAll('#erpPreviewRows .erp-row-check').forEach(x=>x.checked=false);
- refreshErpPreviewDemo();
-});
-document.getElementById('erpPreviewReset')?.addEventListener('click',()=>{
- document.querySelectorAll('#erpPreviewRows .erp-preview-row').forEach(row=>{
-  const ck=row.querySelector('.erp-row-check'); if(ck)ck.checked=true;
-  const m=row.querySelector('.erp-demo-machine'); if(m)m.value='';
-  const p=row.querySelector('.erp-demo-program'); if(p)p.value='';
-  const c=row.querySelector('.erp-demo-cycle'); if(c)c.value='';
-  const mode=row.querySelector('.erp-demo-mode'); if(mode)mode.value='';
- });
- const f=document.getElementById('erpPreviewFileName');
- if(f)f.textContent='目前示意資料來源：RptProduceDetail.xlsx';
- refreshErpPreviewDemo();
-});
-document.getElementById('erpPreviewConfirm')?.addEventListener('click',()=>{
- const rows=[...document.querySelectorAll('#erpPreviewRows .erp-preview-row')];
- const selected=rows.filter(r=>r.querySelector('.erp-row-check')?.checked);
- const ready=selected.filter(r=>r.querySelector('.erp-status')?.classList.contains('ready'));
- const need=selected.length-ready.length;
- alert(`這是 ERP 匯入畫面示意版，不會真的寫入系統。\n\n目前選取：${selected.length} 筆\n資料已補齊：${ready.length} 筆\n仍需補資料：${need} 筆\n\n等你與老闆／同事確認流程後，再決定是否把正式匯入功能加入網站。`);
-});
-refreshErpPreviewDemo();
-
 
 document.getElementById('enterCleanTestMode')?.addEventListener('click',enterCleanTestMode);
 document.getElementById('downloadJsonBackup')?.addEventListener('click',downloadJsonBackup);
